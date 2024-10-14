@@ -68,3 +68,6 @@
     @apply bg-background text-foreground;
   }
 }
+:root{
+  font-family: "Outfit", serif;
+}

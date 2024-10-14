@@ -1,7 +1,10 @@
-//Importing essestial components and modules 
-import { useState } from "react";
+//Importing essestial components and modules
+import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import {axios_instance} from "../../Config/axios_instance"
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import * as yup from "yup";
 import {
   Card,
   CardContent,
@@ -9,19 +12,61 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { EyeIcon, EyeOffIcon } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Axis3DIcon, EyeIcon, EyeOffIcon } from "lucide-react";
 
 // Login component
-function Login() {
+function Login({ current_role }) {
+  //managing the role that was to change the submit route according to the role
+  const [role, setRole] = useState("");
+  //manageing the api routes to sent the data based on the role
+  const [login_api, setLogin_api] = useState("");
+  //State for managing login_data.
+  const [login_data, SetLogin_data] = useState({
+    email: "",
+    password: "",
+  });
   //Declaring the state for show and hide password in password input.
   const [showPassword, setShowPassword] = useState(false);
 
+  useEffect(() => {
+    setRole(current_role);
+    //Setting the routes for specific roles
+    if(role === "student"){
+      setLogin_api("/api/student_login")
+    }else if(role === "instructor"){
+      setLogin_api("/api/instructor/instructor_login")
+    }else if(role === "admin"){
+      setLogin_api("/api/admin/admin_login")
+    }else{
+      setLogin_api("")
+    }
+  }, [role]);
+  
+  console.log(login_api);
+
   //Decalring functions for handle input change
-  const handle_Change = () => {};
+  const handle_Change = (e) => {
+    const { name, value } = e.target;
+    SetLogin_data({
+      ...login_data,
+      [name]: value,
+    });
+  };
+
+  console.log(login_data);
 
   //Decalring functions for handle form submit
-  const handle_Submit = () => {};
+  const handle_Submit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios_instance.post(login_api,login_data)
+      console.log(response);
+      
+    } catch (error) {
+      console.log(error);
+      
+    }
+  };
 
   //Login Component
   return (
@@ -36,7 +81,7 @@ function Login() {
         <CardContent className="space-y-4 sm:space-y-5 md:space-y-6 lg:space-y-7">
           {/* Form starts here */}
           <form
-            action=""
+            onSubmit={handle_Submit}
             className="space-y-4 sm:space-y-5 md:space-y-6 lg:space-y-7"
           >
             {/* email input */}
@@ -49,8 +94,11 @@ function Login() {
               </label>
               <Input
                 id="email"
+                name="email"
                 placeholder="your email"
                 type="email"
+                value={login_data?.email}
+                onChange={handle_Change}
                 className="h-10 sm:h-11 md:h-12 text-sm sm:text-base"
               />
             </div>
@@ -65,9 +113,12 @@ function Login() {
               <div className="relative">
                 <Input
                   id="password"
+                  name="password"
                   placeholder="your password"
                   //Checking the state if show and hide password is required
                   type={showPassword ? "text" : "password"}
+                  value={login_data.password}
+                  onChange={handle_Change}
                   className="h-10 sm:h-11 md:h-12 text-sm sm:text-base pr-10"
                 />
                 <button
