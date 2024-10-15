@@ -3,7 +3,7 @@ import Register from "../../Components/build/register";
 function Instructor_Register() {
   return (
     <>
-      <Register role={"Instructor"} />
+      <Register current_role={"instructor"} />
     </>
   );
 }

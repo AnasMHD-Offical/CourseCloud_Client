@@ -4,7 +4,7 @@ import React from "react";
 function Student_Register() {
   return (
     <>
-      <Register />
+      <Register current_role={"student"} />
     </>
   );
 }
