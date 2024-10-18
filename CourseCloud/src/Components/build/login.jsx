@@ -1,6 +1,6 @@
 //Importing essestial components and modules
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { axios_instance } from "../../Config/axios_instance";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -16,6 +16,7 @@ import {
 import { Axis3DIcon, EyeIcon, EyeOffIcon } from "lucide-react";
 import { Formik, Form, Field } from "formik";
 import { toast } from "sonner";
+import { jwtDecode } from "jwt-decode";
 
 //validation schema for login form
 const form_validation = yup.object({
@@ -43,8 +44,14 @@ function Login({ current_role }) {
   const [login_api, setLogin_api] = useState("");
   //state for manage the register route
   const [register_route, setResgister_route] = useState("");
+  //state for managing forgot password route based on role
+  const [forget_password_route, setForgot_password_route] = useState("");
   //Declaring the state for show and hide password in password input.
   const [showPassword, setShowPassword] = useState(false);
+  //state for manage google auth block for admin
+  const [is_admin, setIs_admin] = useState(true);
+  //Decalring navigate from useNavigate hook
+  const navigate = useNavigate();
 
   //useEffect hooks for handle role based login
   useEffect(() => {
@@ -53,11 +60,15 @@ function Login({ current_role }) {
     if (role === "student") {
       setLogin_api("/api/student_login");
       setResgister_route("/register");
+      setForgot_password_route("/forgot_password");
     } else if (role === "instructor") {
       setLogin_api("/api/instructor/instructor_login");
       setResgister_route("/instructor/register");
+      setForgot_password_route("/instructor/forgot_password");
     } else if (role === "admin") {
       setLogin_api("/api/admin/admin_login");
+      setForgot_password_route("/admin/forgot_password");
+      setIs_admin(false);
     } else {
       setLogin_api("");
     }
@@ -70,12 +81,41 @@ function Login({ current_role }) {
     try {
       //sending data to server in route :  /api/student_login
       const response = await axios_instance.post(login_api, values);
+      console.log("here");
+
+      console.log(response);
+
       //detructuring the success(bool),message(string) from the response
       const { success, message } = response?.data;
       //short circuting the success(bool) to show toaster
       success && toast.success(message);
     } catch (error) {
       //throw a toast error based on the error type
+      const { message } = error?.response?.data;
+      console.log(error);
+      console.log(error?.response?.data);
+      toast.error(message);
+    }
+  };
+  //Declare function to handle google_login and google_signup or register.
+  const handle_google_auth = async (credentialResponse) => {
+    try {
+      //Decoding the user credentials
+      const data = jwtDecode(credentialResponse.credential);
+      // console.log(data);
+      //Sending request to register and login the user
+      const response = await axios_instance.post("/google_auth", { data, role} );
+      console.log(response);
+      //Destructuring the resolved messages and success_status
+      const { success, message } = response?.data;
+      if (success) {
+        //throw a toaster for success indentification for user
+        toast.success(message);
+        //Navigate to home route when the user logged in.
+        navigate("/");
+      }
+    } catch (error) {
+      //Throw error based on the status and rejection message
       const { message } = error?.response?.data;
       console.log(error);
       toast.error(message);
@@ -173,8 +213,8 @@ function Login({ current_role }) {
                 </div>
                 {/* Navigate to forgot password if the user forgot the password */}
                 <Link
-                  href="#"
-                  className="text-sm sm:text-base text-gray-600 hover:underline block"
+                  to={forget_password_route}
+                  className="text-sm sm:text-base text-gray-600 hover:underline"
                 >
                   forgot password?
                 </Link>
@@ -192,25 +232,29 @@ function Login({ current_role }) {
         </CardContent>
         <CardFooter className="flex flex-col space-y-4 sm:space-y-5 md:space-y-6">
           {/* Option provided , when a user didn't have an account . He can navigate to the register page */}
-          <p className="text-sm sm:text-base text-center">
-            Don't have an account?{" "}
-            <Link
-              to={register_route}
-              className="text-neutral-900 font-bold hover:underline"
-            >
-              Register
-            </Link>
-          </p>
-          <div className="text-center text-sm sm:text-base">or</div>
+          {is_admin && (
+            <p className="text-sm sm:text-base text-center">
+              Don't have an account?{" "}
+              <Link
+                to={register_route}
+                className="text-neutral-900 font-bold hover:underline"
+              >
+                Register
+              </Link>
+            </p>
+          )}
+          {is_admin && (
+            <div className="text-center text-sm sm:text-base">or</div>
+          )}
           {/* Option to register and login with google */}
-          <GoogleLogin
-            onSuccess={(credentialResponse) => {
-              console.log(credentialResponse);
-            }}
-            onError={() => {
-              console.log("Login Failed");
-            }}
-          />
+          {is_admin && (
+            <GoogleLogin
+              onSuccess={handle_google_auth}
+              onError={() => {
+                console.log("Login Failed");
+              }}
+            />
+          )}
         </CardFooter>
       </Card>
     </div>

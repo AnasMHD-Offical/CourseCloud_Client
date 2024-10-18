@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import * as yup from "yup";
 import { Formik, Field, Form } from "formik";
 import { axios_instance } from "@/Config/axios_instance";
@@ -61,8 +61,8 @@ function Register({ current_role }) {
   //Declaring states for show password and hide password functionality in password input
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-
-
+  //Declaring navigate
+  const navigate = useNavigate();
   //use effect hook to handle some role based functionalities
   useEffect(() => {
     setRole(current_role);
@@ -91,18 +91,20 @@ function Register({ current_role }) {
 
   //Decalring functions for handle form submit
   const handle_Submit = async (values) => {
-    //setting form data with formik values 
-    setForm_data((prev) => (prev = values));
+    //setting form data with formik values
+    setForm_data(values);
 
-    //destructuring email and name from form_data 
-    const { email, name } = form_data;
-    
+    //destructuring email and name from form_data
+
     try {
       //send a request to the sent_otp server api .
       const response = await axios_instance.post(send_otp_route, {
-        email: email,
-        name: name,
+        email: values.email,
+        name: values.name,
+        For: "registration",
       });
+      console.log(response);
+      
       const { message, success } = response?.data;
       //checking the response resolved or not and proceed the otp_modal open
       if (success) {
@@ -112,13 +114,8 @@ function Register({ current_role }) {
     } catch (error) {
       //throw toast error corresponding to the error type
       const { message } = error?.response?.data;
-      if (error.status === 409) {
-        toast.error(message);
-      } else if (error.status === 500) {
-        toast.error(message);
-      } else {
-        toast.error("Something went wrong");
-      }
+      toast.error(message);
+      console.log(error);
     }
   };
   //Decalring function to validate otp
@@ -126,10 +123,11 @@ function Register({ current_role }) {
     try {
       //destructuring email from form data
       const { email } = form_data;
-      //sending a request to validate the entered otp from otp_modal to server route /api/validate_otp 
+      //sending a request to validate the entered otp from otp_modal to server route /api/validate_otp
       const response = await axios_instance.post(validate_otp_route, {
         email: email,
         otp: otp,
+        For: "registration",
       });
       //destructuring success(bool) and message(string)
       const { message, success } = response?.data;
@@ -147,13 +145,14 @@ function Register({ current_role }) {
   };
   //function to handle the resend otp logic
   const handle_resend_otp = async () => {
-    //dectructuring email and name from form data 
+    //dectructuring email and name from form data
     const { email, name } = form_data;
     try {
-      //sending request a to server to resent otp to the given email 
+      //sending request a to server to resent otp to the given email
       const response = await axios_instance.post(send_otp_route, {
         email: email,
         name: name,
+        For: "registration",
       });
       const { message, success } = response?.data;
       //checking the response and if it resolved then toast a success and open the otp entring modal
@@ -183,6 +182,7 @@ function Register({ current_role }) {
       if (success) {
         toast.success(message);
         setIs_modal_open(false);
+        navigate("/");
       }
     } catch (error) {
       //throw error based on the rejection and toast an error message.
@@ -344,7 +344,7 @@ function Register({ current_role }) {
           )}
         </Formik>
         <OTP_Modal
-        // props passing to the OTP_Modal component
+          // props passing to the OTP_Modal component
           isOpen={is_modal_open}
           onClose={() => setIs_modal_open(false)}
           email={form_data ? form_data.email : "email"}

@@ -7,16 +7,16 @@ import {
   DialogHeader,
   DialogTitle,
   DialogDescription,
-  DialogClose
+  DialogClose,
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
-import {X} from "lucide-react"
-
+import { X } from "lucide-react";
+import { useState, useRef, useEffect } from "react";
 //OTP_Modal component
 export function OTP_Modal({ isOpen, onClose, verify_otp, email, resend_otp }) {
-  //state for manage otp and timer. 
-  const [otp, setOtp] = useState(["", "", "", "", "",""]);
-  const [timer, setTimer] = useState(105); // 1.30 minutes
+  //state for manage otp and timer.
+  const [otp, setOtp] = useState(["", "", "", "", "", ""]);
+  const [timer, setTimer] = useState(90); // 1.30 minutes
 
   const inputRefs = useRef([]);
   //UseEffect hooks for handling timer
@@ -36,7 +36,7 @@ export function OTP_Modal({ isOpen, onClose, verify_otp, email, resend_otp }) {
       const newOtp = [...otp];
       newOtp[index] = value;
       setOtp(newOtp);
-      //moving to the next otp input after entering the value functionality 
+      //moving to the next otp input after entering the value functionality
       if (value !== "" && index < otp.length - 1) {
         inputRefs.current[index + 1].focus();
       }
@@ -45,12 +45,12 @@ export function OTP_Modal({ isOpen, onClose, verify_otp, email, resend_otp }) {
 
   //when we click backspace it it move on to the previous otp input
   const handleKeyDown = (index, e) => {
-    if (e.key === 'Backspace' && index > 0 && otp[index] === '') {
+    if (e.key === "Backspace" && index > 0 && otp[index] === "") {
       inputRefs.current[index - 1].focus();
     }
   };
 
-  //function to handle verify and submit otp  
+  //function to handle verify and submit otp
   const handleVerify = () => {
     const enteredOtp = otp.join("");
     if (enteredOtp.length === otp.length) {
@@ -60,14 +60,14 @@ export function OTP_Modal({ isOpen, onClose, verify_otp, email, resend_otp }) {
     }
   };
 
-  //function to resend otp 
+  //function to resend otp
   const handleResend = () => {
     setTimer(110);
-    setOtp(["", "", "", "", "",""]);
+    setOtp(["", "", "", "", "", ""]);
     resend_otp(); // Call the resendOtp function passed as prop
   };
 
-  //function to make the time format that want to display in the modal 
+  //function to make the time format that want to display in the modal
   const formatTime = (seconds) => {
     const min = Math.floor(seconds / 60)
       .toString()
@@ -78,11 +78,12 @@ export function OTP_Modal({ isOpen, onClose, verify_otp, email, resend_otp }) {
 
   //compoent OTP_Modal
   return (
-    <Dialog open={isOpen} >
+    <Dialog open={isOpen}>
       <DialogContent className="sm:max-w-[425px]">
-
         <DialogClose className="absolute top-3 right-3 z-10">
-            <button onClick={onClose}><X/></button>
+          <button onClick={onClose}>
+            <X />
+          </button>
         </DialogClose>
         <DialogHeader className="mb-5">
           <DialogTitle className="text-center font-extrabold text-3xl">
