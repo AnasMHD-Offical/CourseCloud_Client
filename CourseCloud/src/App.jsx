@@ -11,6 +11,8 @@ import { OTP_Modal } from "./Components/build/OTP_Modal";
 import Admin_Login from "./Pages/admin/Admin_Login";
 import Student_Forgot_password from "./Pages/student/Student_Forgot_password";
 import Student_Password_Reset from "./Pages/student/Student_Password_Reset";
+import Instructor_Forgot_Password from "./Pages/instructor/Instructor_Forgot_Password";
+import Instructor_Password_Reset from "./Pages/instructor/Instructor_Password_Reset";
 
 function App() {
   return (
@@ -27,6 +29,14 @@ function App() {
           <Route
             path="/instructor/register"
             element={<Instructor_Register />}
+          />
+          <Route
+            path="/instructor/forgot_password"
+            element={<Instructor_Forgot_Password />}
+          />
+          <Route
+            path="/instructor/password_reset"
+            element={<Instructor_Password_Reset />}
           />
         </Routes>
         <Routes>

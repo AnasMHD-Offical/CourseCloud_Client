@@ -211,7 +211,7 @@ export default function Password_reset_form({ current_role }) {
         subtitle={"Explore the courses"}
         description={"Login to your account with your new password"}
         buttonText={"Back to Login"}
-        current_role={"student"}
+        current_role={current_role}
       />
     </div>
   );

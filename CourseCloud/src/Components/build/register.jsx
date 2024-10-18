@@ -170,6 +170,8 @@ function Register({ current_role }) {
       } else {
         toast.error("Something went wrong");
       }
+      console.log(error);
+      
     }
   };
   //After verifing the otp sent a request including students data to register.
@@ -182,7 +184,7 @@ function Register({ current_role }) {
       if (success) {
         toast.success(message);
         setIs_modal_open(false);
-        navigate("/");
+        navigate(login_route);
       }
     } catch (error) {
       //throw error based on the rejection and toast an error message.
@@ -221,6 +223,7 @@ function Register({ current_role }) {
                   id="fullName"
                   name="name"
                   placeholder="your name"
+                  className="h-11"
                 />
                 {/* validation error throwing */}
                 {errors.name && touched.name && (
@@ -234,6 +237,7 @@ function Register({ current_role }) {
                   as={Input}
                   id="mobile"
                   placeholder="your mobile no."
+                  className="h-11"
                   name="mobile"
                   type="text"
                   maxLength="10"
@@ -252,6 +256,7 @@ function Register({ current_role }) {
                   as={Input}
                   id="email"
                   placeholder="your email"
+                  className="h-11"
                   type="email"
                   name="email"
                 />
@@ -269,6 +274,7 @@ function Register({ current_role }) {
                   as={Input}
                   id="dob"
                   placeholder="your date-of-birth"
+                  className="h-11"
                   type="date"
                   name="dob"
                 />
@@ -284,6 +290,7 @@ function Register({ current_role }) {
                   as={Input}
                   id="password"
                   placeholder="your password"
+                  className="h-11"
                   name="password"
                   // checking the state if show and hide password is required
                   type={showPassword ? "text" : "password"}
@@ -313,7 +320,8 @@ function Register({ current_role }) {
                 <Field
                   as={Input}
                   id="confirmPassword"
-                  placeholder="your password"
+                  placeholder="confirm your password"
+                  className="h-11"
                   name="confirmPassword"
                   //checking the state if show and hide password is required
                   type={showConfirmPassword ? "text" : "password"}
@@ -337,7 +345,7 @@ function Register({ current_role }) {
                   </div>
                 )}
               </div>
-              <Button className="w-full" type="submit" disabled={isSubmitting}>
+              <Button className="w-full h-11" type="submit" disabled={isSubmitting}>
                 Register
               </Button>
             </Form>

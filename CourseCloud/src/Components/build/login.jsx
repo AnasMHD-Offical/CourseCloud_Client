@@ -156,7 +156,7 @@ function Login({ current_role }) {
                     placeholder="your email"
                     type="email"
                     autoComplete="email"
-                    className="h-10 sm:h-11 md:h-12 text-sm sm:text-base"
+                    className="h-10 sm:h-11 text-sm sm:text-base"
                   />
                   {/* Showing the validation error message for email */}
                   {errors.email && touched.email && (
@@ -182,7 +182,7 @@ function Login({ current_role }) {
                       autoComplete="current-password"
                       //Checking the state if show and hide password is required
                       type={showPassword ? "text" : "password"}
-                      className="h-10 sm:h-11 md:h-12 text-sm sm:text-base pr-10"
+                      className="h-10 mb-2 sm:h-11 text-sm sm:text-base pr-10"
                     />
                     <button
                       type="button"
@@ -214,7 +214,7 @@ function Login({ current_role }) {
                 {/* Navigate to forgot password if the user forgot the password */}
                 <Link
                   to={forget_password_route}
-                  className="text-sm sm:text-base text-gray-600 hover:underline"
+                  className="text-sm sm:text-base  text-gray-600 hover:underline"
                 >
                   forgot password?
                 </Link>
@@ -222,7 +222,7 @@ function Login({ current_role }) {
                 <Button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full bg-black text-white hover:bg-gray-800 h-10 sm:h-11 md:h-12 text-sm sm:text-base"
+                  className="w-full bg-black text-white hover:bg-gray-800 h-10 sm:h-11 text-sm sm:text-base"
                 >
                   Login
                 </Button>
