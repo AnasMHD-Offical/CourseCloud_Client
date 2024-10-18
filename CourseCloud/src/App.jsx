@@ -13,6 +13,8 @@ import Student_Forgot_password from "./Pages/student/Student_Forgot_password";
 import Student_Password_Reset from "./Pages/student/Student_Password_Reset";
 import Instructor_Forgot_Password from "./Pages/instructor/Instructor_Forgot_Password";
 import Instructor_Password_Reset from "./Pages/instructor/Instructor_Password_Reset";
+import Admin_Forgot_Password from "./Pages/admin/Admin_Forgot_Password";
+import Admin_Password_Reset from "./Pages/admin/Admin_Password_Reset";
 
 function App() {
   return (
@@ -41,7 +43,8 @@ function App() {
         </Routes>
         <Routes>
           <Route path="/admin" element={<Admin_Login />} />
-          <Route />
+          <Route path="/admin/forgot_password" element={<Admin_Forgot_Password/>} />
+          <Route path="/admin/password_reset" element={<Admin_Password_Reset/>} />
         </Routes>
       </Router>
       {/* Toaster component */}

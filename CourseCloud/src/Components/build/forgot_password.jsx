@@ -55,6 +55,8 @@ export default function Forgot_Password({ current_role }) {
       setPassword_reset_navigate("/instructor/password_reset") 
     } else if (role === "admin") {
       setLogin_route("/admin");
+      setSend_otp_route("/api/admin/send_otp");
+      setValidate_otp_route("/api/admin/validate_otp");
       setPassword_reset_navigate("/admin/password_reset") 
     } else {
       setLogin_route("");

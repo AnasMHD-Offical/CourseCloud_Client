@@ -4,7 +4,7 @@ import React from 'react'
 function Admin_Login() {
   return (
     <>
-    <Login current_role={"admin"}/>
+      <Login current_role={"admin"}/>
     </>
   )
 }
