@@ -79,7 +79,7 @@ export function OTP_Modal({ isOpen, onClose, verify_otp, email, resend_otp }) {
   //compoent OTP_Modal
   return (
     <Dialog open={isOpen}>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[425px] rounded-md">
         <DialogClose className="absolute top-3 right-3 z-10">
           <button onClick={onClose}>
             <X />

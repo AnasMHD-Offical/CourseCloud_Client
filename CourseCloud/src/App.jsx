@@ -15,6 +15,7 @@ import Instructor_Forgot_Password from "./Pages/instructor/Instructor_Forgot_Pas
 import Instructor_Password_Reset from "./Pages/instructor/Instructor_Password_Reset";
 import Admin_Forgot_Password from "./Pages/admin/Admin_Forgot_Password";
 import Admin_Password_Reset from "./Pages/admin/Admin_Password_Reset";
+import Admin_Category from "./Pages/admin/Admin_Category";
 
 function App() {
   return (
@@ -45,6 +46,7 @@ function App() {
           <Route path="/admin" element={<Admin_Login />} />
           <Route path="/admin/forgot_password" element={<Admin_Forgot_Password/>} />
           <Route path="/admin/password_reset" element={<Admin_Password_Reset/>} />
+          <Route path="/admin/category_management" element={<Admin_Category/>} />
         </Routes>
       </Router>
       {/* Toaster component */}
