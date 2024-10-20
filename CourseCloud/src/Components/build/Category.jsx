@@ -8,6 +8,8 @@ import {
   Pencil,
   Trash2,
   Menu,
+  CirclePlus,
+  Delete,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -48,9 +50,16 @@ export default function Category() {
     title: "",
     description: "",
   });
+  const [is_sub_edit, setIs_sub_edit] = useState(false);
+  const [is_sub_btn_change, setIs_sub_btn_changed] = useState("Add");
+  const [sub_form_initial_value, setSub_form_initial_value] = useState({
+    title: "",
+    description: "",
+  });
   //State for managing category_id for edit each category.
   const [category_id, setCategory_id] = useState();
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [sub_id, setSub_id] = useState();
+  // const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   useEffect(() => {
     //function for get categories that added on db
@@ -83,6 +92,10 @@ export default function Category() {
           SetIs_category_changed(!is_category_changed);
           console.log(categories);
           toast.success(message);
+          setForm_initial_value({
+            title: "",
+            description: "",
+          });
         }
       }
     } catch (error) {
@@ -121,7 +134,7 @@ export default function Category() {
   };
 
   //Handle the change based on edit or add
-  const handle_edit_category = async (category) => {
+  const handle_edit_category = (category) => {
     setIs_edit(true);
     setBtn_change("Edit");
     setForm_initial_value({
@@ -133,7 +146,43 @@ export default function Category() {
   };
 
   //handle unlisting of category
-  const handle_unlist = async (category) => {};
+  const handle_category_delete = async (category) => {
+    try {
+      const response = await axios_instance.patch(
+        "/api/admin/delete_category",
+        { _id: category._id }
+      );
+      console.log(response);
+      const { success, message } = response?.data;
+      if (success) {
+        toast.success(message);
+        SetIs_category_changed(!is_category_changed);
+      }
+    } catch (error) {
+      const { message } = error?.response?.data;
+      toast.error(message);
+      console.log(error);
+    }
+  };
+  //handle listing of category
+  const handle_category_listing = async (category) => {
+    try {
+      const response = await axios_instance.patch(
+        "/api/admin/listing_category",
+        { _id: category._id }
+      );
+      console.log(response);
+      const { success, message } = response?.data;
+      if (success) {
+        toast.success(message);
+        SetIs_category_changed(!is_category_changed);
+      }
+    } catch (error) {
+      const { message } = error?.response?.data;
+      toast.error(message);
+      console.log(error);
+    }
+  };
 
   //Function to handle adding sub category
   const addSubcategory = async (category_id, values) => {
@@ -152,6 +201,10 @@ export default function Category() {
         const { success, message } = response?.data;
         if (success) {
           toast.success(message);
+          setSub_form_initial_value({
+            title: "",
+            description: "",
+          });
           SetIs_category_changed(!is_category_changed);
         }
         console.log(response);
@@ -182,7 +235,89 @@ export default function Category() {
     }
   };
 
+  //Function to edit sub category
+  const edit_subcategory = async (category_id, values) => {
+    try {
+      console.log(values);
+      console.log("Id :", category_id);
+      console.log("sub", sub_id);
+
+      const resposne = await axios_instance.put("api/admin/edit_sub_category", {
+        data: values,
+        _id: category_id,
+        sub_id: sub_id,
+      });
+      const { message, success } = resposne?.data;
+      if (success) {
+        toast.success(message);
+        setIs_sub_btn_changed("Add");
+        setIs_sub_edit(false);
+        setSub_form_initial_value({
+          title: "",
+          description: "",
+        });
+        SetIs_category_changed(!is_category_changed);
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error(error?.response?.data?.message);
+      SetIs_category_changed(!is_category_changed);
+    }
+  };
+
+  //Function to handle sub category datas edits 
+  const handle_edit_Sub_category = (subcategory) => {
+    setIs_sub_btn_changed("Edit");
+    setIs_sub_edit(true);
+    setSub_form_initial_value({
+      title: subcategory.title,
+      description: subcategory.description,
+    });
+    setSub_id(subcategory._id);
+  };
+  //Fucntion to handle sub category listing
+  const handle_sub_category_unlist = async (sub_category, category_id) => {
+    try {
+      console.log("SUb", sub_category);
+      console.log("Id", category_id);
+      const response = await axios_instance.put(
+        "api/admin/delete_sub_category",
+        { id: category_id, data: sub_category }
+      );
+      console.log(response);
+      const { success, message } = response?.data;
+      if (success) {
+        toast.success(message);
+        SetIs_category_changed(!is_category_changed);
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error(error?.response?.data?.message);
+    }
+  };
+  //Function to handle sub category unlisting
+  const handle_sub_category_listing = async (sub_category, category_id) => {
+    try {
+      console.log("SUb", sub_category);
+      console.log("Id", category_id);
+      const response = await axios_instance.put(
+        "api/admin/listing_sub_category",
+        { id: category_id, data: sub_category }
+      );
+      console.log(response);
+      const { success, message } = response?.data;
+      if (success) {
+        toast.success(message);
+        SetIs_category_changed(!is_category_changed);
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error(error?.response?.data?.message);
+    }
+  };
+
   //   const SidebarContent = () => (
+
   //     <nav>
   //       <ul className="space-y-2">
   //         {[
@@ -243,7 +378,7 @@ export default function Category() {
                         <li key={index}>
                           <button
                             href="#"
-                            className={`block py-2 w-52 rounded-md ${
+                            className={`block py-2 w-full rounded-md ${
                               item === "Category Management"
                                 ? "bg-neutral-950 text-white"
                                 : "text-gray-700 hover:bg-neutral-950 hover:text-neutral-50"
@@ -392,20 +527,27 @@ export default function Category() {
                         <Button
                           variant="ghost"
                           size="sm"
-                          onClick={() => handle_unlist(category)}
+                          onClick={() => category.status ? handle_category_delete(category) : handle_category_listing(category) }
                         >
-                          <Trash2 className="h-4 w-4" />
+                          {category.status ? (
+                            <Delete className="h-4 w-4" />
+                          ) : (
+                            <CirclePlus className="h-4 w-4" />
+                          )}
                         </Button>
                       </div>
                     </div>
                     <AccordionContent>
                       <p className="mb-4">{category.description}</p>
                       <Formik
-                        initialValues={form_initial_value}
+                        initialValues={sub_form_initial_value}
                         validationSchema={form_validation}
                         onSubmit={(values) =>
-                          addSubcategory(category._id, values)
+                          is_sub_edit
+                            ? edit_subcategory(category._id, values)
+                            : addSubcategory(category._id, values)
                         }
+                        enableReinitialize={true}
                       >
                         {({ errors, touched, isSubmitting }) => (
                           <Form className="space-y-4 mb-1">
@@ -440,8 +582,9 @@ export default function Category() {
                               disabled={isSubmitting}
                               className="mb-2"
                             >
-                              <PlusCircle className="mr-2 h-4 w-4" /> Add
-                              Subcategory
+                              <PlusCircle className="mr-2 h-4 w-4" />{" "}
+                              {`${is_sub_btn_change}
+                              Subcategory`}
                             </Button>
                           </Form>
                         )}
@@ -456,11 +599,35 @@ export default function Category() {
                               {subcategory.title}
                             </h4>
                             <div>
-                              <Button variant="ghost" size="sm">
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() =>
+                                  handle_edit_Sub_category(subcategory)
+                                }
+                              >
                                 <Pencil className="h-4 w-4" />
                               </Button>
-                              <Button variant="ghost" size="sm">
-                                <Trash2 className="h-4 w-4" />
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() =>
+                                  subcategory.status
+                                    ? handle_sub_category_unlist(
+                                        subcategory,
+                                        category._id
+                                      )
+                                    : handle_sub_category_listing(
+                                        subcategory,
+                                        category._id
+                                      )
+                                }
+                              >
+                                {subcategory.status ? (
+                                  <Delete className="h-4 w-4" />
+                                ) : (
+                                  <CirclePlus className="h-4 w-4" />
+                                )}
                               </Button>
                             </div>
                           </div>
