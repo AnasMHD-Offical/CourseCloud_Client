@@ -14,12 +14,21 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import {Link} from "react-router-dom"
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import {
+  Breadcrumb,
+  BreadcrumbPage,
+  BreadcrumbItem,
+  BreadcrumbList,
+  BreadcrumbLink,
+  BreadcrumbSeparator,
+} from "../ui/breadcrumb";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { axios_instance } from "@/Config/axios_instance";
 import { toast } from "sonner";
@@ -265,7 +274,7 @@ export default function Category() {
     }
   };
 
-  //Function to handle sub category datas edits 
+  //Function to handle sub category datas edits
   const handle_edit_Sub_category = (subcategory) => {
     setIs_sub_btn_changed("Edit");
     setIs_sub_edit(true);
@@ -349,383 +358,218 @@ export default function Category() {
   //   );
 
   return (
-    <div className="min-h-screen flex flex-col">
-      {/* Header */}
-      <header className="bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
-          <div className="flex items-center">
-            <Sheet>
-              <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" className="mr-2 md:hidden">
-                  <Menu className="h-6 w-6" />
-                </Button>
-              </SheetTrigger>
-              <SheetContent
-                side="left"
-                className="w-[265px] sm:w-[300px] bg-neutral-100"
-              >
-                <aside className="w-56 bg-neutral-100 py-4 px-1">
-                  <nav>
-                    <ul className="space-y-2">
-                      {[
-                        "Dashboard",
-                        "Profile",
-                        "Student Management",
-                        "Instructor Management",
-                        "Course Management",
-                        "Category Management",
-                      ].map((item, index) => (
-                        <li key={index}>
-                          <button
-                            href="#"
-                            className={`block py-2 w-full rounded-md ${
-                              item === "Category Management"
-                                ? "bg-neutral-950 text-white"
-                                : "text-gray-700 hover:bg-neutral-950 hover:text-neutral-50"
-                            }`}
-                          >
-                            {item}
-                          </button>
-                        </li>
-                      ))}
-                    </ul>
-                  </nav>
-                  <button className="mt-4 w-full px-4 py-2 bg-red-500 text-white rounded-md flex items-center justify-center">
-                    <LogOut className="mr-2 h-4 w-4" /> Logout
-                  </button>
-                </aside>
-              </SheetContent>
-            </Sheet>
-            <h1 className="text-2xl font-bold text-gray-900">CourseCloud</h1>
+    <>
+      {/* <main className="flex-1 p-4 sm:p-8"> */}
+        <div className="max-w-4xl mx-auto">
+          <div className="items-center justify-between mb-6">
+            <Breadcrumb>
+              <BreadcrumbList>
+                <BreadcrumbItem>
+                  <BreadcrumbLink>
+                    <Link href="/">Admin</Link>
+                  </BreadcrumbLink>
+                </BreadcrumbItem>
+                <BreadcrumbSeparator />
+                <BreadcrumbItem>
+                  <BreadcrumbPage>Category Management</BreadcrumbPage>
+                </BreadcrumbItem>
+                {/* ... */}
+              </BreadcrumbList>
+            </Breadcrumb>
+            <h2 className="text-2xl mt-2 font-bold mb-6">Category Management</h2>
           </div>
-          <div className="flex items-center space-x-4">
-            <div className="relative hidden sm:block">
-              <input
-                type="text"
-                placeholder="Search courses"
-                className="w-64 h-9 pl-5 pr-4 py-2 border rounded-full text-sm focus:outline-none focus:ring-1 focus:ring-neutral-800"
-              />
-              <button className="absolute right-0 top-0 h-9 w-9  border rounded-full bg-neutral-50 hover:border-neutral-800">
-                <Search className="absolute left-2 top-2 h-5 w-5 text-neutral-600 " />
-              </button>
-            </div>
-            <User className="h-6 w-6 text-neutral-950" />
-          </div>
-        </div>
-      </header>
 
-      <div className="flex-1 flex">
-        {/* Sidebar - hidden on mobile, visible on larger screens */}
-        <aside className="hidden w-64 md:block xl:w-80 lg:w-72 bg-neutral-50 border-r border-t p-4">
-          <nav>
-            <ul className="space-y-2">
-              {[
-                "Dashboard",
-                "Profile",
-                "Student Management",
-                "Instructor Management",
-                "Course Management",
-                "Category Management",
-              ].map((item, index) => (
-                <li key={index}>
-                  <button
-                    href="#"
-                    className={`block py-2 w-full rounded-md ${
-                      item === "Category Management"
-                        ? "bg-neutral-950 text-white"
-                        : "text-gray-700 hover:bg-neutral-950 hover:text-neutral-50"
-                    }`}
-                  >
-                    {item}
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </nav>
-          <button className="mt-4 w-full px-4 py-2 bg-red-500 text-white rounded-md flex items-center justify-center">
-            <LogOut className="mr-2 h-4 w-4" /> Logout
-          </button>
-        </aside>
-
-        {/* Main Content */}
-        <main className="flex-1 p-4 sm:p-8">
-          <div className="max-w-4xl mx-auto">
-            <h2 className="text-2xl font-bold mb-6">Category Management</h2>
-
-            {/* Add Category Form */}
-            <Formik
-              initialValues={form_initial_value}
-              validationSchema={form_validation}
-              onSubmit={is_edit ? editCategory : addCategory}
-              enableReinitialize={true}
-            >
-              {({ errors, touched, isSubmitting }) => (
-                <Form className="bg-white shadow-md rounded-lg p-4 sm:p-6 mb-8">
-                  <h3 className="text-lg font-semibold mb-4">{`${btn_change} Category`}</h3>
-                  <div className="mb-3">
-                    <Field
-                      as={Input}
-                      id="title"
-                      name="title"
-                      placeholder="Enter category title"
-                      className="mb-1"
-                    />
-                    {errors.title && touched.title && (
-                      <div className="text-sm text-red-500 mb-1">
-                        {errors.title}
-                      </div>
-                    )}
-                  </div>
-                  <div className="mb-3">
-                    <Field
-                      as={Textarea}
-                      id="description"
-                      name="description"
-                      placeholder="Write something about your category"
-                      className="mb-1"
-                    />
-                    {errors.description && touched.description && (
-                      <div className="text-sm text-red-500 mb-1">
-                        {errors.description}
-                      </div>
-                    )}
-                  </div>
-                  <Button type="submit" disabled={isSubmitting}>
-                    <PlusCircle className="mr-2 h-4 w-4" />{" "}
-                    {`${btn_change} Category`}
-                  </Button>
-                </Form>
-              )}
-            </Formik>
-
-            {/* Added Categories */}
-            <div className="bg-white shadow-md rounded-lg p-4 sm:p-6">
-              <h3 className="text-lg font-semibold mb-4">Added Categories</h3>
-              <Accordion
-                type="single"
-                collapsible
-                className="w-full border rounded-md"
-              >
-                {categories.map((category) => (
-                  <AccordionItem
-                    key={category._id}
-                    value={category._id}
-                    className="px-3 py-1"
-                  >
-                    <div className="flex justify-between px-2 items-center">
-                      <AccordionTrigger className="text-base p-2 flex gap-3">
-                        {category.title}
-                      </AccordionTrigger>
-                      <div>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => handle_edit_category(category)}
-                        >
-                          <Pencil className="h-4 w-4" />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => category.status ? handle_category_delete(category) : handle_category_listing(category) }
-                        >
-                          {category.status ? (
-                            <Delete className="h-4 w-4" />
-                          ) : (
-                            <CirclePlus className="h-4 w-4" />
-                          )}
-                        </Button>
-                      </div>
+          {/* Add Category Form */}
+          <Formik
+            initialValues={form_initial_value}
+            validationSchema={form_validation}
+            onSubmit={is_edit ? editCategory : addCategory}
+            enableReinitialize={true}
+          >
+            {({ errors, touched, isSubmitting }) => (
+              <Form className="bg-white shadow-md rounded-lg p-4 sm:p-6 mb-8">
+                <h3 className="text-lg font-semibold mb-4">{`${btn_change} Category`}</h3>
+                <div className="mb-3">
+                  <Field
+                    as={Input}
+                    id="title"
+                    name="title"
+                    placeholder="Enter category title"
+                    className="mb-1"
+                  />
+                  {errors.title && touched.title && (
+                    <div className="text-sm text-red-500 mb-1">
+                      {errors.title}
                     </div>
-                    <AccordionContent>
-                      <p className="mb-4">{category.description}</p>
-                      <Formik
-                        initialValues={sub_form_initial_value}
-                        validationSchema={form_validation}
-                        onSubmit={(values) =>
-                          is_sub_edit
-                            ? edit_subcategory(category._id, values)
-                            : addSubcategory(category._id, values)
-                        }
-                        enableReinitialize={true}
-                      >
-                        {({ errors, touched, isSubmitting }) => (
-                          <Form className="space-y-4 mb-1">
-                            <div className="mb-3">
-                              <Field
-                                as={Input}
-                                id="title"
-                                name="title"
-                                placeholder="Enter subcategory title"
-                              />
-                              {errors.title && touched.title && (
-                                <div className="text-sm text-red-500 mb-1">
-                                  {errors.title}
-                                </div>
-                              )}
-                            </div>
-                            <div className="mb-4">
-                              <Field
-                                as={Textarea}
-                                id="description"
-                                name="description"
-                                placeholder="Write something about your subcategory"
-                              />
-                              {errors.description && touched.description && (
-                                <div className="text-sm text-red-500 mb-1">
-                                  {errors.description}
-                                </div>
-                              )}
-                            </div>
-                            <Button
-                              type="submit"
-                              disabled={isSubmitting}
-                              className="mb-2"
-                            >
-                              <PlusCircle className="mr-2 h-4 w-4" />{" "}
-                              {`${is_sub_btn_change}
-                              Subcategory`}
-                            </Button>
-                          </Form>
-                        )}
-                      </Formik>
-                      {category.sub_category.map((subcategory) => (
-                        <div
-                          key={subcategory._id}
-                          className="mb-4 p-4 border rounded-md"
-                        >
-                          <div className="flex justify-between items-center mb-2">
-                            <h4 className="font-semibold">
-                              {subcategory.title}
-                            </h4>
-                            <div>
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={() =>
-                                  handle_edit_Sub_category(subcategory)
-                                }
-                              >
-                                <Pencil className="h-4 w-4" />
-                              </Button>
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={() =>
-                                  subcategory.status
-                                    ? handle_sub_category_unlist(
-                                        subcategory,
-                                        category._id
-                                      )
-                                    : handle_sub_category_listing(
-                                        subcategory,
-                                        category._id
-                                      )
-                                }
-                              >
-                                {subcategory.status ? (
-                                  <Delete className="h-4 w-4" />
-                                ) : (
-                                  <CirclePlus className="h-4 w-4" />
-                                )}
-                              </Button>
-                            </div>
-                          </div>
-                          <p>{subcategory.description}</p>
-                        </div>
-                      ))}
-                    </AccordionContent>
-                  </AccordionItem>
-                ))}
-              </Accordion>
-            </div>
-          </div>
-        </main>
-      </div>
+                  )}
+                </div>
+                <div className="mb-3">
+                  <Field
+                    as={Textarea}
+                    id="description"
+                    name="description"
+                    placeholder="Write something about your category"
+                    className="mb-1"
+                  />
+                  {errors.description && touched.description && (
+                    <div className="text-sm text-red-500 mb-1">
+                      {errors.description}
+                    </div>
+                  )}
+                </div>
+                <Button type="submit" disabled={isSubmitting}>
+                  <PlusCircle className="mr-2 h-4 w-4" />{" "}
+                  {`${btn_change} Category`}
+                </Button>
+              </Form>
+            )}
+          </Formik>
 
-      {/* Footer */}
-      <footer className="bg-gray-800 text-white py-8">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
-            <div>
-              <h3 className="text-lg font-semibold mb-4">CourseCloud</h3>
-              <ul className="space-y-2">
-                <li>
-                  <a href="#" className="hover:underline">
-                    Teach in Company
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:underline">
-                    About Us
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:underline">
-                    Contact Us
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:underline">
-                    Ratings
-                  </a>
-                </li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="text-lg font-semibold mb-4">Help & Support</h3>
-              <ul className="space-y-2">
-                <li>
-                  <a href="#" className="hover:underline">
-                    Help Center
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:underline">
-                    Career
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:underline">
-                    Blog
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:underline">
-                    More
-                  </a>
-                </li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="text-lg font-semibold mb-4">Terms & Conditions</h3>
-              <ul className="space-y-2">
-                <li>
-                  <a href="#" className="hover:underline">
-                    Cookie settings
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:underline">
-                    Privacy policy
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:underline">
-                    Sitemap
-                  </a>
-                </li>
-              </ul>
-            </div>
-          </div>
-          <div className="mt-8 pt-8 border-t border-gray-700 text-center">
-            <p>
-              &copy; {new Date().getFullYear()} CourseCloud. All rights reserved
-              by LMS company.
-            </p>
+          {/* Added Categories */}
+          <div className="bg-white shadow-md rounded-lg p-4 sm:p-6">
+            <h3 className="text-lg font-semibold mb-4">Added Categories</h3>
+            <Accordion
+              type="single"
+              collapsible
+              className="w-full border rounded-md"
+            >
+              {categories.map((category) => (
+                <AccordionItem
+                  key={category._id}
+                  value={category._id}
+                  className="px-3 py-1"
+                >
+                  <div className="flex justify-between px-2 items-center">
+                    <AccordionTrigger className="text-base p-2 flex gap-3">
+                      {category.title}
+                    </AccordionTrigger>
+                    <div>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handle_edit_category(category)}
+                      >
+                        <Pencil className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() =>
+                          category.status
+                            ? handle_category_delete(category)
+                            : handle_category_listing(category)
+                        }
+                      >
+                        {category.status ? (
+                          <Delete className="h-4 w-4" />
+                        ) : (
+                          <CirclePlus className="h-4 w-4" />
+                        )}
+                      </Button>
+                    </div>
+                  </div>
+                  <AccordionContent>
+                    <p className="mb-4">{category.description}</p>
+                    <Formik
+                      initialValues={sub_form_initial_value}
+                      validationSchema={form_validation}
+                      onSubmit={(values) =>
+                        is_sub_edit
+                          ? edit_subcategory(category._id, values)
+                          : addSubcategory(category._id, values)
+                      }
+                      enableReinitialize={true}
+                    >
+                      {({ errors, touched, isSubmitting }) => (
+                        <Form className="space-y-4 mb-1">
+                          <div className="mb-3">
+                            <Field
+                              as={Input}
+                              id="title"
+                              name="title"
+                              placeholder="Enter subcategory title"
+                            />
+                            {errors.title && touched.title && (
+                              <div className="text-sm text-red-500 mb-1">
+                                {errors.title}
+                              </div>
+                            )}
+                          </div>
+                          <div className="mb-4">
+                            <Field
+                              as={Textarea}
+                              id="description"
+                              name="description"
+                              placeholder="Write something about your subcategory"
+                            />
+                            {errors.description && touched.description && (
+                              <div className="text-sm text-red-500 mb-1">
+                                {errors.description}
+                              </div>
+                            )}
+                          </div>
+                          <Button
+                            type="submit"
+                            disabled={isSubmitting}
+                            className="mb-2"
+                          >
+                            <PlusCircle className="mr-2 h-4 w-4" />{" "}
+                            {`${is_sub_btn_change}
+                              Subcategory`}
+                          </Button>
+                        </Form>
+                      )}
+                    </Formik>
+                    {category.sub_category.map((subcategory) => (
+                      <div
+                        key={subcategory._id}
+                        className="mb-4 p-4 border rounded-md"
+                      >
+                        <div className="flex justify-between items-center mb-2">
+                          <h4 className="font-semibold">{subcategory.title}</h4>
+                          <div>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() =>
+                                handle_edit_Sub_category(subcategory)
+                              }
+                            >
+                              <Pencil className="h-4 w-4" />
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() =>
+                                subcategory.status
+                                  ? handle_sub_category_unlist(
+                                      subcategory,
+                                      category._id
+                                    )
+                                  : handle_sub_category_listing(
+                                      subcategory,
+                                      category._id
+                                    )
+                              }
+                            >
+                              {subcategory.status ? (
+                                <Delete className="h-4 w-4" />
+                              ) : (
+                                <CirclePlus className="h-4 w-4" />
+                              )}
+                            </Button>
+                          </div>
+                        </div>
+                        <p>{subcategory.description}</p>
+                      </div>
+                    ))}
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
           </div>
         </div>
-      </footer>
-    </div>
+      {/* </main> */}
+    </>
   );
 }

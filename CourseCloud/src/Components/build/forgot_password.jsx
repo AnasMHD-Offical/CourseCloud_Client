@@ -32,7 +32,7 @@ export default function Forgot_Password({ current_role }) {
   const [send_otp_route, setSend_otp_route] = useState("");
   //state to manage otp validation based on role
   const [validate_otp_route, setValidate_otp_route] = useState("");
-  //state to handle password_reset_navigate 
+  //state to handle password_reset_navigate
   const [password_reset_navigate, setPassword_reset_navigate] = useState("");
   //declaring navigate from useNavigate hook
   const navigate = useNavigate();
@@ -45,29 +45,28 @@ export default function Forgot_Password({ current_role }) {
       setSend_otp_route("/api/send_otp");
       //setting validate_otp route api based on student
       setValidate_otp_route("/api/validate_otp");
-      setPassword_reset_navigate("/password_reset") 
+      setPassword_reset_navigate("/password_reset");
     } else if (role === "instructor") {
       setLogin_route("/instructor");
       //setting send_otp route api based on instructor role
       setSend_otp_route("/api/instructor/send_otp");
       //setting validate_otp route api based on instructor role
       setValidate_otp_route("/api/instructor/validate_otp");
-      setPassword_reset_navigate("/instructor/password_reset") 
+      setPassword_reset_navigate("/instructor/password_reset");
     } else if (role === "admin") {
       setLogin_route("/admin");
       setSend_otp_route("/api/admin/send_otp");
       setValidate_otp_route("/api/admin/validate_otp");
-      setPassword_reset_navigate("/admin/password_reset") 
+      setPassword_reset_navigate("/admin/password_reset");
     } else {
       setLogin_route("");
     }
-  }, [role,current_role]);
+  }, [role, current_role]);
   console.log(login_route);
 
   const handle_submit = async (values) => {
-
     try {
-      setEmail(values.email)
+      setEmail(values.email);
       //send a request to the sent_otp server api .
       const response = await axios_instance.post(send_otp_route, {
         email: values.email,
@@ -84,14 +83,9 @@ export default function Forgot_Password({ current_role }) {
       }
     } catch (error) {
       //throw toast error corresponding to the error type
-      // const { message } = error?.response?.data;
-      if (error.status === 409) {
-        //   toast.error(message);
-      } else if (error.status === 500) {
-        //   toast.error(message);
-      } else {
-        toast.error("Something went wrong");
-      }
+      const { message } = error?.response?.data;
+      toast.error(message);
+
       console.log(error);
     }
   };
@@ -104,12 +98,12 @@ export default function Forgot_Password({ current_role }) {
         For: "forgot_password",
       });
       //destructuring success(bool) and message(string)
-      const { message, success , data } = response?.data;
+      const { message, success, data } = response?.data;
       console.log(response);
       //checking if the otp is valid and if it valid call the handle_form_submit for furthur student register procedures
       if (success) {
         toast.success(message);
-        navigate(password_reset_navigate,{state:data?.email});
+        navigate(password_reset_navigate, { state: data?.email });
       }
     } catch (error) {
       //throw an toaster error based on the error type.
