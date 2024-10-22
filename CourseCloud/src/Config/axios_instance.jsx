@@ -30,7 +30,7 @@ axios_instance.interceptors.response.use(
   (response) => {
     console.log("in axios response interceptor ===>", response);
     if (response?.data?.access_token) {
-      let role_access_token = `${response?.data?.role}_assess_token`
+      let role_access_token = `${response?.data?.role}_access_token`
       Cookies.set(role_access_token, response?.data?.access_token, {
         expires: .0045,
       });

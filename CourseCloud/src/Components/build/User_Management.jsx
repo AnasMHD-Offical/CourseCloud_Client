@@ -33,6 +33,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Link } from "react-router-dom";
 import { axios_instance } from "@/Config/axios_instance";
 import { toast } from "sonner";
+import Pagination_Handler from "./Pagination";
 
 // const students = [
 //   {
@@ -101,7 +102,7 @@ import { toast } from "sonner";
 //   },
 // ];
 
-export default function User_Management({ current_role }) {
+export default function User_Management({ current_role , route }) {
   //state for handle search input
   const [searchTerm, setSearchTerm] = useState("");
   //state for handle role based on current role
@@ -114,18 +115,20 @@ export default function User_Management({ current_role }) {
   const [unblock_user_route, setUnblock_user_route] = useState("");
   //state for handle is page changed or not
   const [is_page_changed, SetIs_page_changed] = useState(false);
+  const [raw_data, setRaw_data] = useState([]);
   //stata for handle user data based on role
   const [user_data, setUser_data] = useState([]);
 
   //UseEffect to handle role of the user based on current role
   useEffect(() => {
     setRole(current_role);
+    setGet_all_user_route(route)
     if (role === "Student") {
-      setGet_all_user_route("/api/admin/get_all_student");
+      // setGet_all_user_route("/api/admin/get_all_student");
       setBlock_user_route("/api/admin/block_student");
       setUnblock_user_route("/api/admin/unblock_student");
     } else if (role === "Instructor") {
-      setGet_all_user_route("/api/admin/get_all_instructor");
+      // setGet_all_user_route("/api/admin/get_all_instructor");
       setBlock_user_route("/api/admin/block_instructor");
       setUnblock_user_route("/api/admin/unblock_instructor");
     }
@@ -137,23 +140,32 @@ export default function User_Management({ current_role }) {
     const get_user_data = async () => {
       try {
         console.log(get_all_user_route);
-
         const response = await axios_instance.get(get_all_user_route);
-        console.log(response);
-        setUser_data(response?.data?.user_data);
+        // console.log(response);
+        setRaw_data(response?.data?.user_data);
       } catch (error) {
         console.log(error);
         setUser_data([]);
       }
     };
+
     get_user_data();
 
+
     return;
-  }, [get_all_user_route, is_page_changed]);
+  },[current_role,is_page_changed,get_all_user_route]);
 
-  console.log(user_data);
+  useEffect(()=>{
+    if(searchTerm === ""){
+      const interval = setInterval(()=>{
+        SetIs_page_changed(!is_page_changed)
+      },100)
+      return () => clearInterval(interval)
+    }
+  })
+  // console.log(user_data);
 
-  //Function to handle user block 
+  //Function to handle user block
   const handle_block = async (user_id) => {
     try {
       const response = await axios_instance.put(block_user_route, {
@@ -171,7 +183,7 @@ export default function User_Management({ current_role }) {
     }
   };
 
-  //Function to handle user unblock 
+  //Function to handle user unblock
   const handle_unblock = async (user_id) => {
     try {
       const response = await axios_instance.put(unblock_user_route, {
@@ -189,6 +201,21 @@ export default function User_Management({ current_role }) {
     }
   };
 
+  //Funtion to handle pagination 
+  const handlePagination = (paged_user_data) => {
+    setUser_data(paged_user_data);
+  };
+  //Function to handle search the user 
+  const handle_search = (e) => {
+    const term = e.target.value
+
+    setSearchTerm(term)
+    const searched_data = user_data.filter((data) => (
+      data.name.toLowerCase().includes(term.toLowerCase()) ||
+        data.email.toLowerCase().includes(term.toLowerCase())
+    ));
+    setUser_data(searched_data)
+  };
   return (
     <>
       <div className="max-w-7xl mx-auto">
@@ -215,6 +242,8 @@ export default function User_Management({ current_role }) {
           <input
             type="text"
             placeholder={`Search ${role}s`}
+            value={searchTerm}
+            onChange={handle_search}
             className="w-64 h-9 pl-5 pr-4 py-2 border border-neutral-950 rounded-full text-sm focus:outline-none focus:ring-1 focus:ring-neutral-800"
           />
           <button className="absolute right-0 top-0 h-9 w-9  border rounded-full bg-white border-neutral-950">
@@ -250,7 +279,7 @@ export default function User_Management({ current_role }) {
                         student?.joined_at?.split("T")[0] ||
                         "Nil"}
                     </p>
-                    <p>Student Email: {student.email || "Nil"}</p>
+                    <p>{`${role} Email`}: {student.email || "Nil"}</p>
                     <p>Task Completion: {student.taskCompletion || "Nil"}</p>
                     <p>
                       Overall Performance: {student.overallPerformance || "Nil"}
@@ -294,7 +323,7 @@ export default function User_Management({ current_role }) {
               {user_data.length !== 0 &&
                 user_data.map((student, index) => (
                   <TableRow
-                    key={student.id}
+                    key={student._id}
                     className="border border-neutral-400"
                   >
                     <TableCell className="text-center">{index + 1}</TableCell>
@@ -342,7 +371,7 @@ export default function User_Management({ current_role }) {
           </Table>
         </div>
 
-        <div className="flex items-center justify-center space-x-2 mt-8">
+        {/* <div className="flex items-center justify-center space-x-2 mt-8">
           <Button
             variant="outline"
             className="rounded-full p-0.5 border-2 border-neutral-950"
@@ -385,7 +414,11 @@ export default function User_Management({ current_role }) {
           >
             <ChevronRight className="h-5 w-5" />
           </Button>
-        </div>
+        </div> */}
+        <Pagination_Handler
+          data={raw_data}
+          handlePagination={handlePagination}
+        />
       </div>
     </>
   );

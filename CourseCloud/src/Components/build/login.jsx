@@ -17,7 +17,10 @@ import { Axis3DIcon, EyeIcon, EyeOffIcon } from "lucide-react";
 import { Formik, Form, Field } from "formik";
 import { toast } from "sonner";
 import { jwtDecode } from "jwt-decode";
-
+import { useSelector, useDispatch } from "react-redux";
+import { set_admin_data } from "@/Redux/Slices/AdminSlice";
+import { set_student_data } from "@/Redux/Slices/StudentSlice";
+import { set_instructor_data } from "@/Redux/Slices/Instructor_Slice";
 //validation schema for login form
 const form_validation = yup.object({
   email: yup
@@ -53,6 +56,7 @@ function Login({ current_role }) {
   //Decalring navigate from useNavigate hook
   const navigate = useNavigate();
 
+  const dispatch = useDispatch();
   //useEffect hooks for handle role based login
   useEffect(() => {
     setRole(current_role);
@@ -87,14 +91,47 @@ function Login({ current_role }) {
 
       //detructuring the success(bool),message(string) from the response
       const { success, message } = response?.data;
+      const user_data = response?.data?.admin_data || response?.data?.instructor_data || response?.data?.student_data
       //short circuting the success(bool) to show toaster
-      success && toast.success(message);
+      if (success) {
+        toast.success(message);
+        console.log(user_data.role);
+        console.log(user_data);
+        
+        //setting the user data based on the role to the redux store
+        { user_data.role === "admin" && dispatch(set_admin_data({
+          admin : {
+            _id : user_data._id,
+            role : user_data.role
+          }
+        }))}
+        { user_data.role === "student" && dispatch(set_student_data({
+          student : {
+            _id: user_data._id,
+            role : user_data.role
+          }
+        }))}
+        { user_data.role === "instructor" && dispatch(set_instructor_data({
+          instructor : {
+            _id: user_data._id,
+            role : user_data.role
+          }
+        }))}
+
+        //navigate it into the Home page of the user role
+        {user_data.role === "admin" && navigate("/admin/category_management")}
+        // {user_data.role === "admin" && navigate("/admin/category_management")}
+        // {user_data.role === "admin" && navigate("/admin/category_management")}
+
+
+
+      }
     } catch (error) {
       //throw a toast error based on the error type
-      const { message } = error?.response?.data;
+      // const { message } = error?.response?.data;
       console.log(error);
       console.log(error?.response?.data);
-      toast.error(message);
+      // toast.error(message);
     }
   };
   //Declare function to handle google_login and google_signup or register.
@@ -104,7 +141,10 @@ function Login({ current_role }) {
       const data = jwtDecode(credentialResponse.credential);
       // console.log(data);
       //Sending request to register and login the user
-      const response = await axios_instance.post("/google_auth", { data, role} );
+      const response = await axios_instance.post("/google_auth", {
+        data,
+        role,
+      });
       console.log(response);
       //Destructuring the resolved messages and success_status
       const { success, message } = response?.data;

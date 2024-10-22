@@ -2,7 +2,7 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { Provider } from "react-redux";
 import { GoogleOAuthProvider } from "@react-oauth/google";
-import store from "./Store/store.jsx";
+import store from "./Redux/store.jsx";
 import App from "./App.jsx";
 import "./index.css";
 

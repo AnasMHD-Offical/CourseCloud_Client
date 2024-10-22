@@ -22,16 +22,33 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   Link,
-  BrowserRouter as Router,
-  Routes,
-  Route,
   NavLink,
+  Outlet,
 } from "react-router-dom";
-import Category from "../build/Category";
-import User_Management from "../build/User_Management";
+import { useDispatch } from "react-redux";
+import Admin_Auth from "@/Auth/Admin_Auth";
+import { admin_logout } from "@/Redux/Slices/AdminSlice";
+import { toast } from "sonner";
+import { axios_instance } from "@/Config/axios_instance";
 
 export default function Admin() {
-  const [searchTerm, setSearchTerm] = useState("");
+  const dispatch = useDispatch()
+
+  const handleLogout = async () => {
+    try {
+      const response = await axios_instance.post("/api/admin/admin_logout");
+      const { success, message } = response?.data;
+      if(success){
+        localStorage.removeItem("admin_data")
+        dispatch(admin_logout())
+        toast.success(message)
+      }
+    } catch (error) {
+      const { message } = error?.response?.data;
+      console.log(error);
+      toast.error(message);
+    }
+  };
 
   const SidebarContent = () => (
     <nav>
@@ -62,7 +79,10 @@ export default function Admin() {
           </li>
         ))}
       </ul>
-      <button className="mt-4 w-full px-4 py-2 bg-red-500 text-white rounded-md flex items-center justify-center">
+      <button
+        className="mt-4 w-full px-4 py-2 bg-red-500 text-white rounded-md flex items-center justify-center"
+        onClick={handleLogout}
+      >
         <LogOut className="mr-2 h-4 w-4" /> Logout
       </button>
     </nav>
@@ -112,17 +132,9 @@ export default function Admin() {
 
         {/* Main Content */}
         <main className="flex-1 p-4 sm:p-8">
-          <Routes>
-            <Route
-              path="student_management"
-              element={<User_Management current_role={"Student"} />}
-            />
-            <Route
-              path="instructor_management"
-              element={<User_Management current_role={"Instructor"} />}
-            />
-            <Route path="category_management" element={<Category />} />
-          </Routes>
+          <Admin_Auth>
+            <Outlet />
+          </Admin_Auth>
         </main>
       </div>
 

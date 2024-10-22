@@ -16,12 +16,12 @@ import Instructor_Password_Reset from "./Pages/instructor/Instructor_Password_Re
 import Admin_Forgot_Password from "./Pages/admin/Admin_Forgot_Password";
 import Admin_Password_Reset from "./Pages/admin/Admin_Password_Reset";
 import Admin_Category from "./Pages/admin/Admin_Category";
-import User_Manangement from "./Components/build/User_Management";
 import Admin from "./Components/main/Admin_Component";
-import StudentManagement from "./Components/build/User_Management";
 import Category from "./Components/build/Category";
-import User_Management from "./Components/build/User_Management";
-
+import Admin_Student_Management from "./Pages/admin/Admin_Student_Management";
+import Admin_Instructor_Managment from "./Pages/admin/Admin_Instructor_Managment";
+import Admin_Login_Auth from "./Auth/Admin_Login_Auth";
+import Admin_Auth from "./Auth/Admin_Auth";
 function App() {
   return (
     <>
@@ -48,7 +48,14 @@ function App() {
           />
         </Routes>
         <Routes>
-          <Route path="/admin" element={<Admin_Login />} />
+          <Route
+            path="/admin/login"
+            element={
+              <Admin_Login_Auth>
+                <Admin_Login />
+              </Admin_Login_Auth>
+            }
+          />
           <Route
             path="/admin/forgot_password"
             element={<Admin_Forgot_Password />}
@@ -58,15 +65,35 @@ function App() {
             element={<Admin_Password_Reset />}
           />
         </Routes>
+
         <Routes>
-          <Route path="/admin" element={<Admin />}>
+          <Route
+            path="/admin"
+            element={
+              <Admin_Auth>
+                <Admin />
+              </Admin_Auth>
+            }
+          >
             <Route
               path="student_management"
-              element={<User_Manangement keys={0} current_role={"Student"} />}
+              element={
+                <Admin_Student_Management
+                  keys={0}
+                  current_role={"Student"}
+                  route={"/api/admin/get_all_student"}
+                />
+              }
             />
             <Route
               path="instructor_management"
-              element={<User_Management keys={1} current_role={"Instructor"} />}
+              element={
+                <Admin_Instructor_Managment
+                  keys={1}
+                  current_role={"Instructor"}
+                  route={"/api/admin/get_all_instructor"}
+                />
+              }
             />
             <Route path="category_management" element={<Category />} />
           </Route>
