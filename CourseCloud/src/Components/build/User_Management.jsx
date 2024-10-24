@@ -218,7 +218,7 @@ export default function User_Management({ current_role , route }) {
   };
   return (
     <>
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-7xl mx-auto lg:ms-2">
         <div className="items-center justify-between mb-6">
           {/* breadcrumb */}
           <Breadcrumb>

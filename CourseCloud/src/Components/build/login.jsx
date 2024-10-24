@@ -128,10 +128,10 @@ function Login({ current_role }) {
       }
     } catch (error) {
       //throw a toast error based on the error type
-      // const { message } = error?.response?.data;
+      const { message } = error?.response?.data;
       console.log(error);
       console.log(error?.response?.data);
-      // toast.error(message);
+      toast.error(message);
     }
   };
   //Declare function to handle google_login and google_signup or register.

@@ -1,7 +1,7 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { BreadcrumbDemo } from "./Pages/sample";
+// import { BreadcrumbDemo } from "./Pages/sample";
 import { Toaster } from "sonner";
 import Student_Login from "./Pages/student/student_login";
 import Student_Register from "./Pages/student/student_register";
@@ -22,6 +22,8 @@ import Admin_Student_Management from "./Pages/admin/Admin_Student_Management";
 import Admin_Instructor_Managment from "./Pages/admin/Admin_Instructor_Managment";
 import Admin_Login_Auth from "./Auth/Admin_Login_Auth";
 import Admin_Auth from "./Auth/Admin_Auth";
+import Admin_Profile from "./Pages/admin/Admin_Profile";
+import Admin_Dashboard from "./Pages/admin/Admin_Dashboard";
 function App() {
   return (
     <>
@@ -75,6 +77,7 @@ function App() {
               </Admin_Auth>
             }
           >
+            <Route path="dashboard" element={<Admin_Dashboard/>}/>
             <Route
               path="student_management"
               element={
@@ -96,6 +99,7 @@ function App() {
               }
             />
             <Route path="category_management" element={<Category />} />
+            <Route path="profile" element={<Admin_Profile/>} />
           </Route>
         </Routes>
       </Router>

@@ -20,11 +20,7 @@ import {
 } from "@/components/ui/table";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Card, CardContent } from "@/components/ui/card";
-import {
-  Link,
-  NavLink,
-  Outlet,
-} from "react-router-dom";
+import { Link, NavLink, Outlet } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import Admin_Auth from "@/Auth/Admin_Auth";
 import { admin_logout } from "@/Redux/Slices/AdminSlice";
@@ -32,16 +28,16 @@ import { toast } from "sonner";
 import { axios_instance } from "@/Config/axios_instance";
 
 export default function Admin() {
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
   const handleLogout = async () => {
     try {
       const response = await axios_instance.post("/api/admin/admin_logout");
       const { success, message } = response?.data;
-      if(success){
-        localStorage.removeItem("admin_data")
-        dispatch(admin_logout())
-        toast.success(message)
+      if (success) {
+        localStorage.removeItem("admin_data");
+        dispatch(admin_logout());
+        toast.success(message);
       }
     } catch (error) {
       const { message } = error?.response?.data;
@@ -51,7 +47,7 @@ export default function Admin() {
   };
 
   const SidebarContent = () => (
-    <nav>
+    <nav className="bg-white">
       <ul className="space-y-2">
         {[
           { path: "dashboard", label: "Dashboard" },
@@ -91,8 +87,8 @@ export default function Admin() {
   return (
     <div className="min-h-screen flex flex-col">
       {/* Header */}
-      <header className="bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
+      <header className="bg-white shadow-sm border">
+        <div className="max-w-7xl mx-auto xl:ms-1 px-4 sm:px-6 lg:px-8 xl:pe-0  py-4 flex items-center justify-between">
           <div className="flex items-center">
             <Sheet>
               <SheetTrigger asChild>
@@ -108,7 +104,7 @@ export default function Admin() {
             </Sheet>
             <h1 className="text-2xl font-bold text-gray-900">CourseCloud</h1>
           </div>
-          <div className="flex items-center space-x-4">
+          {/* <div className="flex items-center space-x-4">
             <div className="relative hidden sm:block">
               <input
                 type="text"
@@ -120,13 +116,13 @@ export default function Admin() {
               </button>
             </div>
             <User className="h-6 w-6 text-gray-500" />
-          </div>
+          </div> */}
         </div>
       </header>
 
       <div className="flex-1 flex">
         {/* Sidebar - hidden on mobile, visible on larger screens */}
-        <aside className="hidden md:block w-64 bg-gray-100 p-4">
+        <aside className="hidden md:block w-64 bg-white p-4 shadow-sm shadow-neutral-400 rounded-md my-2 mx-2">
           <SidebarContent />
         </aside>
 

@@ -360,7 +360,7 @@ export default function Category() {
   return (
     <>
       {/* <main className="flex-1 p-4 sm:p-8"> */}
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-4xl mx-auto md:ms-5">
           <div className="items-center justify-between mb-6">
             <Breadcrumb>
               <BreadcrumbList>
@@ -387,7 +387,7 @@ export default function Category() {
             enableReinitialize={true}
           >
             {({ errors, touched, isSubmitting }) => (
-              <Form className="bg-white shadow-md rounded-lg p-4 sm:p-6 mb-8">
+              <Form className="bg-white border border-neutral-300 shadow-sm rounded-lg p-4 sm:p-6 mb-8">
                 <h3 className="text-lg font-semibold mb-4">{`${btn_change} Category`}</h3>
                 <div className="mb-3">
                   <Field
@@ -426,7 +426,7 @@ export default function Category() {
           </Formik>
 
           {/* Added Categories */}
-          <div className="bg-white shadow-md rounded-lg p-4 sm:p-6">
+          <div className="bg-white shadow-sm border-neutral-300 border rounded-lg p-4 sm:p-6">
             <h3 className="text-lg font-semibold mb-4">Added Categories</h3>
             <Accordion
               type="single"

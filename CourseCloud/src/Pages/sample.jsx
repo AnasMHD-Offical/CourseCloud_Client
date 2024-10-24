@@ -1,58 +1,21 @@
-import {
-    Breadcrumb,
-    BreadcrumbEllipsis,
-    BreadcrumbItem,
-    BreadcrumbLink,
-    BreadcrumbList,
-    BreadcrumbPage,
-    BreadcrumbSeparator,
-  } from "@/components/ui/breadcrumb"
-  import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuTrigger,
-  } from "@/components/ui/dropdown-menu"
+// import React from 'react'
+// import { Cloudinary } from '@cloudinary/url-gen';
+// import { auto } from '@cloudinary/url-gen/actions/resize';
+// import { autoGravity } from '@cloudinary/url-gen/qualifiers/gravity';
+// import { AdvancedImage } from '@cloudinary/react';
+
+// const Cloudinary = () => {
+//   const cld = new Cloudinary({ cloud: { cloudName: 'dtc1xcil8' } });
   
-  export function BreadcrumbDemo() {
-    return (
-      <>
-      <Breadcrumb>
-        <BreadcrumbList>
-          <BreadcrumbItem>
-            <BreadcrumbLink href="/">Home</BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <DropdownMenu>
-              <DropdownMenuTrigger className="flex items-center gap-1">
-                <BreadcrumbEllipsis className="h-4 w-4" />
-                <span className="sr-only">Toggle menu</span>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="start">
-                <DropdownMenuItem>Documentation</DropdownMenuItem>
-                <DropdownMenuItem>Themes</DropdownMenuItem>
-                <DropdownMenuItem>GitHub</DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbLink href="/docs/components">Components</BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbPage>Breadcrumb</BreadcrumbPage>
-          </BreadcrumbItem>
-        </BreadcrumbList>
-      </Breadcrumb>
-      
-      
-      
-      
-      
-      
-      </>
-    )
-  }
-  
+//   // Use this sample image or upload your own via the Media Explorer
+//   const img = cld
+//         .image('cld-sample-5')
+//         .format('auto') // Optimize delivery by resizing and applying auto-format and auto-quality
+//         .quality('auto')
+//         .resize(auto().gravity(autoGravity()).width(500).height(500)); // Transform the image: auto-crop to square aspect_ratio
+
+//   return (<AdvancedImage cldImg={img}/>);
+// };
+
+// export default Cloudinary 
+

@@ -1,6 +1,6 @@
 import axios from "axios";
 import Cookies from "js-cookie";
-
+import { Link } from "react-router-dom";
 //Configuring the base url of CourseCloud server API
 export const axios_instance = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL,
@@ -48,16 +48,23 @@ axios_instance.interceptors.response.use(
       !original_request._retry
     ) {
       // Clear the local storage or cookies where tokens are stored
-      Cookies.remove("student_access_token", { path: "/" });
-      Cookies.remove("student_refresh_token", { path: "/" });
+      localStorage.clear()
+      Cookies.remove();
+      Cookies.remove();
       // document.cookie =
       //   "user_refresh_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;"; // Correct way to clear the cookie
 
       // Redirect the user to the login page
-      window.location.href = "/";
+      if(error?.response?.data?.role === "student"){
+        window.location.href = "/";
+      }else if(error?.response?.data?.role === "instructor"){
+        window.location.href = "/instructor";
+      }else{
+        window.location.href = "/admin/login"
+      }
 
       return Promise.reject(error);
-    } else if(error.response.status === 401 ) {
+    } else if(error.response.status === 401 && error.response.data.message === "Token Error. Token not found") {
       try {
         const response = await axios_instance.post(
           "/api/refresh_token",
@@ -67,6 +74,7 @@ axios_instance.interceptors.response.use(
           }
         );
         console.log(response);
+        console.log(response?.data?.role);
 
         // Set the new Authorization header
         axios_instance.defaults.headers.common[
