@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, Home } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
@@ -77,6 +77,7 @@ export default function Profile({ current_role, user_route }) {
   const [user_id, setUser_id] = useState("");
   const [user_data, setUser_data] = useState();
   const [is_user_data_changed, setIs_user_data_changed] = useState("");
+  const [home_route,setHome_route] = useState("")
 
   console.log(admin);
 
@@ -84,12 +85,15 @@ export default function Profile({ current_role, user_route }) {
     setRole(current_role);
     setGet_user_route(user_route);
     if (role === "Student") {
+      setHome_route("/dashboard")
       setEdit_user_route("api/edit_student");
       setUser_id(student?._id);
     } else if (role === "Instructor") {
+      setHome_route("instuctor/dashboard")
       setEdit_user_route("api/instructor/edit_instructor");
       setUser_id(instructor?._id);
     } else if (role === "Admin") {
+      setHome_route("admin/dashboard")
       setEdit_user_route("api/admin/edit_admin");
       setUser_id(admin?._id);
     }
@@ -148,8 +152,9 @@ export default function Profile({ current_role, user_route }) {
   //       </button>
   //     </nav>
   //   );
-
-  const Cloudinary_Upload = async (profile) => {
+//
+  
+const Cloudinary_Upload = async (profile) => {
     const formData = new FormData();
     formData.append("file", profile);
     formData.append("upload_preset", "CourseCloud");
@@ -206,7 +211,7 @@ export default function Profile({ current_role, user_route }) {
             <BreadcrumbList>
               <BreadcrumbItem>
                 <BreadcrumbLink>
-                  <Link to="/">Admin</Link>
+                  <Link to={home_route}>{role}</Link>
                 </BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator />

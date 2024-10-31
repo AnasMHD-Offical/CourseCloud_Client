@@ -50,7 +50,7 @@ export default function Admin() {
     <nav className="bg-white">
       <ul className="space-y-2">
         {[
-          { path: "dashboard", label: "Dashboard" },
+          { path: "", label: "Dashboard" },
           { path: "profile", label: "Profile" },
           { path: "student_management", label: "Student Management" },
           { path: "instructor_management", label: "Instructor Management" },
@@ -65,10 +65,11 @@ export default function Admin() {
               //       : "text-gray-700 hover:bg-gray-200"
               //   }`}
               className={({ isActive }) =>
-                isActive
+                isActive && index !== 0
                   ? `block px-4 py-2 rounded-md bg-neutral-950 text-white `
                   : "block px-4 py-2 rounded-md text-gray-700 hover:bg-gray-200"
               }
+
             >
               {item.label}
             </NavLink>

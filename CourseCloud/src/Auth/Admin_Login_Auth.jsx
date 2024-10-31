@@ -6,7 +6,7 @@ function Admin_Login_Auth({children}) {
   console.log(admin);
   
     if(admin){
-      return <Navigate to={"/admin/dashboard"}/> 
+      return <Navigate to={"/admin"}/> 
     }
     return children
 }

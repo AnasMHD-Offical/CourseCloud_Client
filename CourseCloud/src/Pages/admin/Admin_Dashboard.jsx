@@ -92,7 +92,7 @@ export default function Admin_Dashboard() {
           <BreadcrumbList>
             <BreadcrumbItem>
               <BreadcrumbLink>
-                <Link href="/">Admin</Link>
+                <Link to="/admin">Admin</Link>
               </BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator />

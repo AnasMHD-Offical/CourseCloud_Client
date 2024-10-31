@@ -24,6 +24,15 @@ import Admin_Login_Auth from "./Auth/Admin_Login_Auth";
 import Admin_Auth from "./Auth/Admin_Auth";
 import Admin_Profile from "./Pages/admin/Admin_Profile";
 import Admin_Dashboard from "./Pages/admin/Admin_Dashboard";
+import Instructor from "./Components/main/Instructor_Component";
+import Instructor_CreateCourse from "./Pages/instructor/Instructor_Create_Course_1";
+import Instructor_Create_Course_1 from "./Pages/instructor/Instructor_Create_Course_1";
+// import Instructor_Create_Course_2 from "./Pages/instructor/Instructor_Create_Course_2";
+import Instructor_Profile from "./Pages/instructor/Instructor_Profile";
+import Instructor_Create_Course_Plan from "./Pages/instructor/Instructor_Create_Course_Plan";
+import Instructor_Create_Course_Curriculum from "./Pages/instructor/Instructor_Create_Course_Curriculum";
+import CloudinaryUploadWidget from "./Utils/CloudinaryVideoUpload";
+import Instructor_Create_Course_Preview from "./Pages/instructor/Instructor_Create_Course_Preview";
 function App() {
   return (
     <>
@@ -34,8 +43,9 @@ function App() {
           <Route path="forgot_password" element={<Student_Forgot_password />} />
           <Route path="password_reset" element={<Student_Password_Reset />} />
         </Routes>
+        {/* Instructor Auth Routes */}
         <Routes>
-          <Route path="/instructor" element={<Instructor_Login />} />
+          <Route path="/instructor/login" element={<Instructor_Login />} />
           <Route
             path="/instructor/register"
             element={<Instructor_Register />}
@@ -49,6 +59,27 @@ function App() {
             element={<Instructor_Password_Reset />}
           />
         </Routes>
+        {/* Instructor Routes */}
+        <Routes>
+          <Route path="/instructor" element={<Instructor />}>
+            <Route path="profile" element={<Instructor_Profile />} />
+            <Route
+              path="create_course"
+              element={<Instructor_Create_Course_1 />}
+            >
+              <Route index element={<Instructor_Create_Course_Plan />} />
+              <Route
+                path="2"
+                element={<Instructor_Create_Course_Curriculum />}
+              />
+              <Route
+                path="3"
+                element={<Instructor_Create_Course_Preview />}
+              />
+            </Route>
+          </Route>
+        </Routes>
+        {/* Admin Auth Routes */}
         <Routes>
           <Route
             path="/admin/login"
@@ -67,7 +98,7 @@ function App() {
             element={<Admin_Password_Reset />}
           />
         </Routes>
-
+        {/* Admin Routes */}
         <Routes>
           <Route
             path="/admin"
@@ -77,7 +108,7 @@ function App() {
               </Admin_Auth>
             }
           >
-            <Route path="dashboard" element={<Admin_Dashboard/>}/>
+            <Route index element={<Admin_Dashboard />} />
             <Route
               path="student_management"
               element={
@@ -99,7 +130,7 @@ function App() {
               }
             />
             <Route path="category_management" element={<Category />} />
-            <Route path="profile" element={<Admin_Profile/>} />
+            <Route path="profile" element={<Admin_Profile />} />
           </Route>
         </Routes>
       </Router>

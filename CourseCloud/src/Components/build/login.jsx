@@ -13,7 +13,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Axis3DIcon, EyeIcon, EyeOffIcon } from "lucide-react";
+import { Axis3DIcon, EyeIcon, EyeOffIcon, OctagonX } from "lucide-react";
 import { Formik, Form, Field } from "formik";
 import { toast } from "sonner";
 import { jwtDecode } from "jwt-decode";
@@ -21,6 +21,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { set_admin_data } from "@/Redux/Slices/AdminSlice";
 import { set_student_data } from "@/Redux/Slices/StudentSlice";
 import { set_instructor_data } from "@/Redux/Slices/Instructor_Slice";
+import { StopIcon } from "@radix-ui/react-icons";
 //validation schema for login form
 const form_validation = yup.object({
   email: yup
@@ -91,40 +92,57 @@ function Login({ current_role }) {
 
       //detructuring the success(bool),message(string) from the response
       const { success, message } = response?.data;
-      const user_data = response?.data?.admin_data || response?.data?.instructor_data || response?.data?.student_data
+      const user_data =
+        response?.data?.admin_data ||
+        response?.data?.instructor_data ||
+        response?.data?.student_data;
       //short circuting the success(bool) to show toaster
       if (success) {
         toast.success(message);
         console.log(user_data.role);
         console.log(user_data);
-        
+
         //setting the user data based on the role to the redux store
-        { user_data.role === "admin" && dispatch(set_admin_data({
-          admin : {
-            _id : user_data._id,
-            role : user_data.role
-          }
-        }))}
-        { user_data.role === "student" && dispatch(set_student_data({
-          student : {
-            _id: user_data._id,
-            role : user_data.role
-          }
-        }))}
-        { user_data.role === "instructor" && dispatch(set_instructor_data({
-          instructor : {
-            _id: user_data._id,
-            role : user_data.role
-          }
-        }))}
+        {
+          user_data.role === "admin" &&
+            dispatch(
+              set_admin_data({
+                admin: {
+                  _id: user_data._id,
+                  role: user_data.role,
+                },
+              })
+            );
+        }
+        {
+          user_data.role === "student" &&
+            dispatch(
+              set_student_data({
+                student: {
+                  _id: user_data._id,
+                  role: user_data.role,
+                },
+              })
+            );
+        }
+        {
+          user_data.role === "instructor" &&
+            dispatch(
+              set_instructor_data({
+                instructor: {
+                  _id: user_data._id,
+                  role: user_data.role,
+                },
+              })
+            );
+        }
 
         //navigate it into the Home page of the user role
-        {user_data.role === "admin" && navigate("/admin/category_management")}
+        {
+          user_data.role === "admin" && navigate("/admin");
+        }
         // {user_data.role === "admin" && navigate("/admin/category_management")}
         // {user_data.role === "admin" && navigate("/admin/category_management")}
-
-
-
       }
     } catch (error) {
       //throw a toast error based on the error type
@@ -164,138 +182,186 @@ function Login({ current_role }) {
 
   //Login Component
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4 sm:p-6 md:p-8 lg:p-10">
-      <Card className="w-full max-w-[400px] sm:max-w-[450px] md:max-w-[500px] lg:max-w-[550px]">
-        {/* Login heading */}
-        <CardHeader className="space-y-2 sm:space-y-3 md:space-y-4">
-          <CardTitle className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-center">
-            Login
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4 sm:space-y-5 md:space-y-6 lg:space-y-7">
-          {/* Form starts here */}
-          <Formik
-            initialValues={{ email: "", password: "" }}
-            validationSchema={form_validation}
-            onSubmit={handle_Submit}
-          >
-            {({ errors, touched, isSubmitting }) => (
-              <Form className="space-y-4 sm:space-y-5 md:space-y-6 lg:space-y-7">
-                {/* email input */}
-                <div className="space-y-2">
-                  <label
-                    htmlFor="email"
-                    className="text-sm sm:text-base md:text-lg font-medium block"
-                  >
-                    Email
-                  </label>
-                  <Field
-                    as={Input}
-                    id="email"
-                    name="email"
-                    placeholder="your email"
-                    type="email"
-                    autoComplete="email"
-                    className="h-10 sm:h-11 text-sm sm:text-base"
-                  />
-                  {/* Showing the validation error message for email */}
-                  {errors.email && touched.email && (
-                    <div className="text-red-500 text-sm mt-1">
-                      {errors.email}
-                    </div>
-                  )}
-                </div>
-                {/* Password inputs */}
-                <div className="space-y-2">
-                  <label
-                    htmlFor="password"
-                    className="text-sm sm:text-base md:text-lg font-medium block"
-                  >
-                    Password
-                  </label>
-                  <div className="relative">
+    <div className="relative min-h-screen xl:min-h-screen flex items-center justify-center bg-gray-100 p-4 sm:p-2 md:p-4 lg:p-10">
+      {/* <h2 className=" block sm:hidden absolute text-2xl text-center font-extrabold top-6 sm:left-60">
+        CourseCloud
+      </h2> */}
+      <Card
+        className="flex relative md:w-10/12 rounded-xl md:max-h-screen"
+        id="login_form"
+      >
+        <h2 className=" hidden md:block absolute sm:text-2xl md:text-3xl font-extrabold top-6 left-8">
+          CourseCloud
+        </h2>
+        <img
+          src="../../public/Login.jpg"
+          alt=""
+          className="sm:max-w-xs md:max-w-sm lg:max-w-md xl:max-w-2xl hidden md:block rounded-xl"
+        />
+        <Card className="w-full max-w-[400px] sm:max-w-[450px] md:max-w-[500px] lg:max-w-[550px] sm:rounded-s-sm">
+          {/* Login heading */}
+          <CardHeader className="space-y-2 sm:space-y-3 md:space-y-4">
+            <CardTitle className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-center">
+              Login
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4 sm:space-y-5 md:space-y-6 lg:space-y-7">
+            {/* Form starts here */}
+            <Formik
+              initialValues={{ email: "", password: "" }}
+              validationSchema={form_validation}
+              onSubmit={handle_Submit}
+            >
+              {({ errors, touched, isSubmitting }) => (
+                <Form className="space-y-4 sm:space-y-5 md:space-y-6 lg:space-y-7">
+                  {/* email input */}
+                  <div className="space-y-2">
+                    <label
+                      htmlFor="email"
+                      className="text-sm sm:text-base md:text-lg font-medium block"
+                    >
+                      Email
+                    </label>
                     <Field
                       as={Input}
-                      id="password"
-                      name="password"
-                      placeholder="your password"
-                      autoComplete="current-password"
-                      //Checking the state if show and hide password is required
-                      type={showPassword ? "text" : "password"}
-                      className="h-10 mb-2 sm:h-11 text-sm sm:text-base pr-10"
+                      id="email"
+                      name="email"
+                      placeholder="your email"
+                      type="email"
+                      autoComplete="email"
+                      className="h-10 sm:h-11 text-sm sm:text-base"
                     />
-                    <button
-                      type="button"
-                      // setting the state for show and hide password
-                      onClick={() => setShowPassword(!showPassword)}
-                      className={
-                        errors.password
-                          ? "absolute right-3 top-8 trForm -translate-y-6"
-                          : "absolute right-3 top-1/2 trForm -translate-y-1/2"
-                      }
-                      aria-label={
-                        showPassword ? "Hide password" : "Show password"
-                      }
-                    >
-                      {showPassword ? (
-                        <EyeOffIcon className="h-5 w-5 sm:h-6 sm:w-6 text-gray-500" />
-                      ) : (
-                        <EyeIcon className="h-5 w-5 sm:h-6 sm:w-6 text-gray-500" />
-                      )}
-                    </button>
-                    {/* Showing the validation error message for password */}
-                    {errors.password && touched.password && (
+                    {/* Showing the validation error message for email */}
+                    {errors.email && touched.email && (
                       <div className="text-red-500 text-sm mt-1">
-                        {errors.password}
+                        {errors.email}
                       </div>
                     )}
                   </div>
-                </div>
-                {/* Navigate to forgot password if the user forgot the password */}
-                <Link
-                  to={forget_password_route}
-                  className="text-sm sm:text-base  text-gray-600 hover:underline"
-                >
-                  forgot password?
-                </Link>
-                {/* Submit button */}
-                <Button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="w-full bg-black text-white hover:bg-gray-800 h-10 sm:h-11 text-sm sm:text-base"
-                >
-                  Login
-                </Button>
-              </Form>
+                  {/* Password inputs */}
+                  <div className="space-y-2">
+                    <label
+                      htmlFor="password"
+                      className="text-sm sm:text-base md:text-lg font-medium block"
+                    >
+                      Password
+                    </label>
+                    <div className="relative">
+                      <Field
+                        as={Input}
+                        id="password"
+                        name="password"
+                        placeholder="your password"
+                        autoComplete="current-password"
+                        //Checking the state if show and hide password is required
+                        type={showPassword ? "text" : "password"}
+                        className="h-10 mb-2 sm:h-11 text-sm sm:text-base pr-10"
+                      />
+                      <button
+                        type="button"
+                        // setting the state for show and hide password
+                        onClick={() => setShowPassword(!showPassword)}
+                        className={
+                          errors.password
+                            ? "absolute right-3 top-8 trForm -translate-y-6"
+                            : "absolute right-3 top-1/2 trForm -translate-y-1/2"
+                        }
+                        aria-label={
+                          showPassword ? "Hide password" : "Show password"
+                        }
+                      >
+                        {showPassword ? (
+                          <EyeOffIcon className="h-5 w-5 sm:h-6 sm:w-6 text-gray-500" />
+                        ) : (
+                          <EyeIcon className="h-5 w-5 sm:h-6 sm:w-6 text-gray-500" />
+                        )}
+                      </button>
+                      {/* Showing the validation error message for password */}
+                      {errors.password && touched.password && (
+                        <div className="text-red-500 text-sm mt-1">
+                          {errors.password}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  {/* Navigate to forgot password if the user forgot the password */}
+                  <Link
+                    to={forget_password_route}
+                    className="text-sm sm:text-base  text-gray-600 hover:underline"
+                  >
+                    forgot password?
+                  </Link>
+                  {/* Submit button */}
+                  <Button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="w-full bg-black text-white hover:bg-gray-800 h-10 sm:h-11 text-sm sm:text-base"
+                  >
+                    Login
+                  </Button>
+                </Form>
+              )}
+            </Formik>
+          </CardContent>
+          <CardFooter className="flex flex-col space-y-4 sm:space-y-5 md:space-y-6">
+            {!is_admin && (
+              <div className="flex-col items-center">
+                <h1 className="text-center text-lg font-medium">
+                  Admin Only access
+                </h1>
+                <p>Unauthorised access will made you in trouble</p>
+                <OctagonX className="w-32 h-32 ms-24 mt-3" />
+              </div>
             )}
-          </Formik>
-        </CardContent>
-        <CardFooter className="flex flex-col space-y-4 sm:space-y-5 md:space-y-6">
-          {/* Option provided , when a user didn't have an account . He can navigate to the register page */}
-          {is_admin && (
-            <p className="text-sm sm:text-base text-center">
-              Don't have an account?{" "}
-              <Link
-                to={register_route}
-                className="text-neutral-900 font-bold hover:underline"
-              >
-                Register
-              </Link>
-            </p>
-          )}
-          {is_admin && (
-            <div className="text-center text-sm sm:text-base">or</div>
-          )}
-          {/* Option to register and login with google */}
-          {is_admin && (
-            <GoogleLogin
-              onSuccess={handle_google_auth}
-              onError={() => {
-                console.log("Login Failed");
-              }}
-            />
-          )}
-        </CardFooter>
+
+            {/* Option provided , when a user didn't have an account . He can navigate to the register page */}
+            {is_admin && (
+              <p className="text-sm sm:text-base text-center">
+                Don't have an account?{" "}
+                <Link
+                  to={register_route}
+                  className="text-neutral-900 font-bold hover:underline"
+                >
+                  Register
+                </Link>
+              </p>
+            )}
+            {is_admin && (
+              <div className="text-center text-sm sm:text-base">or</div>
+            )}
+            {/* Option to register and login with google */}
+            {is_admin && (
+              <GoogleLogin
+                onSuccess={handle_google_auth}
+                onError={() => {
+                  console.log("Login Failed");
+                }}
+              />
+            )}
+            {role === "instructor" && (
+              <>
+                <h1 className="text-base text-center font-light">
+                  "Get into the fasinating world of course and Wish you all the
+                  best for your teaching journey."
+                </h1>
+                <p className="text-right">
+                  - By <span className="font-medium">CourseCloud Team</span>
+                </p>
+              </>
+            )}
+            {role === "student" && (
+              <>
+                <h1 className="text-base text-center font-light mb-0">
+                  "Get into the fasinating world of course and Wish you all the
+                  best for your upskilling journey."
+                </h1>
+                <p className="text-right">
+                  - By <span className="font-medium">CourseCloud Team</span>
+                </p>
+              </>
+            )}
+          </CardFooter>
+        </Card>
       </Card>
     </div>
   );

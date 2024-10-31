@@ -34,6 +34,11 @@ import { Link } from "react-router-dom";
 import { axios_instance } from "@/Config/axios_instance";
 import { toast } from "sonner";
 import Pagination_Handler from "./Pagination";
+import {
+  useUser_Management_Mutation,
+  useUser_management,
+} from "@/Hooks/Coustom_Hooks_useFetching";
+import { useQuery } from "@tanstack/react-query";
 
 // const students = [
 //   {
@@ -102,7 +107,7 @@ import Pagination_Handler from "./Pagination";
 //   },
 // ];
 
-export default function User_Management({ current_role , route }) {
+export default function User_Management({ current_role, route }) {
   //state for handle search input
   const [searchTerm, setSearchTerm] = useState("");
   //state for handle role based on current role
@@ -119,10 +124,14 @@ export default function User_Management({ current_role , route }) {
   //stata for handle user data based on role
   const [user_data, setUser_data] = useState([]);
 
+  // const [searching,setSearching] = useState([])
+
+  // const { mutate: handleBlock } = useUser_Management_Mutation();
+
   //UseEffect to handle role of the user based on current role
   useEffect(() => {
     setRole(current_role);
-    setGet_all_user_route(route)
+    setGet_all_user_route(route);
     if (role === "Student") {
       // setGet_all_user_route("/api/admin/get_all_student");
       setBlock_user_route("/api/admin/block_student");
@@ -136,34 +145,28 @@ export default function User_Management({ current_role , route }) {
   }, [current_role, role]);
 
   //Useffect to handle get user data based on the role
-  useEffect(() => {
-    const get_user_data = async () => {
-      try {
-        console.log(get_all_user_route);
-        const response = await axios_instance.get(get_all_user_route);
-        // console.log(response);
-        setRaw_data(response?.data?.user_data);
-      } catch (error) {
-        console.log(error);
-        setUser_data([]);
-      }
-    };
 
-    get_user_data();
-
-
-    return;
-  },[current_role,is_page_changed,get_all_user_route]);
-
-  useEffect(()=>{
-    if(searchTerm === ""){
-      const interval = setInterval(()=>{
-        SetIs_page_changed(!is_page_changed)
-      },100)
-      return () => clearInterval(interval)
+  const get_user_data = async () => {
+    try {
+      console.log(get_all_user_route);
+      const response = await axios_instance.get(route);
+      // console.log(response);
+      setRaw_data(response?.data?.user_data);
+      return response?.data
+    } catch (error) {
+      console.log(error);
+      setUser_data([]);
     }
+  };
+  // useUser_management(get_user_data);
+  const user_manage = useQuery({
+    queryKey:["users"],
+    queryFn:get_user_data
   })
-  // console.log(user_data);
+  user_manage
+  useEffect(() => {
+    get_user_data();
+  }, [is_page_changed]);
 
   //Function to handle user block
   const handle_block = async (user_id) => {
@@ -173,6 +176,7 @@ export default function User_Management({ current_role , route }) {
       });
       const { success, message } = response?.data;
       if (success) {
+        // handleBlock(data)
         toast.success(message);
         SetIs_page_changed(!is_page_changed);
       }
@@ -184,6 +188,7 @@ export default function User_Management({ current_role , route }) {
   };
 
   //Function to handle user unblock
+
   const handle_unblock = async (user_id) => {
     try {
       const response = await axios_instance.put(unblock_user_route, {
@@ -200,21 +205,22 @@ export default function User_Management({ current_role , route }) {
       toast.error(message);
     }
   };
-
-  //Funtion to handle pagination 
+  useUser_Management_Mutation(handle_unblock);
+  //Funtion to handle pagination
   const handlePagination = (paged_user_data) => {
     setUser_data(paged_user_data);
   };
-  //Function to handle search the user 
+  //Function to handle search the user
   const handle_search = (e) => {
-    const term = e.target.value
+    const term = e.target.value;
 
-    setSearchTerm(term)
-    const searched_data = user_data.filter((data) => (
-      data.name.toLowerCase().includes(term.toLowerCase()) ||
+    setSearchTerm(term);
+    const searched_data = raw_data.filter(
+      (data) =>
+        data.name.toLowerCase().includes(term.toLowerCase()) ||
         data.email.toLowerCase().includes(term.toLowerCase())
-    ));
-    setUser_data(searched_data)
+    );
+    setUser_data(searched_data);
   };
   return (
     <>
@@ -225,7 +231,7 @@ export default function User_Management({ current_role , route }) {
             <BreadcrumbList>
               <BreadcrumbItem>
                 <BreadcrumbLink>
-                  <Link href="/">Admin</Link>
+                  <Link to="/admin/dashboard">Admin</Link>
                 </BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator />
@@ -279,7 +285,9 @@ export default function User_Management({ current_role , route }) {
                         student?.joined_at?.split("T")[0] ||
                         "Nil"}
                     </p>
-                    <p>{`${role} Email`}: {student.email || "Nil"}</p>
+                    <p>
+                      {`${role} Email`}: {student.email || "Nil"}
+                    </p>
                     <p>Task Completion: {student.taskCompletion || "Nil"}</p>
                     <p>
                       Overall Performance: {student.overallPerformance || "Nil"}

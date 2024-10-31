@@ -21,6 +21,6 @@ export const Instructor_Slice = createSlice({
   },
 });
 
-export const { set_instructor_data, instructor_logout } = Instructor_Slice;
+export const { set_instructor_data, instructor_logout } = Instructor_Slice.actions;
 
 export default Instructor_Slice.reducer;

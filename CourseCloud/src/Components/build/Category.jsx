@@ -34,6 +34,7 @@ import { axios_instance } from "@/Config/axios_instance";
 import { toast } from "sonner";
 import { Formik, Form, Field } from "formik";
 import * as yup from "yup";
+import { Confirmation } from "./Confirmation";
 
 //Form validation schema
 const form_validation = yup.object({
@@ -366,7 +367,7 @@ export default function Category() {
               <BreadcrumbList>
                 <BreadcrumbItem>
                   <BreadcrumbLink>
-                    <Link href="/">Admin</Link>
+                    <Link to="/admin/dashboard">Admin</Link>
                   </BreadcrumbLink>
                 </BreadcrumbItem>
                 <BreadcrumbSeparator />
@@ -452,6 +453,7 @@ export default function Category() {
                         <Pencil className="h-4 w-4" />
                       </Button>
                       <Button
+                        id="unlist_category"
                         variant="ghost"
                         size="sm"
                         onClick={() =>

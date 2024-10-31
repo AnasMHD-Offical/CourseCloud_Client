@@ -16,7 +16,7 @@ import { useState, useRef, useEffect } from "react";
 export function OTP_Modal({ isOpen, onClose, verify_otp, email, resend_otp }) {
   //state for manage otp and timer.
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
-  const [timer, setTimer] = useState(90); // 1.30 minutes
+  const [timer, setTimer] = useState(115); // 1 minutes
 
   const inputRefs = useRef([]);
   //UseEffect hooks for handling timer
@@ -62,7 +62,7 @@ export function OTP_Modal({ isOpen, onClose, verify_otp, email, resend_otp }) {
 
   //function to resend otp
   const handleResend = () => {
-    setTimer(110);
+    setTimer(115);
     setOtp(["", "", "", "", "", ""]);
     resend_otp(); // Call the resendOtp function passed as prop
   };
