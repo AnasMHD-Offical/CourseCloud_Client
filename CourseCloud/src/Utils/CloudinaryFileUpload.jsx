@@ -2,7 +2,7 @@ import { Button } from "@/Components/ui/button";
 import { Plus } from "lucide-react";
 import { useRef, useEffect } from "react";
 import { toast } from "sonner";
-const CloudinaryUploadWidget_Files = ({ setAssignmentFileUrl }) => {
+const CloudinaryUploadWidget_Files = ({ onUploadComplete }) => {
   const cloudinaryRef = useRef();
   const FileWidgetRef = useRef();
   useEffect(() => {
@@ -28,7 +28,7 @@ const CloudinaryUploadWidget_Files = ({ setAssignmentFileUrl }) => {
           toast.error("Unexpected error occurs while uploading. Try again");
         } else if (!error && result && result?.event === "success") {
           console.log(result);
-          setAssignmentFileUrl(result?.info?.secure_url);
+          onUploadComplete(result?.info?.secure_url);
           toast.success("Assignment file uploaded to the cloud storage");
         }
       }
@@ -38,7 +38,7 @@ const CloudinaryUploadWidget_Files = ({ setAssignmentFileUrl }) => {
 
   return (
     <>
-      <Button onClick={() => FileWidgetRef.current.open()} variant="outline">
+      <Button onClick={() => FileWidgetRef.current.open()} type="button" variant="outline">
         <Plus className="mr-2 h-4 w-4" /> Add Assignments
       </Button>
     </>

@@ -1,76 +1,96 @@
-import React, { useState } from "react";
-import {
-  Search,
-  User,
-  Plus,
-  Upload,
-  ArrowRight,
-  Menu,
-  CircleCheckBig,
-  ArrowLeft,
-} from "lucide-react";
+import React, { useRef, useState } from "react";
+import { ArrowRight, CircleCheckBig, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Link, useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
 import CloudinaryUploadWidget_Videos from "@/Utils/CloudinaryVideoUpload";
 import CloudinaryUploadWidget_Files from "@/Utils/CloudinaryFileUpload";
+import { set_Course_Curriculum } from "@/Redux/Slices/CourseCuriculum";
+import * as yup from "yup";
+import { Formik, Form, Field } from "formik";
+
+const validation_form = yup.object({
+  title: yup
+    .string()
+    .matches(
+      /^[a-zA-Z0-9: ]+$/,
+      "Title should only contain alphabet,numbers , colen or whitespace"
+    )
+    .matches(/^\s*\S[\s\S]*$/, "Enter valid title")
+    .required("Title is required"),
+  description: yup
+    .string()
+    .matches(
+      /^[a-zA-Z0-9!%@&#?."';:, ]+$/,
+      `Description should only contain alphabet, numbers, speacials characters (@,!,#,&,?,.,",',;,:,) or whitespace `
+    )
+    .matches(/^\s*\S[\s\S]*$/, "Enter valid description")
+    .required("Description is required"),
+  video_tutorial: yup
+    .string()
+    .required("Video tutorial of the lesson is required"),
+  assignment: yup.string().required("assignment for the lesson is required"),
+});
+
 export default function Instructor_Create_Course_Curriculum() {
   const course_plan = useSelector(
     (state) => state?.course_plan?.Course_plan?.data
   );
   console.log(course_plan);
   const navigate = useNavigate();
-  const [video_public_id, setVideo_public_id] = useState("");
-  const [assignment_url, SetAssignment_url] = useState("");
+  const dispatch = useDispatch();
+  const formResetRef = useRef();
+
+  const [LessionMinRequiredErrorFound, SetLessionMinRequiredErrorFound] =
+    useState(false);
   const [lessons, setLessons] = useState([
     {
-      data: {
-        title: "Lesson 1 : Introduction",
-        description:
-          "This video is a introduction of this whole course. Watch the full video. Let's kick off.",
-      },
-      video_url: " ",
-      Assignment: " ",
+      title: "Lesson 1 : Introduction",
+      description:
+        "This video is a introduction of this whole course. Watch the full video. Let's kick off.",
+      video_tutorial: " ",
+      assignment: " ",
     },
   ]);
-  const [newLesson, setNewLesson] = useState({
+  const [form_initial_value, setForm_initial_value] = useState({
     title: "",
     description: "",
-    Assignment: "",
+    video_tutorial: "",
+    assignment: "",
   });
 
-  const addLesson = () => {
-    console.log(video_public_id, "jiuuiyud");
-
-    // setNewLesson({...newLesson,video_url:video_public_id})
-    if (newLesson.title && newLesson.description) {
-      setLessons([
-        ...lessons,
-        {
-          data: newLesson,
-          video_url: video_public_id,
-          Assignment: assignment_url,
-        },
-      ]);
-      setNewLesson({
-        title: "",
-        description: "",
-        video_url: "",
-        Assignment: "",
-      });
+  //Function to add lessions to the lessons array
+  const addLesson = (values) => {
+    // e.preventDefault();
+    console.log("Submitted");
+    setLessons([...lessons, values]);
+    formResetRef.current.resetForm();
+  };
+  //Fucntion to validate the instructor added the minimum lession requirements
+  const validation = () => {
+    let isErrorFound = false;
+    if (lessons.length < 5) {
+      isErrorFound = true;
+      SetLessionMinRequiredErrorFound(true);
     }
+    return isErrorFound;
   };
-  const setPublicId = (public_id) => {
-    setVideo_public_id(public_id);
+  const remove_lessions = (index) => {
+    console.log(index);
+
+    //Removing one of the lession based on the instructor action
+    const removed = lessons.splice(index, 1);
+    setLessons((prev) => [...prev]);
+    console.log(`removed : ${removed}`);
   };
-  const setAssignmentFileUrl = (file_url) => {
-    SetAssignment_url(file_url);
-  };
+  //Function to navigate to the next page and add the data to the redux store
   const handleNavigateCoursePreview = () => {
-    console.log(video_public_id);
-    navigate("/instructor/create_course/3")
+    if (!validation()) {
+      dispatch(set_Course_Curriculum({ data: lessons }));
+      navigate("/instructor/create_course/3");
+    }
   };
   console.log(lessons);
 
@@ -105,88 +125,143 @@ export default function Instructor_Create_Course_Curriculum() {
         <div>
           <h3 className="text-xl font-semibold mb-1">Course Curriculum</h3>
           <p className="text-sm font-normal">
-            {"Add course in the proper manner (First to last manner)"}
+            {
+              "Add course in the proper manner (First to last manner). Minimum 5 lessions should be in your course"
+            }
           </p>
         </div>
         {/* Lesson Adding */}
-        <div className="space-y-4 sm:shadow-sm sm:border p-2 sm:p-4 rounded-lg">
-          <div>
-            <label htmlFor="course_title" className="text-lg font-medium">
-              Enter lession no & title :{" "}
-            </label>
+        <Formik
+          innerRef={formResetRef}
+          initialValues={form_initial_value}
+          validationSchema={validation_form}
+          onSubmit={(values) => addLesson(values)}
+          enableReinitialize={true}
+        >
+          {({ errors, touched, setFieldValue, isSubmitting, resetForm }) => (
+            <Form className="space-y-4 sm:shadow-sm sm:border p-2 sm:p-4 rounded-lg">
+              <div>
+                <label htmlFor="title" className="text-lg font-medium">
+                  Enter lession no & title :{" "}
+                </label>
 
-            <Input
-              id="course_title"
-              placeholder="Enter lesson no. : Enter lesson title"
-              className="h-11"
-              value={newLesson.title}
-              onChange={(e) =>
-                setNewLesson({ ...newLesson, title: e.target.value })
-              }
-            />
-            <p className="text-xs ms-1 mt-1 text-neutral-600">
-              {
-                "Follow the proper format that shown in the input eg: '<lesson_number> : <lesson_title>'"
-              }
-            </p>
-          </div>
-          <div>
-            <label htmlFor="course_title" className="text-lg font-medium">
-              Enter Lesson description :{" "}
-            </label>
-            <Textarea
-              placeholder="Lesson description"
-              value={newLesson.description}
-              onChange={(e) =>
-                setNewLesson({ ...newLesson, description: e.target.value })
-              }
-              rows={4}
-            />
-            <p className="text-xs ms-1 mt-1 text-neutral-600">
-              {
-                "Give a proper description about the lession. Student should understand, what are you trying to teach in this purticular lession"
-              }
-            </p>
-          </div>
-          <div className="flex flex-col gap-2 lg:flex-row justify-between">
-            <div className="space-x-1 md:space-x-2">
-              {/* Cloudinary upload widget component for tutorial uploads */}
-              <CloudinaryUploadWidget_Videos setPublicId={setPublicId} />
-              {/* Cloudinary upload widget component for Assignments file uploads */}
-              <CloudinaryUploadWidget_Files
-                setAssignmentFileUrl={setAssignmentFileUrl}
-              />
-            </div>
-            <Button onClick={addLesson} className="bg-black text-white">
-              Add Lesson
-            </Button>
-          </div>
-        </div>
+                <Field
+                  as={Input}
+                  id="title"
+                  name="title"
+                  placeholder="Enter lesson no. : Enter lesson title"
+                  className="h-11"
+                  // value={newLesson.title}
+                  // onChange={(e) =>
+                  //   setNewLesson({ ...newLesson, title: e.target.value })
+                  // }
+                />
+                {errors.title && touched.title && (
+                  <div className="text-sm text-red-500">{errors.title}</div>
+                )}
+                <p className="text-xs ms-1 mt-1 text-neutral-600">
+                  {
+                    "Follow the proper format that shown in the input eg: '<lesson_number> : <lesson_title>'"
+                  }
+                </p>
+              </div>
+              <div>
+                <label htmlFor="course_title" className="text-lg font-medium">
+                  Enter Lesson description :{" "}
+                </label>
+                <Field
+                  as={Textarea}
+                  id="description"
+                  name="description"
+                  placeholder="Lesson description"
+                  // value={newLesson.description}
+                  // onChange={(e) =>
+                  //   setNewLesson({ ...newLesson, description: e.target.value })
+                  // }
+                  rows={4}
+                />
+                {errors.description && touched.description && (
+                  <div className="text-sm text-red-500">
+                    {errors.description}
+                  </div>
+                )}
+                <p className="text-xs ms-1 mt-1 text-neutral-600">
+                  {
+                    "Give a proper description about the lession. Student should understand, what are you trying to teach in this purticular lession"
+                  }
+                </p>
+              </div>
+              <div className="max-w-5xl flex flex-col gap-2 lg:flex-row justify-between">
+                <div className="flex space-x-1 md:space-x-5">
+                  {/* Cloudinary upload widget component for tutorial uploads */}
+                  <div className="flex flex-col">
+                    <CloudinaryUploadWidget_Videos
+                      onUploadComplete={(url) =>
+                        setFieldValue("video_tutorial", url)
+                      }
+                    />
+                    {errors.video_tutorial && touched.video_tutorial && (
+                      <span className="text-sm text-red-500">
+                        {errors.video_tutorial}
+                      </span>
+                    )}
+                  </div>
+                  <div className="flex flex-col">
+                    {/* Cloudinary upload widget component for Assignments file uploads */}
+                    <CloudinaryUploadWidget_Files
+                      onUploadComplete={(url) =>
+                        setFieldValue("assignment", url)
+                      }
+                    />
+                    {errors.assignment && touched.assignment && (
+                      <span className="text-sm text-red-500">
+                        {errors.assignment}
+                      </span>
+                    )}
+                  </div>
+                </div>
+                <Button type="submit" className="bg-black text-white">
+                  Add Lesson
+                </Button>
+              </div>
+            </Form>
+          )}
+        </Formik>
         {/* Added lession display */}
         <div className="space-y-4">
           <h3 className="text-2xl font-bold ms-1">Added Lessions</h3>
           {lessons.map((lesson, index) => (
-            <div key={index} className="border rounded-md p-4 shadow ">
-              <h4 className="font-semibold">{lesson.data.title}</h4>
-              <p className="text-gray-600">{lesson.data.description}</p>
-              <div className="flex gap-4 mt-2">
-                {lesson.video_url && (
-                  <button className="border p-2 rounded-lg flex gap-2 border-neutral-400">
-                    <CircleCheckBig />
-                    <p className="text-sm">Video tutorial uploaded</p>
-                  </button>
-                )}
-                {lesson.Assignment && (
-                  <button className="border p-2 rounded-lg flex gap-2 border-neutral-400">
-                    <CircleCheckBig />
-                    <p className="text-sm">Assignment uploaded</p>
-                  </button>
-                )}
+            <div key={index} className="flex justify-between border rounded-md p-4 shadow ">
+              <div>
+                <h4 className="font-semibold">{lesson.title}</h4>
+                <p className="text-gray-600">{lesson.description}</p>
+                <div className="flex gap-4 mt-2">
+                  {lesson.video_tutorial && (
+                    <button className="border p-2 rounded-lg flex gap-2 border-neutral-400">
+                      <CircleCheckBig />
+                      <p className="text-sm">Video tutorial uploaded</p>
+                    </button>
+                  )}
+                  {lesson.assignment && (
+                    <button className="border p-2 rounded-lg flex gap-2 border-neutral-400">
+                      <CircleCheckBig />
+                      <p className="text-sm">Assignment uploaded</p>
+                    </button>
+                  )}
+                </div>
+              </div>
+              <div>
+                <Button onClick={remove_lessions} className="bg-white hover:bg-neutral-50 border text-black">Remove</Button>
               </div>
             </div>
           ))}
         </div>
       </div>
+      {LessionMinRequiredErrorFound && (
+        <div className="text-sm text-red-500">
+          Minimum lession requirement must be followed . Add minimum 5 lessions
+        </div>
+      )}
       {/* Navigating to course preview component */}
       <div className="mt-8 flex justify-between">
         <Button

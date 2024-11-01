@@ -8,15 +8,14 @@ import { set_course_plan } from "@/Redux/Slices/CoursePlan";
 // import { Field, Formik, Form } from "formik";
 
 export default function Instructor_Create_Course_Plan() {
-//   const [learningObjectiveError, setLearningObjectiveError] = useState("");
-//   // const [targetAudienceError, setTargetAudienceError] = useState("");
-//   // const [requirementsError, setRequirementsError] = useState("");
-//   // const [isRequirementsErrorFound, setIsRequirementsErrorFound] = useState("");
-//   // const [isTargetAudienceErrorFound, setIsTargetAudienceErrorFound] =
-//   //   useState("");
-//   // const [isLearningObjectiveErrorFound, setIsLearningObjectiveErrorFound] =
-//   //   useState(false);
-  const [isErrorFound, setIsErrorFound] = useState(false);
+    // const [learningObjectiveError, setLearningObjectiveError] = useState("");
+  //   // const [targetAudienceError, setTargetAudienceError] = useState("");
+  //   // const [requirementsError, setRequirementsError] = useState("");
+    const [isRequirementsErrorFound, setIsRequirementsErrorFound] = useState("");
+    const [isTargetAudienceErrorFound, setIsTargetAudienceErrorFound] = useState("");
+    const [isLearningObjectiveErrorFound, setIsLearningObjectiveErrorFound] = useState(false);
+    const [isLearningObjectiveErrorFoundMin, setIsLearningObjectiveErrorFoundMin] = useState(false);
+  // const [isErrorFound, setIsErrorFound] = useState(false);
   const [objective, setObjective] = useState("");
   const [requirement, setRequirement] = useState("");
   const [targetAudience, setTargetAudience] = useState("");
@@ -30,8 +29,32 @@ export default function Instructor_Create_Course_Plan() {
     "Students who are interested in coding",
   ]);
   const navigate = useNavigate();
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
+  const validation = () =>{
+    let isErrorFound = false
+    if(learningObjectives.length === 0){
+        isErrorFound = true
+        setIsLearningObjectiveErrorFound(true)
+    }
+    else if(learningObjectives.length < 4){
+        isErrorFound = true
+        setIsLearningObjectiveErrorFoundMin(true)
+    }
+
+    if(requirements.length === 0){
+        isErrorFound = true
+        setIsRequirementsErrorFound(true)
+    }
+    if(targetAudiences.length === 0){
+        isErrorFound = true
+        setIsTargetAudienceErrorFound(true)
+
+    }
+
+    return isErrorFound
+
+  }
   // const validation_schema = async () => {
   //   if (learningObjectives.length === 0) {
   //     setLearningObjectiveError("Learning objectives are required");
@@ -157,17 +180,20 @@ export default function Instructor_Create_Course_Plan() {
     console.log("removed : ", removed);
   };
 
-  const handleRedirectNext = async () => {
-    // const error = await validation_schema();
-    // console.log(error);
-    dispatch(set_course_plan({
-        data:{
+  const handleRedirectNext = async (e) => {
+    e.preventDefault()
+    console.log(validation());
+    
+    if (!validation()) {
+      dispatch(
+        set_course_plan({
+          data: {
             learningObjectives,
             targetAudiences,
-            requirements
-        }
-    }))
-    if (true) {
+            requirements,
+          },
+        })
+      );
       navigate("/instructor/create_course/2");
       setIsErrorFound(false);
     }
@@ -215,13 +241,13 @@ export default function Instructor_Create_Course_Plan() {
               Add minimum 4 objective you must provide
             </p>
             <div className="flex mb-2">
-                <Input
-                  id="learningObjective"
-                  placeholder="Eg : Learn the basics of python"
-                  className="flex-grow h-11"
-                  onChange={(e) => setObjective(e.target.value)}
-                  value={objective}
-                />
+              <Input
+                id="learningObjective"
+                placeholder="Eg : Learn the basics of python"
+                className="flex-grow h-11"
+                onChange={(e) => setObjective(e.target.value)}
+                value={objective}
+              />
               <Button
                 onClick={addLearningObjectives}
                 className="ml-2 h-11 bg-white border hover:bg-neutral-100 border-gray-300"
@@ -229,6 +255,16 @@ export default function Instructor_Create_Course_Plan() {
                 <Plus className="h-4 w-4 text-black" />
               </Button>
             </div>
+            {isLearningObjectiveErrorFound && (
+              <div className="text-sm text-red-500 mb-2">
+                  Learning objectives are required
+              </div>
+            )}
+            {isLearningObjectiveErrorFoundMin && (
+              <div className="text-sm text-red-500">
+                  Minimum 4 Learning objectives should be mentioned in your course
+              </div>
+            )}
             {learningObjectives.map((objective, index) => (
               <div
                 key={index}
@@ -247,7 +283,7 @@ export default function Instructor_Create_Course_Plan() {
                 </div>
               </div>
             ))}
-            {console.log(learningObjectives)}
+            
           </div>
           {/* Requirements */}
           <div>
@@ -273,6 +309,11 @@ export default function Instructor_Create_Course_Plan() {
                 <Plus className="h-4 w-4 text-black " />
               </Button>
             </div>
+            {isRequirementsErrorFound && (
+              <div className="text-sm text-red-500">
+                 Requirements for your course must be added on you course
+              </div>
+            )}
             {requirements.map((requirement, index) => (
               <div
                 key={index}
@@ -315,6 +356,11 @@ export default function Instructor_Create_Course_Plan() {
                 <Plus className="h-4 w-4 text-black hover:text-white" />
               </Button>
             </div>
+            {isTargetAudienceErrorFound && (
+              <div className="text-sm text-red-500">
+                 Mention the target audiences for your course
+              </div>
+            )}
             {targetAudiences.map((audience, index) => (
               <div
                 key={index}

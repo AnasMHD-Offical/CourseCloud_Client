@@ -2,7 +2,7 @@ import { Button } from "@/Components/ui/button";
 import { Upload } from "lucide-react";
 import { useRef, useEffect } from "react";
 import { toast } from "sonner";
-const CloudinaryUploadWidget_Videos = ({ setPublicId }) => {
+const CloudinaryUploadWidget_Videos = ({ onUploadComplete }) => {
   const cloudinaryRef = useRef();
   const widgetRef = useRef();
   useEffect(() => {
@@ -21,7 +21,7 @@ const CloudinaryUploadWidget_Videos = ({ setPublicId }) => {
           toast.error("Unexpected error occurs while uploading. Try again");
         } else if (result?.event === "success") {
           console.log(result);
-          setPublicId(result?.info?.public_id);
+          onUploadComplete(result?.info?.public_id);
           toast.success("Video uploaded to the cloud storage")
         }
       }
@@ -31,7 +31,7 @@ const CloudinaryUploadWidget_Videos = ({ setPublicId }) => {
 
   return (
     <>
-      <Button onClick={() => widgetRef.current.open()} variant="outline">
+      <Button onClick={() => widgetRef.current.open()} type="button" variant="outline">
         <Upload className="mr-2 h-4 w-4" /> Upload video
       </Button>
     </>
