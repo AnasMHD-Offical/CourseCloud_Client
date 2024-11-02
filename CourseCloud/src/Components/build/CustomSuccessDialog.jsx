@@ -9,39 +9,21 @@ import {
   DialogTrigger,
   DialogClose,
 } from "@/components/ui/dialog";
-import { BadgeCheck, Check, CircleCheck, ShieldCheck, X } from "lucide-react";
-import { useEffect, useState } from "react";
+import { BadgeCheck, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 // Success modal reusable component
-export default function Success_Modal({
+export default function CustomSuccessDialogBox({
   isOpen,
   onClose,
   title,
   subtitle,
   description,
   buttonText,
-  current_role,
+  customRoute
 }) {
-  //State for manage the user role
-  const [role, setRole] = useState("");
-  //State for manange login route based on user role
-  const [login_route, setLogin_route] = useState("");
-  const [CustomRoute, setCustomRoute] = useState("");
   const navigate = useNavigate();
-  //useeffect hook used to manange the states that based on user role
-  useEffect(() => {
-    setRole(current_role);
-    if (role === "student") {
-      setLogin_route("/");
-    } else if (role === "instructor") {
-      setLogin_route("/instructor");
-    } else if (role === "admin") {
-      setLogin_route("/admin");
-    } else {
-      setLogin_route("");
-    }
-  }, [role]);
+
 //component 
   return (
     <Dialog open={isOpen}>
@@ -53,10 +35,10 @@ export default function Success_Modal({
         </DialogClose>
         <DialogHeader className="flex flex-col items-center text-center">
           <div className="rounded-full bg-primary p-3 mb-4">
-            <ShieldCheck className="h-8 w-8  text-primary-foreground  " />
+            <BadgeCheck className="h-8 w-8  text-primary-foreground  " />
           </div>
-          <DialogTitle className="text-3xl font-bold">{title}</DialogTitle>
-          <DialogDescription className="text-lg text-neutral-950 font-bold">
+          <DialogTitle className="text-3xl text-center font-bold">{title}</DialogTitle>
+          <DialogDescription className="text-lg text-center text-neutral-950 font-bold">
             {subtitle}
           </DialogDescription>
         </DialogHeader>
@@ -65,7 +47,7 @@ export default function Success_Modal({
             {description}
           </p>
         </div>
-        <Button className="w-full h-11" onClick={() => navigate(login_route)}>
+        <Button className="w-full h-11" onClick={() => navigate(customRoute)}>
           {buttonText}
         </Button>
       </DialogContent>

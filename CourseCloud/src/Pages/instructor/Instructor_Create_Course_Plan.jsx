@@ -37,7 +37,7 @@ export default function Instructor_Create_Course_Plan() {
         isErrorFound = true
         setIsLearningObjectiveErrorFound(true)
     }
-    else if(learningObjectives.length < 4){
+    else if(learningObjectives.length < 1){
         isErrorFound = true
         setIsLearningObjectiveErrorFoundMin(true)
     }

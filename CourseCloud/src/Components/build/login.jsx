@@ -187,21 +187,21 @@ function Login({ current_role }) {
         CourseCloud
       </h2> */}
       <Card
-        className="flex relative md:w-10/12 rounded-xl md:max-h-screen"
+        className=" mx-auto flex relative md:w-10/12 rounded-xl md:max-h-screen"
         id="login_form"
       >
-        <h2 className=" hidden md:block absolute sm:text-2xl md:text-3xl font-extrabold top-6 left-8">
+        <h2 className=" hidden md:block absolute sm:text-2xl md:text-3xl font-extrabold top-6 left-8 text-neutral-200">
           CourseCloud
         </h2>
         <img
-          src="../../public/Login.jpg"
+          src="https://res.cloudinary.com/dtc1xcil8/image/upload/v1730556641/dhil48sknbltoebtjupu.jpg"
           alt=""
-          className="sm:max-w-xs md:max-w-sm lg:max-w-md xl:max-w-2xl hidden md:block rounded-xl"
+          className="sm:max-w-xs md:max-w-sm lg:max-w-md xl:max-w-2xl hidden md:block rounded-xl rounded-r-none"
         />
         <Card className="w-full max-w-[400px] sm:max-w-[450px] md:max-w-[500px] lg:max-w-[550px] sm:rounded-s-sm">
           {/* Login heading */}
           <CardHeader className="space-y-2 sm:space-y-3 md:space-y-4">
-            <CardTitle className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-center">
+            <CardTitle className="bg-clip-text text-transparent bg-gradient-to-r from-primary to-purple-600 text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-center h-14">
               Login
             </CardTitle>
           </CardHeader>
@@ -320,7 +320,7 @@ function Login({ current_role }) {
                 Don't have an account?{" "}
                 <Link
                   to={register_route}
-                  className="text-neutral-900 font-bold hover:underline"
+                  className="bg-clip-text text-transparent bg-gradient-to-r from-primary to-purple-600 font-bold hover:underline"
                 >
                   Register
                 </Link>
@@ -338,7 +338,7 @@ function Login({ current_role }) {
                 }}
               />
             )}
-            {role === "instructor" && (
+            {/* {role === "instructor" && (
               <>
                 <h1 className="text-base text-center font-light">
                   "Get into the fasinating world of course and Wish you all the
@@ -359,7 +359,7 @@ function Login({ current_role }) {
                   - By <span className="font-medium">CourseCloud Team</span>
                 </p>
               </>
-            )}
+            )} */}
           </CardFooter>
         </Card>
       </Card>

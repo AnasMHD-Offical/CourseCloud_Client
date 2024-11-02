@@ -71,7 +71,7 @@ export default function Instructor_Create_Course_Curriculum() {
   //Fucntion to validate the instructor added the minimum lession requirements
   const validation = () => {
     let isErrorFound = false;
-    if (lessons.length < 5) {
+    if (lessons.length < 1) {
       isErrorFound = true;
       SetLessionMinRequiredErrorFound(true);
     }

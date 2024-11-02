@@ -220,7 +220,7 @@ const Cloudinary_Upload = async (profile) => {
               </BreadcrumbItem>
             </BreadcrumbList>
           </Breadcrumb>
-          <h2 className="text-2xl font-bold mt-2">Profile</h2>
+          <h2 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-black to-purple-600  mt-2">Profile</h2>
         </div>
 
         {/* Personal info card */}
@@ -268,7 +268,7 @@ const Cloudinary_Upload = async (profile) => {
 
         <Card>
           <CardContent className="p-6">
-            <h3 className="text-xl font-semibold mb-4">Edit Profile</h3>
+            <h3 className="text-xl font-semibold mb-4 ">Edit Profile</h3>
             <Formik
               initialValues={{
                 name: user_data?.name || "",

@@ -18,6 +18,9 @@ import CloudinaryUploadWidget_Image from "@/Utils/CloudinaryImageUpload";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { axios_instance } from "@/Config/axios_instance";
+import { remove_course_plan } from "@/Redux/Slices/CoursePlan";
+import { remove_Course_Curriculum } from "@/Redux/Slices/CourseCuriculum";
+import CustomSuccessDialogBox from "@/Components/build/CustomSuccessDialog";
 const validation_form = yup.object({
   title: yup
     .string()
@@ -53,25 +56,57 @@ const validation_form = yup.object({
 });
 
 export default function Instructor_Create_Course_Preview() {
+  const instructor_id = useSelector((state)=>state?.instructor?.instructor_data?.instructor?._id)
+  console.log(instructor_id);
+  
   const course_curriculam = useSelector(
     (state) => state?.course_curriculum?.Course_Curriculum?.data
   );
+  console.log("course curriculaum", course_curriculam);
+
+  const course_plan = useSelector((state) => state?.course_plan?.Course_plan?.data);
+  console.log("Course plan", course_plan);
+
   const [thumbnailPreview, setThumbnailPreview] = useState("");
   const [Course_curriculum_data, setCourse_curriculum_data] = useState("");
   const [course_categories, setCourse_categories] = useState([]);
   const [course_subcategories, setCourse_subcategories] = useState([]);
+  const [isDialogOpen, setisDialogOpen] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const formikRef = useRef();
-  const handleFormSubmit = (values) => {
+
+  const handleFormSubmit = async (values) => {
     console.log(values);
+    try {
+      const course_data = {
+        instructor_id: instructor_id,
+        course_preview: values,
+        course_plan: course_plan,
+        course_curriculam: course_curriculam,
+      };
+      const response = await axios_instance.post(
+        "api/instructor/add_course",
+        course_data
+      );
+      const { message, success } = response?.data;
+      if (success) {
+        dispatch(remove_course_plan());
+        dispatch(remove_Course_Curriculum());
+        setisDialogOpen(true);
+      }
+    } catch (error) {
+      console.log(error);
+      
+    }
   };
+
   const get_category = async () => {
     try {
       const response = await axios_instance.get(
         "api/instructor/get_category_instructor"
       );
-      console.log(response);
+      // console.log(response);
       const { message, success, categories } = response?.data;
       if (success) {
         setCourse_categories(categories);
@@ -82,6 +117,7 @@ export default function Instructor_Create_Course_Preview() {
       toast.error(message);
     }
   };
+
   useEffect(() => {
     setCourse_curriculum_data(course_curriculam);
     get_category();
@@ -90,7 +126,7 @@ export default function Instructor_Create_Course_Preview() {
   const handleCategoryChange = (value) => {
     formikRef.current.setFieldValue("category", value);
     const category = course_categories.filter(
-      (category) => category.title === value
+      (category) => category._id === value
     );
     const subcategory = category[0].sub_category.filter(
       (subcategory) => subcategory.status === true
@@ -98,6 +134,12 @@ export default function Instructor_Create_Course_Preview() {
     setCourse_subcategories(subcategory);
     console.log(category);
     console.log(subcategory);
+  };
+
+  const handleThumbnailUpload = (thumbnail) => {
+    formikRef.current.setFieldValue("thumbnail", thumbnail);
+    setThumbnailPreview(thumbnail);
+    console.log("image:", thumbnail);
   };
 
   return (
@@ -296,7 +338,7 @@ export default function Instructor_Create_Course_Preview() {
                                 return (
                                   <SelectItem
                                     key={category._id}
-                                    value={category.title}
+                                    value={category._id}
                                   >
                                     {category.title}
                                   </SelectItem>
@@ -370,19 +412,19 @@ export default function Instructor_Create_Course_Preview() {
                 <div>
                   <Label className="text-base">Course Thumbnail</Label>
                   <div className="mt-2 flex items-start gap-4">
-                    <div className="relative w-40 aspect-video bg-gray-100 rounded-lg overflow-hidden">
+                    <div className="relative w-40 aspect-video border bg-gray-100 rounded-lg overflow-hidden">
                       <img
                         src={
-                          thumbnailPreview ? "" : "https://placehold.co/600x400"
+                          thumbnailPreview
+                            ? `${thumbnailPreview}`
+                            : "https://placehold.co/600x400"
                         }
                         alt="Course thumbnail placeholder"
                         className="w-full h-full object-cover"
                       />
                     </div>
                     <CloudinaryUploadWidget_Image
-                      onUploadComplete={(url) =>
-                        setFieldValue("thumbnail", url)
-                      }
+                      onUploadComplete={(url) => handleThumbnailUpload(url)}
                     />
                   </div>
                   <p className="text-xs text-gray-500 mt-2">
@@ -433,6 +475,15 @@ export default function Instructor_Create_Course_Preview() {
               </Form>
             )}
           </Formik>
+          <CustomSuccessDialogBox
+            isOpen={isDialogOpen}
+            onClose={() => setisDialogOpen(false)}
+            title={"Course Added Successfully"}
+            subtitle={"Keep going & earn more"}
+            description={"The course is reviewed and added to this platform shortly"}
+            buttonText={"Back to create course"}
+            customRoute={"/instructor/create_course"}
+          />
         </div>
       </div>
     </>

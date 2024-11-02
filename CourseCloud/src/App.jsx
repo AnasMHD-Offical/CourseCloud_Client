@@ -33,12 +33,14 @@ import Instructor_Create_Course_Plan from "./Pages/instructor/Instructor_Create_
 import Instructor_Create_Course_Curriculum from "./Pages/instructor/Instructor_Create_Course_Curriculum";
 import CloudinaryUploadWidget from "./Utils/CloudinaryVideoUpload";
 import Instructor_Create_Course_Preview from "./Pages/instructor/Instructor_Create_Course_Preview";
+import LandingPage from "./Pages/student/Student_Landing_Page";
 function App() {
   return (
     <>
       <Router>
         <Routes>
           <Route path="/" element={<Student_Login />} />
+          <Route path="/landingPage" element={<LandingPage />} />
           <Route path="register" element={<Student_Register />} />
           <Route path="forgot_password" element={<Student_Forgot_password />} />
           <Route path="password_reset" element={<Student_Password_Reset />} />

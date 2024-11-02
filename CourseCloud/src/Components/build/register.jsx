@@ -211,17 +211,17 @@ function Register({ current_role }) {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 py-4 px-2  md:px-1">
       <Card className="flex relative w-10/12 sm:w-9/12 md:w-10/12 rounded-xl md:max-h-screen-sm md:max-w-screen-md xl:max-w-screen-lg">
-        <h2 className=" hidden sm:block absolute sm:text-2xl md:text-3xl font-extrabold top-6 left-8">
+        <h2 className=" hidden text-neutral-200 sm:block absolute sm:text-2xl md:text-3xl font-extrabold top-6 left-8">
           CourseCloud
         </h2>
         <img
-          src="../../public/Register.jpg"
+          src="https://res.cloudinary.com/dtc1xcil8/image/upload/v1730562521/openart-21efa5b7aa3f422a9a2fb775d7e26d06_rabjkhjledw_cqsbqd.jpg"
           alt=""
-          className="sm:max-w-xs md:max-w-xs lg:max-w-sm xl:max-w-lg hidden sm:block rounded-xl"
+          className="sm:max-w-xs md:max-w-xs lg:max-w-sm xl:max-w-lg hidden sm:block rounded-xl rounded-r-none"
         />
         <div className="w-full max-w-2xl md:max-w-3xl lx:max-w-4xl space-y-4 bg-white p-8 rounded-lg sm:rounded-s-sm shadow-md">
           {/* Heading for register */}
-          <h1 className="text-3xl font-bold text-center">Register</h1>
+          <h1 className="text-4xl font-bold text-center bg-clip-text text-transparent bg-gradient-to-r from-primary to-purple-600 h-12">Register</h1>
           {/* Form starts here */}
           <Formik
             initialValues={{
@@ -394,7 +394,7 @@ function Register({ current_role }) {
             Already have an account?{" "}
             <Link
               to={login_route}
-              className="font-bold text-neutral-900 hover:underline"
+              className="font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-purple-600 hover:underline"
             >
               Login
             </Link>
