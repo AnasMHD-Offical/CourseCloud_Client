@@ -54,6 +54,8 @@ function Login({ current_role }) {
   const [showPassword, setShowPassword] = useState(false);
   //state for manage google auth block for admin
   const [is_admin, setIs_admin] = useState(true);
+
+  const [homeRoute,setHomeRoute] = useState("")
   //Decalring navigate from useNavigate hook
   const navigate = useNavigate();
 
@@ -66,10 +68,12 @@ function Login({ current_role }) {
       setLogin_api("/api/student_login");
       setResgister_route("/register");
       setForgot_password_route("/forgot_password");
+      setHomeRoute("/")
     } else if (role === "instructor") {
       setLogin_api("/api/instructor/instructor_login");
       setResgister_route("/instructor/register");
       setForgot_password_route("/instructor/forgot_password");
+      setHomeRoute("/instructor")
     } else if (role === "admin") {
       setLogin_api("/api/admin/admin_login");
       setForgot_password_route("/admin/forgot_password");
@@ -99,6 +103,7 @@ function Login({ current_role }) {
       //short circuting the success(bool) to show toaster
       if (success) {
         toast.success(message);
+        navigate(homeRoute)
         console.log(user_data.role);
         console.log(user_data);
 

@@ -75,7 +75,7 @@ function Register({ current_role }) {
       //setting student_register route api based on student
       setRegister_api("/api/student_register");
       //setting login route api based on student
-      setLogin_route("/");
+      setLogin_route("/login");
       //setting otp_send route api based on student
       setSend_otp_route("/api/send_otp");
       //setting validate_otp route api based on student

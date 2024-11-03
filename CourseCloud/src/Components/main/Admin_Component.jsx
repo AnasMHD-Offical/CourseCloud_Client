@@ -26,6 +26,7 @@ import Admin_Auth from "@/Auth/Admin_Auth";
 import { admin_logout } from "@/Redux/Slices/AdminSlice";
 import { toast } from "sonner";
 import { axios_instance } from "@/Config/axios_instance";
+import Footer from "../base/Footer";
 
 export default function Admin() {
   const dispatch = useDispatch();
@@ -136,88 +137,7 @@ export default function Admin() {
       </div>
 
       {/* Footer */}
-      <footer className="bg-gray-800 text-white py-8">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
-            <div>
-              <h3 className="text-lg font-semibold mb-4">CourseCloud</h3>
-              <ul className="space-y-2">
-                <li>
-                  <a href="#" className="hover:underline">
-                    Teach in Company
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:underline">
-                    About us
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:underline">
-                    Contact us
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:underline">
-                    Ratings
-                  </a>
-                </li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="text-lg font-semibold mb-4">Help & Support</h3>
-              <ul className="space-y-2">
-                <li>
-                  <a href="#" className="hover:underline">
-                    Help Center
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:underline">
-                    Career
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:underline">
-                    Blog
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:underline">
-                    More
-                  </a>
-                </li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="text-lg font-semibold mb-4">Term & Conditions</h3>
-              <ul className="space-y-2">
-                <li>
-                  <a href="#" className="hover:underline">
-                    Cookie settings
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:underline">
-                    Privacy policy
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:underline">
-                    Sitemap
-                  </a>
-                </li>
-              </ul>
-            </div>
-          </div>
-          <div className="mt-8 pt-8 border-t border-gray-700 text-center">
-            <p>
-              &copy; {new Date().getFullYear()} CourseCloud. All rights reserved
-              by LMS company.
-            </p>
-          </div>
-        </div>
-      </footer>
+      <Footer/>
     </div>
   );
 }

@@ -9,7 +9,7 @@ import {
   DialogTrigger,
   DialogClose,
 } from "@/components/ui/dialog";
-import { BadgeCheck, Check, CircleCheck, ShieldCheck, X } from "lucide-react";
+import { ShieldCheck, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -33,11 +33,11 @@ export default function Success_Modal({
   useEffect(() => {
     setRole(current_role);
     if (role === "student") {
-      setLogin_route("/");
+      setLogin_route("/login");
     } else if (role === "instructor") {
-      setLogin_route("/instructor");
+      setLogin_route("/instructor/login");
     } else if (role === "admin") {
-      setLogin_route("/admin");
+      setLogin_route("/admin/login");
     } else {
       setLogin_route("");
     }

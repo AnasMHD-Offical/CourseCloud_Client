@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Search,
   User,
@@ -71,6 +71,9 @@ export default function Category() {
   const [sub_id, setSub_id] = useState();
   // const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
+  const CategoryRef = useRef()
+  const SubCategoryRef = useRef()
+
   useEffect(() => {
     //function for get categories that added on db
     const get_all_category = async () => {
@@ -106,6 +109,7 @@ export default function Category() {
             title: "",
             description: "",
           });
+          CategoryRef.current.resetForm()
         }
       }
     } catch (error) {
@@ -134,6 +138,7 @@ export default function Category() {
           description: "",
         });
         SetIs_category_changed(!is_category_changed);
+        CategoryRef.current.resetForm()
       }
     } catch (error) {
       const { message } = error?.response?.data;
@@ -216,6 +221,7 @@ export default function Category() {
             description: "",
           });
           SetIs_category_changed(!is_category_changed);
+          SubCategoryRef.current.resetForm()
         }
         console.log(response);
       } catch (error) {
@@ -267,6 +273,7 @@ export default function Category() {
           description: "",
         });
         SetIs_category_changed(!is_category_changed);
+        SubCategoryRef.current.resetForm()
       }
     } catch (error) {
       console.log(error);
@@ -386,6 +393,7 @@ export default function Category() {
             validationSchema={form_validation}
             onSubmit={is_edit ? editCategory : addCategory}
             enableReinitialize={true}
+            innerRef={CategoryRef}
           >
             {({ errors, touched, isSubmitting }) => (
               <Form className="bg-white border border-neutral-300 shadow-sm rounded-lg p-4 sm:p-6 mb-8">
@@ -481,6 +489,7 @@ export default function Category() {
                           : addSubcategory(category._id, values)
                       }
                       enableReinitialize={true}
+                      innerRef={SubCategoryRef}
                     >
                       {({ errors, touched, isSubmitting }) => (
                         <Form className="space-y-4 mb-1">

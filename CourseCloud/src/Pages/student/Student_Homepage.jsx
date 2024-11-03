@@ -16,7 +16,7 @@ import CallForTutor from "@/Components/base/CallForTutor";
 
 
 
-export default function LandingPage() {
+export default function HomePage() {
 
   // Use ref to handle the hero scrolling animation 
   const heroRef = useRef(null);
@@ -101,7 +101,7 @@ export default function LandingPage() {
     <div className="flex flex-col min-h-screen bg-gradient-to-b from-gray-50 to-white">
       {/* Header */}
 
-      <Header isScrolled={isScrolled} page={"landing"} />
+      <Header isScrolled={isScrolled} page={"Home"} />
 
       {/* Hero Section */}
       <Hero heroRef={heroRef} heroOpacity={heroOpacity} heroScale={heroScale} />

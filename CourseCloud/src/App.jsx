@@ -34,13 +34,38 @@ import Instructor_Create_Course_Curriculum from "./Pages/instructor/Instructor_C
 import CloudinaryUploadWidget from "./Utils/CloudinaryVideoUpload";
 import Instructor_Create_Course_Preview from "./Pages/instructor/Instructor_Create_Course_Preview";
 import LandingPage from "./Pages/student/Student_Landing_Page";
+import Student_Login_Auth from "./Auth/Student_Login_Auth";
+import Student_Auth from "./Auth/Student_Auth";
+import HomePage from "./Pages/student/Student_Homepage";
 function App() {
   return (
     <>
       <Router>
         <Routes>
-          <Route path="/" element={<Student_Login />} />
-          <Route path="/landingPage" element={<LandingPage />} />
+          <Route
+            path="/login"
+            element={
+              <Student_Login_Auth>
+                <Student_Login />
+              </Student_Login_Auth>
+            }
+          />
+          <Route
+            path="/"
+            element={
+              <Student_Auth>
+                <HomePage />
+              </Student_Auth>
+            }
+          />
+          <Route
+            path="/landing"
+            element={
+              <Student_Login_Auth>
+                <LandingPage />
+              </Student_Login_Auth>
+            }
+          />
           <Route path="register" element={<Student_Register />} />
           <Route path="forgot_password" element={<Student_Forgot_password />} />
           <Route path="password_reset" element={<Student_Password_Reset />} />
@@ -74,10 +99,7 @@ function App() {
                 path="2"
                 element={<Instructor_Create_Course_Curriculum />}
               />
-              <Route
-                path="3"
-                element={<Instructor_Create_Course_Preview />}
-              />
+              <Route path="3" element={<Instructor_Create_Course_Preview />} />
             </Route>
           </Route>
         </Routes>
