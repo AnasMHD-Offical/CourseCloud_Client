@@ -23,6 +23,7 @@ import { autoGravity } from "@cloudinary/url-gen/qualifiers/gravity";
 import { AdvancedImage } from "@cloudinary/react";
 import axios from "axios";
 import { toast } from "sonner";
+import { Textarea } from "../ui/textarea";
 
 // import { URL } from "url";
 const form_validation = yup.object({
@@ -60,6 +61,19 @@ const form_validation = yup.object({
     .string()
     .oneOf([yup.ref("new_password"), null], "Passwords must be same"),
   profile: yup.mixed(),
+  about: yup
+    .string()
+    .matches(
+      /^[a-zA-Z0-9!%@&#?."';:, ]+$/,
+      `About should only contain alphabet, numbers, speacials characters (@,!,#,&,?,.,",',;,:,) or whitespace `
+    )
+    .matches(/^\s*\S[\s\S]*$/, "Enter valid description"),
+  proffession: yup
+    .string()
+    .matches(
+      /^[a-zA-Z ]+$/,
+      "Proffession should only contain alphabet or whitespace "
+    ),
 });
 
 export default function Profile({ current_role, user_route }) {
@@ -77,7 +91,7 @@ export default function Profile({ current_role, user_route }) {
   const [user_id, setUser_id] = useState("");
   const [user_data, setUser_data] = useState();
   const [is_user_data_changed, setIs_user_data_changed] = useState("");
-  const [home_route,setHome_route] = useState("")
+  const [home_route, setHome_route] = useState("");
 
   console.log(admin);
 
@@ -85,15 +99,15 @@ export default function Profile({ current_role, user_route }) {
     setRole(current_role);
     setGet_user_route(user_route);
     if (role === "Student") {
-      setHome_route("/dashboard")
+      setHome_route("/dashboard");
       setEdit_user_route("api/edit_student");
       setUser_id(student?._id);
     } else if (role === "Instructor") {
-      setHome_route("instuctor/dashboard")
+      setHome_route("instuctor/dashboard");
       setEdit_user_route("api/instructor/edit_instructor");
       setUser_id(instructor?._id);
     } else if (role === "Admin") {
-      setHome_route("admin/dashboard")
+      setHome_route("admin/dashboard");
       setEdit_user_route("api/admin/edit_admin");
       setUser_id(admin?._id);
     }
@@ -152,9 +166,9 @@ export default function Profile({ current_role, user_route }) {
   //       </button>
   //     </nav>
   //   );
-//
-  
-const Cloudinary_Upload = async (profile) => {
+  //
+
+  const Cloudinary_Upload = async (profile) => {
     const formData = new FormData();
     formData.append("file", profile);
     formData.append("upload_preset", "CourseCloud");
@@ -186,16 +200,18 @@ const Cloudinary_Upload = async (profile) => {
         current_password: values?.current_password || "",
         new_password: values?.new_password || "",
         profile: values?.profile || "",
+        proffession: values?.proffession || "",
+        about: values?.about || "",
         _id: user_id || "",
       };
       console.log(data);
 
-      const response = await axios_instance.patch(edit_user_route, data);
+      const response = await axios_instance.put(edit_user_route, data);
       const { success, message } = response?.data;
       if (success) {
         toast.success(message);
-        setIs_user_data_changed(!is_user_data_changed)
-      } 
+        setIs_user_data_changed(!is_user_data_changed);
+      }
     } catch (error) {
       // const {message} = error?.response?.data
       console.log(error);
@@ -220,7 +236,9 @@ const Cloudinary_Upload = async (profile) => {
               </BreadcrumbItem>
             </BreadcrumbList>
           </Breadcrumb>
-          <h2 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-black to-purple-600  mt-2">Profile</h2>
+          <h2 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-black to-purple-600  mt-2">
+            Profile
+          </h2>
         </div>
 
         {/* Personal info card */}
@@ -261,8 +279,16 @@ const Cloudinary_Upload = async (profile) => {
                   <span className="font-semibold text-base">DOB:</span>{" "}
                   {user_data?.dob || "Nil"}
                 </p>
+                <p>
+                  <span className="font-semibold text-base">Proffession:</span>{" "}
+                  {user_data?.proffession || "Nil"}
+                </p>
               </div>
             </div>
+              <p className="p-2 border rounded-lg mt-2">
+                <span className="font-semibold text-lg">About:</span>{" "}
+                {user_data?.about || "Nil"}
+              </p>
           </CardContent>
         </Card>
 
@@ -275,6 +301,8 @@ const Cloudinary_Upload = async (profile) => {
                 email: user_data?.email || "",
                 mobile: user_data?.mobile || "",
                 dob: user_data?.dob || "",
+                proffession: user_data?.proffession || "",
+                about: user_data?.about || "",
                 current_password: "",
                 new_password: "",
                 confirmPassword: "",
@@ -367,6 +395,52 @@ const Cloudinary_Upload = async (profile) => {
                       <div className="text-sm text-red-500">{errors.dob}</div>
                     )}
                   </div>
+                  {/* Proffesion */}
+                  {role === "Instructor" && (
+                    <div>
+                      <label
+                        htmlFor="proffession"
+                        className="block text-sm font-medium text-gray-700"
+                      >
+                        Proffession
+                      </label>
+                      <Field
+                        as={Input}
+                        id="proffession"
+                        name="proffession"
+                        placeholder="Your proffession"
+                        className="h-10"
+                      />
+                      {errors.proffession && touched.proffession && (
+                        <div className="text-sm text-red-500">
+                          {errors.proffession}
+                        </div>
+                      )}
+                    </div>
+                  )}
+                  {role === "Instructor" && (
+                    <div>
+                      <label
+                        htmlFor="about"
+                        className="block text-sm font-medium text-gray-700"
+                      >
+                        About
+                      </label>
+                      <Field
+                        as={Textarea}
+                        id="about"
+                        name="about"
+                        placeholder="About yourself"
+                        // className="h-10"
+                        rows={4}
+                      />
+                      {errors.about && touched.about && (
+                        <div className="text-sm text-red-500">
+                          {errors.about}
+                        </div>
+                      )}
+                    </div>
+                  )}
                   {/* Current password */}
                   <div>
                     <label

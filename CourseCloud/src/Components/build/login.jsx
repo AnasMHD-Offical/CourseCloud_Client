@@ -146,7 +146,7 @@ function Login({ current_role }) {
         {
           user_data.role === "admin" && navigate("/admin");
         }
-        // {user_data.role === "admin" && navigate("/admin/category_management")}
+        // {user_data.role === "student" && navigate("/admin/category_management")}
         // {user_data.role === "admin" && navigate("/admin/category_management")}
       }
     } catch (error) {
@@ -170,12 +170,36 @@ function Login({ current_role }) {
       });
       console.log(response);
       //Destructuring the resolved messages and success_status
-      const { success, message } = response?.data;
+      const { success, message , user_data} = response?.data;
       if (success) {
         //throw a toaster for success indentification for user
         toast.success(message);
+        navigate(homeRoute)
         //Navigate to home route when the user logged in.
-        navigate("/");
+        {
+          user_data.role === "student" &&
+            dispatch(
+              set_student_data({
+                student: {
+                  _id: user_data._id,
+                  role: user_data.role,
+                },
+              })
+            );
+        }
+        {
+          user_data.role === "instructor" &&
+            dispatch(
+              set_instructor_data({
+                instructor: {
+                  _id: user_data._id,
+                  role: user_data.role,
+                },
+              })
+            );
+        }
+
+
       }
     } catch (error) {
       //Throw error based on the status and rejection message

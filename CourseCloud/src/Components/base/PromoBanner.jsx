@@ -1,9 +1,8 @@
-"use client"
-
 import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { ChevronLeft, ChevronRight } from "lucide-react"
+import "./CustomStyle.css"
 export default function PromoBanner({slides}) {
   const [currentSlide, setCurrentSlide] = useState(0)
   const [direction, setDirection] = useState(0)
@@ -55,7 +54,7 @@ export default function PromoBanner({slides}) {
   }
 
   return (
-    <section className="py-16 md:py-24 sm:px-16 md:px-18 lg:px-36 bg-gradient-to-r from-primary to-purple-600 overflow-hidden">
+    <section className="py-16 md:py-24 sm:px-16 md:px-18 lg:px-36 custom-h bg-gradient-to-r from-primary to-purple-600 overflow-hidden">
       <div className="container mx-auto px-6">
         <div className="relative">
           <AnimatePresence initial={false} custom={direction}>

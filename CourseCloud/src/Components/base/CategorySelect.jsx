@@ -10,11 +10,15 @@ import {
 } from "@/components/ui/select";
 import { toast } from "sonner";
 import { axios_instance } from "@/Config/axios_instance";
+import { useNavigate } from "react-router-dom";
 function CategorySelect() {
   const [selectedCategory, setSelectedCategory] = useState("All Category");
   const [categories, setCategories] = useState([
     { _id: "All", title: "All category" },
   ]);
+  const [subcategory, setSubcategory] = useState([]);
+
+  const navigate = useNavigate();
   const get_category = async () => {
     try {
       const response = await axios_instance.get("api/get_category");
@@ -57,9 +61,6 @@ function CategorySelect() {
       setSubcategory(subCategory);
     }
   };
-  const handleCategoryNavigate = (category) =>{
-    
-  }
   console.log(selectedCategory);
 
   //   const categories = [
@@ -74,7 +75,6 @@ function CategorySelect() {
   //     { value: "personal", label: "Self-help" },
   //     { value: "music", label: "Music" },
   //   ];
-  const [subcategory, setSubcategory] = useState([]);
   return (
     <>
       <section className="py-16 md:py-24 px-10 bg-gray-50">
@@ -126,16 +126,18 @@ function CategorySelect() {
           {/* Content for selected category */}
           <div className="mt-8">
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-              {subcategory.map((category, index) => (
+              {subcategory.map((sub, index) => (
                 <motion.button
                   key={index}
                   className="bg-white p-6 rounded-lg shadow-md text-center cursor-pointer hover:shadow-lg transition-shadow"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  onClick={(category)=>handleCategoryNavigate(category)}
+                  onClick={() =>
+                    navigate(`/category/${sub.category_id}/${sub.title}`)
+                  }
                 >
                   <h3 className="font-semibold text-lg mb-2 bg-clip-text text-transparent bg-gradient-to-r from-primary to-purple-600">
-                    {category.title}
+                    {sub.title}
                   </h3>
                   <p className="text-sm text-gray-600">20+ Courses</p>
                 </motion.button>

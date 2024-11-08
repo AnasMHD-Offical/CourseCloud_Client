@@ -1,13 +1,11 @@
-import React from "react";
+import { lazy, Suspense } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-// import { BreadcrumbDemo } from "./Pages/sample";
 import { Toaster } from "sonner";
 import Student_Login from "./Pages/student/student_login";
 import Student_Register from "./Pages/student/student_register";
 import Instructor_Register from "./Pages/instructor/Instructor_Register";
 import Instructor_Login from "./Pages/instructor/Instructor_Login";
-import { OTP_Modal } from "./Components/build/OTP_Modal";
 import Admin_Login from "./Pages/admin/Admin_Login";
 import Student_Forgot_password from "./Pages/student/Student_Forgot_password";
 import Student_Password_Reset from "./Pages/student/Student_Password_Reset";
@@ -25,48 +23,84 @@ import Admin_Auth from "./Auth/Admin_Auth";
 import Admin_Profile from "./Pages/admin/Admin_Profile";
 import Admin_Dashboard from "./Pages/admin/Admin_Dashboard";
 import Instructor from "./Components/main/Instructor_Component";
-import Instructor_CreateCourse from "./Pages/instructor/Instructor_Create_Course_1";
 import Instructor_Create_Course_1 from "./Pages/instructor/Instructor_Create_Course_1";
-// import Instructor_Create_Course_2 from "./Pages/instructor/Instructor_Create_Course_2";
 import Instructor_Profile from "./Pages/instructor/Instructor_Profile";
 import Instructor_Create_Course_Plan from "./Pages/instructor/Instructor_Create_Course_Plan";
 import Instructor_Create_Course_Curriculum from "./Pages/instructor/Instructor_Create_Course_Curriculum";
-import CloudinaryUploadWidget from "./Utils/CloudinaryVideoUpload";
 import Instructor_Create_Course_Preview from "./Pages/instructor/Instructor_Create_Course_Preview";
-import LandingPage from "./Pages/student/Student_Landing_Page";
+const LandingPage = lazy(() => import("./Pages/student/Student_Landing_Page"));
 import Student_Login_Auth from "./Auth/Student_Login_Auth";
 import Student_Auth from "./Auth/Student_Auth";
-import HomePage from "./Pages/student/Student_Homepage";
+import LandingPageFallback from "./Components/fallback/LandingPageFallback";
+import CartPage from "./Pages/student/Student_Cart";
+import WishlistPage from "./Pages/student/Student_Wishlist";
+import Student_Main from "./Pages/student/Student_Main";
+import ProfilePage from "./Pages/student/Student_Profile";
+const HomePage = lazy(() => import("./Pages/student/Student_Homepage"));
+const CourseOverview = lazy(() =>
+  import("./Pages/student/Student_Course_Overview")
+);
+const CategoryPage = lazy(() => import("./Pages/student/Student_CategoryPage"));
 function App() {
   return (
     <>
       <Router>
+        <Suspense fallback={<LandingPageFallback />}>
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <Student_Auth>
+                  <HomePage />
+                </Student_Auth>
+              }
+            ></Route>
+            <Route
+              path="/login"
+              element={
+                <Student_Login_Auth>
+                  <Student_Login />
+                </Student_Login_Auth>
+              }
+            />
+            <Route path="overview/:id" element={<CourseOverview />} />
+            <Route
+              path="category/:id/:subcategory"
+              element={<CategoryPage />}
+            />
+            <Route path="cart" element={<CartPage />} />
+            <Route path="dashboard" element={<Student_Main/>}>
+              <Route path="wishlist" element={<WishlistPage/>} />
+              <Route path="profile" element={<ProfilePage/>} />
+            </Route>
+            <Route
+              path="landing"
+              element={
+                <Student_Login_Auth>
+                  <LandingPage />
+                </Student_Login_Auth>
+              }
+            />
+          </Routes>
+        </Suspense>
         <Routes>
           <Route
-            path="/login"
-            element={
-              <Student_Login_Auth>
-                <Student_Login />
-              </Student_Login_Auth>
-            }
-          />
-          <Route
-            path="/"
+            path="register"
             element={
               <Student_Auth>
-                <HomePage />
+                <Student_Register />
               </Student_Auth>
             }
           />
-          <Route
-            path="/landing"
+          {/* <Route
+            path="overview"
             element={
               <Student_Login_Auth>
-                <LandingPage />
+                <CourseOverview/>
               </Student_Login_Auth>
             }
-          />
-          <Route path="register" element={<Student_Register />} />
+          /> */}
+
           <Route path="forgot_password" element={<Student_Forgot_password />} />
           <Route path="password_reset" element={<Student_Password_Reset />} />
         </Routes>

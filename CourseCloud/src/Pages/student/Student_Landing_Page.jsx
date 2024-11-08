@@ -121,7 +121,7 @@ export default function LandingPage() {
       <CategorySelect />
 
       {/* Our top pick for you */}
-      <TopPick />
+      {/* <TopPick /> */}
 
       {/* Call For tutors */}
       <CallForTutor />

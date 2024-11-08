@@ -6,7 +6,7 @@ function Hero({ heroRef , heroOpacity , heroScale}) {
     <>
       <motion.section
         ref={heroRef}
-        className="relative bg-gradient-to-r from-neutral-200/10 to-neutral-100 py-24 md:py-32 overflow-hidden px-10"
+        className="relative bg-gradient-to-br from-primary/10 via-purple-100 to-blue-50 py-24 md:py-32 overflow-hidden px-10"
         style={{ opacity: heroOpacity, scale: heroScale }}
       >
         <div className="container mx-auto px-4 flex flex-col-reverse md:flex-row items-center relative z-10">
@@ -45,7 +45,7 @@ function Hero({ heroRef , heroOpacity , heroScale}) {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5, delay: 0.2 }}
           >
-            <div className="relative">
+            <motion.div className="relative" whileHover={{ scale: 1.05 }} >
               <img
                 src="https://res.cloudinary.com/dtc1xcil8/image/upload/v1730556641/dhil48sknbltoebtjupu.jpg"
                 alt="Students learning"
@@ -62,7 +62,7 @@ function Hero({ heroRef , heroOpacity , heroScale}) {
                 <p className="text-lg font-bold">10,000+</p>
                 <p className="text-sm text-gray-600">Active Students</p>
               </motion.div>
-            </div>
+            </motion.div>
           </motion.div>
         </div>
         <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-purple-500/5 mix-blend-multiply"></div>
