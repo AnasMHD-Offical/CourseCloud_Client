@@ -10,7 +10,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { ArrowLeft, PlusCircle, Upload } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import * as yup from "yup";
 import { Formik, Form, Field } from "formik";
@@ -20,8 +20,10 @@ import { toast } from "sonner";
 import { axios_instance } from "@/Config/axios_instance";
 import { remove_course_plan } from "@/Redux/Slices/CoursePlan";
 import { remove_Course_Curriculum } from "@/Redux/Slices/CourseCuriculum";
+import { remove_Course_Preview } from "@/Redux/Slices/CoursePreview";
 import CustomSuccessDialogBox from "@/Components/build/CustomSuccessDialog";
 import { motion } from "framer-motion";
+
 const validation_form = yup.object({
   title: yup
     .string()
@@ -56,7 +58,9 @@ const validation_form = yup.object({
     .required("Price of the course is required"),
 });
 
-export default function Instructor_Create_Course_Preview() {
+export default function Instructor_Edit_Course_Preview() {
+  const location = useLocation()
+  const id = location.id
   const instructor_id = useSelector(
     (state) => state?.instructor?.instructor_data?.instructor?._id
   );
@@ -70,6 +74,12 @@ export default function Instructor_Create_Course_Preview() {
   const course_plan = useSelector(
     (state) => state?.course_plan?.Course_plan?.data
   );
+
+  const course_preview = useSelector(
+    (state) => state?.course_Preview?.Course_Preview?.data
+  );
+  console.log("Course preview", course_preview);
+
   console.log("Course plan", course_plan);
 
   const [thumbnailPreview, setThumbnailPreview] = useState("");
@@ -77,6 +87,18 @@ export default function Instructor_Create_Course_Preview() {
   const [course_categories, setCourse_categories] = useState([]);
   const [course_subcategories, setCourse_subcategories] = useState([]);
   const [isDialogOpen, setisDialogOpen] = useState(false);
+  const [FormData, SetFormData] = useState({
+    title: "",
+    subtitle: "",
+    description: "",
+    language: "",
+    difficulty: "",
+    category: "",
+    subcategory: "",
+    subject: "",
+    thumbnail: "",
+    price: "",
+  });
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const formikRef = useRef();
@@ -86,18 +108,20 @@ export default function Instructor_Create_Course_Preview() {
     try {
       const course_data = {
         instructor_id: instructor_id,
+        course_id:id,
         course_preview: values,
         course_plan: course_plan,
         course_curriculam: course_curriculam,
       };
       const response = await axios_instance.post(
-        "api/instructor/add_course",
+        "api/instructor/edit_course",
         course_data
       );
       const { message, success } = response?.data;
       if (success) {
         dispatch(remove_course_plan());
         dispatch(remove_Course_Curriculum());
+        dispatch(remove_Course_Preview())
         setisDialogOpen(true);
       }
     } catch (error) {
@@ -124,6 +148,8 @@ export default function Instructor_Create_Course_Preview() {
 
   useEffect(() => {
     setCourse_curriculum_data(course_curriculam);
+    SetFormData(course_preview);
+    setThumbnailPreview(course_preview.thumbnail)
     get_category();
   }, []);
 
@@ -186,21 +212,11 @@ export default function Instructor_Create_Course_Preview() {
             </p>
           </div>
           <Formik
-            initialValues={{
-              title: "",
-              subtitle: "",
-              description: "",
-              language: "",
-              difficulty: "",
-              category: "",
-              subcategory: "",
-              subject: "",
-              thumbnail: "",
-              price: "",
-            }}
+            initialValues={FormData}
             innerRef={formikRef}
             validationSchema={validation_form}
             onSubmit={handleFormSubmit}
+            enableReinitialize={true}
           >
             {({
               errors,
@@ -477,7 +493,7 @@ export default function Instructor_Create_Course_Preview() {
                     disabled={isSubmitting}
                     className="bg-black text-white hover:bg-gray-800"
                   >
-                    Add Course
+                    Edit Course
                     <PlusCircle className="mr-2 h-4 w-4" />
                   </Button>
                 </div>
@@ -487,13 +503,13 @@ export default function Instructor_Create_Course_Preview() {
           <CustomSuccessDialogBox
             isOpen={isDialogOpen}
             onClose={() => setisDialogOpen(false)}
-            title={"Course Added Successfully"}
+            title={"Course Edited Successfully"}
             subtitle={"Keep going & earn more"}
             description={
-              "The course is reviewed and added to this platform shortly"
+              "The course is reviewed and edited changes will shown to this platform shortly"
             }
-            buttonText={"Back to create course"}
-            customRoute={"/instructor/create_course"}
+            buttonText={"Back to Dashboard"}
+            customRoute={"/instructor/dashboard"}
           />
         </div>
       </motion.div>

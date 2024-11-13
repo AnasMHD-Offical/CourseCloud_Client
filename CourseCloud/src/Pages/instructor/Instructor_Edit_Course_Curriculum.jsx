@@ -1,13 +1,13 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { ArrowRight, CircleCheckBig, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import CloudinaryUploadWidget_Videos from "@/Utils/CloudinaryVideoUpload";
 import CloudinaryUploadWidget_Files from "@/Utils/CloudinaryFileUpload";
-import { set_Course_Curriculum } from "@/Redux/Slices/CourseCuriculum";
+import { course_curriculum, set_Course_Curriculum } from "@/Redux/Slices/CourseCuriculum";
 import * as yup from "yup";
 import { Formik, Form, Field } from "formik";
 import { motion } from "framer-motion";
@@ -35,33 +35,38 @@ const validation_form = yup.object({
   assignment: yup.string().required("assignment for the lesson is required"),
 });
 
-export default function Instructor_Create_Course_Curriculum() {
+export default function Instructor_Edit_Course_Curriculum() {
+  const location = useLocation()
+  const id = location.id
+  console.log(id);
+  
+  
   const course_plan = useSelector(
     (state) => state?.course_plan?.Course_plan?.data
   );
+  const course_curriculum = useSelector(
+    (state) => state?.course_curriculum?.Course_Curriculum?.data
+  );
+  console.log(course_curriculum);
+  
   console.log(course_plan);
+  console.log(course_curriculum);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const formResetRef = useRef();
 
   const [LessionMinRequiredErrorFound, SetLessionMinRequiredErrorFound] =
     useState(false);
-  const [lessons, setLessons] = useState([
-    {
-      title: "Lesson 1 : Introduction",
-      description:
-        "This video is a introduction of this whole course. Watch the full video. Let's kick off.",
-      video_tutorial: " ",
-      assignment: " ",
-    },
-  ]);
+  const [lessons, setLessons] = useState([]);
   const [form_initial_value, setForm_initial_value] = useState({
     title: "",
     description: "",
     video_tutorial: "",
     assignment: "",
   });
-
+  useEffect(()=>{
+    setLessons(course_curriculum)
+  },[])
   //Function to add lessions to the lessons array
   const addLesson = (values) => {
     // e.preventDefault();
@@ -90,7 +95,7 @@ export default function Instructor_Create_Course_Curriculum() {
   const handleNavigateCoursePreview = () => {
     if (!validation()) {
       dispatch(set_Course_Curriculum({ data: lessons }));
-      navigate("/instructor/create_course/3");
+      navigate("/instructor/edit_course/3" , {state:id});
     }
   };
   console.log(lessons);
@@ -293,46 +298,6 @@ export default function Instructor_Create_Course_Curriculum() {
           Next <ArrowRight className="ml-2 h-4 w-4" />
         </Button>
       </div>
-      {/* </div> */}
-      {/* </div> */}
-
-      {/* Footer */}
-      {/* <footer className="bg-black text-white py-8">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
-            <div>
-              <h3 className="text-lg font-semibold mb-4">CourseCloud</h3>
-              <ul className="space-y-2">
-                <li><a href="#" className="hover:underline">Teach in Company</a></li>
-                <li><a href="#" className="hover:underline">About us</a></li>
-                <li><a href="#" className="hover:underline">Contact us</a></li>
-                <li><a href="#" className="hover:underline">Ratings</a></li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="text-lg font-semibold mb-4">Help & Support</h3>
-              <ul className="space-y-2">
-                <li><a href="#" className="hover:underline">Help Center</a></li>
-                <li><a href="#" className="hover:underline">Career</a></li>
-                <li><a href="#" className="hover:underline">Blog</a></li>
-                <li><a href="#" className="hover:underline">More</a></li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="text-lg font-semibold mb-4">Term & Conditions</h3>
-              <ul className="space-y-2">
-                <li><a href="#" className="hover:underline">Cookie settings</a></li>
-                <li><a href="#" className="hover:underline">Privacy policy</a></li>
-                <li><a href="#" className="hover:underline">Sitemap</a></li>
-              </ul>
-            </div>
-          </div>
-          <div className="mt-8 pt-8 border-t border-gray-700 text-center">
-            <p>All copyright are reserved by LMS company</p>
-            <p>lmscompany.com</p>
-          </div>
-        </div>
-      </footer> */}
     </motion.div>
   );
 }

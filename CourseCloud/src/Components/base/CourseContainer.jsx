@@ -6,13 +6,14 @@ import CourseCard from "./CourseCard";
 import { axios_instance } from "@/Config/axios_instance";
 import { useNavigate } from "react-router-dom";
 
-function CourseContainer({ title }) {
+function CourseContainer({ update, title, mutation, wishlistMutation }) {
   const CourseContainerRef = useRef();
   const [courses, setCourses] = useState([]);
   const navigate = useNavigate();
   const handleCourseScroll = (scrollOffset) => {
     CourseContainerRef.current.scrollLeft += scrollOffset;
   };
+  const [ismutated, setIsMutated] = useState(false);
   const get_Courses = async () => {
     try {
       const resposne = await axios_instance.get("/api/get_courses");
@@ -29,7 +30,8 @@ function CourseContainer({ title }) {
 
   useEffect(() => {
     get_Courses();
-  }, []);
+  }, [ismutated,update]);
+
   return (
     <>
       <section className="py-16 md:py-24 px-2 sm:px-10">
@@ -60,7 +62,7 @@ function CourseContainer({ title }) {
                 whileHover={{ y: -5 }}
                 className="flex flex-nowrap "
               >
-                <CourseCard course={course} />
+                <CourseCard update={update} mutation={mutation} course={course} />
               </motion.div>
             ))}
           </div>

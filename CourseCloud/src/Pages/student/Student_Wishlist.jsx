@@ -243,7 +243,7 @@ export default function WishlistPage() {
           </div>
 
           {/* Recommended Courses */}
-          <CourseContainer title={"Our Top Picks For You"} />
+          <CourseContainer wishlistMutation={handleChange} title={"Our Top Picks For You"} />
         </div>
       </main>
     </>

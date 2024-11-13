@@ -340,7 +340,7 @@ export default function ProfilePage() {
                               src={
                                 studentData.profile
                                   ? studentData.profile
-                                  : "https://res.cloudinary.com/dtc1xcil8/image/upload/v1730125171/WhatsApp_Image_2024-06-20_at_13.07.30_5ed12f1a_dnzcqu.jpg"
+                                  : `https://eu.ui-avatars.com/api/?name=${studentData.name}&size=250`
                               }
                               alt="Profile"
                               width={128}

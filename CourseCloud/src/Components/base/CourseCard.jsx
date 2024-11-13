@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Heart, Star } from "lucide-react";
 import { Button } from "../ui/button";
@@ -7,11 +7,12 @@ import { axios_instance } from "@/Config/axios_instance";
 import { useSelector } from "react-redux";
 import { toast } from "sonner";
 
-function CourseCard({ naviate, course }) {
+function CourseCard({ update, mutation, naviate, course }) {
   const student_id = useSelector(
     (state) => state?.student?.student_data?.student?._id
   );
-  const [isWishlisted, setisWishlisted] = useState();
+  const [isChanged, setIsChanged] = useState();
+  const [BtnText, SetBtnText] = useState("Add To Cart");
   const navigate = useNavigate();
   const { title, subtitle, thumbnail, rating, reviews, actual_price } = course;
 
@@ -24,9 +25,10 @@ function CourseCard({ naviate, course }) {
       });
       const { success, message } = response?.data;
       if (success) {
-        setisWishlisted(true);
+        setIsChanged(!isChanged);
         toast.success(message);
         console.log(response);
+        mutation(false);
       }
     } catch (error) {
       console.log(error);
@@ -50,6 +52,26 @@ function CourseCard({ naviate, course }) {
     }
   };
 
+  const get_cart_items = async (req, res) => {
+    try {
+      const response = await axios_instance.get(`api/get_cart/${student_id}`);
+      const { cart_items, success } = response?.data;
+      if (success) {
+        console.log(response);
+
+        const isAddedtoCart = cart_items?.cart_items.filter(
+          (item) => item.course_id._id == course._id
+        );
+        SetBtnText(isAddedtoCart.length > 0 ? "Go to Cart" : "Add to Cart");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  useEffect(() => {
+    get_cart_items();
+  }, [isChanged, update]);
+
   return (
     <>
       <Card className="cursor-pointer overflow-hidden w-72 sm:min-w-80 transition-all duration-300 hover:shadow-lg group">
@@ -71,11 +93,7 @@ function CourseCard({ naviate, course }) {
               onClick={handleAddToWishlist}
               className="absolute top-2 right-2 bg-transparent rounded-full p-2"
             >
-              <Heart
-                className={`w-5 h-5 text-center text-white drop-shadow ${
-                  isWishlisted ? "fill-red-500" : ""
-                } `}
-              />
+              <Heart className={`w-5 h-5 text-center text-white drop-shadow`} />
             </button>
           </div>
           <div className="p-6">
@@ -96,10 +114,14 @@ function CourseCard({ naviate, course }) {
         </CardContent>
         <CardFooter className="p-6 pt-0">
           <Button
-            onClick={handleAddToCart}
+            onClick={
+              BtnText === "Add to Cart"
+                ? handleAddToCart
+                : () => navigate("/cart")
+            }
             className="w-full rounded-full  text-white bg-gradient-to-r from-primary to-purple-600 hover:bg-primary-dark transition-colors duration-300"
           >
-            Add To Cart
+            {BtnText}
           </Button>
         </CardFooter>
       </Card>

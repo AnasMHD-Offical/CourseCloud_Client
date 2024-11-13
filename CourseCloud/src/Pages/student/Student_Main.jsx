@@ -23,11 +23,17 @@ import {
   Medal,
   User,
 } from "lucide-react";
-import { Link, Outlet } from "react-router-dom";
+import { Link, Outlet, useNavigate } from "react-router-dom";
 import Header from "@/Components/base/Header";
 import Footer from "@/Components/base/Footer";
+import { axios_instance } from "@/Config/axios_instance";
+import { useDispatch } from "react-redux";
+import { student_logout } from "@/Redux/Slices/StudentSlice";
+import { toast } from "sonner";
 
 export default function Student_Main() {
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
   const navItems = [
     { href: "/dashboard", icon: LayoutDashboard, label: "Dashboard" },
     { href: "/dashboard/profile", icon: User, label: "Profile" },
@@ -36,6 +42,23 @@ export default function Student_Main() {
     { href: "/dashboard/certificates", icon: Medal, label: "Certificates" },
     { href: "/dashboard/learning", icon: GraduationCap, label: "Learning" },
   ];
+  const handleLogout = async () => {
+    try {
+      const response = await axios_instance.post("/api/student_logout");
+      const { success, message } = response?.data;
+      if (success) {
+        localStorage.removeItem("student_data");
+        dispatch(student_logout());
+        toast.success(message);
+        console.log(response);
+        navigate("/");
+      }
+    } catch (error) {
+      const { message } = error?.response?.data;
+      console.log(error);
+      toast.error(message);
+    }
+  };
 
   return (
     <div className="flex flex-col min-h-screen bg-background transition-colors bg-gradient-to-br from-primary/10 via-purple-100 to-blue-50 duration-300">
@@ -71,6 +94,7 @@ export default function Student_Main() {
             <div className="space-y-1">
               <Button
                 variant="ghost"
+                onClick={handleLogout}
                 className="w-full justify-start gap-3 text-muted-foreground hover:bg-accent hover:text-accent-foreground"
               >
                 <LogOut className="h-4 w-4" />

@@ -36,6 +36,13 @@ import CartPage from "./Pages/student/Student_Cart";
 import WishlistPage from "./Pages/student/Student_Wishlist";
 import Student_Main from "./Pages/student/Student_Main";
 import ProfilePage from "./Pages/student/Student_Profile";
+import InstructorDashboard from "./Pages/instructor/Instructor_Dashboard";
+import Instructor_Edit_Course from "./Pages/instructor/Instructor_Edit_Course";
+import Instructor_Edit_Course_Plan from "./Pages/instructor/Instructor_Edit_Course_Plan";
+import Instructor_Edit_Course_Curriculum from "./Pages/instructor/Instructor_Edit_Course_Curriculum";
+import Instructor_Edit_Course_Preview from "./Pages/instructor/Instructor_Edit_Course_Preview";
+import Instructor_Login_Auth from "./Auth/Instructor_Login_Auth";
+import Instructor_Auth from "./Auth/Instructor_Auth";
 const HomePage = lazy(() => import("./Pages/student/Student_Homepage"));
 const CourseOverview = lazy(() =>
   import("./Pages/student/Student_Course_Overview")
@@ -69,9 +76,9 @@ function App() {
               element={<CategoryPage />}
             />
             <Route path="cart" element={<CartPage />} />
-            <Route path="dashboard" element={<Student_Main/>}>
-              <Route path="wishlist" element={<WishlistPage/>} />
-              <Route path="profile" element={<ProfilePage/>} />
+            <Route path="dashboard" element={<Student_Main />}>
+              <Route path="wishlist" element={<WishlistPage />} />
+              <Route path="profile" element={<ProfilePage />} />
             </Route>
             <Route
               path="landing"
@@ -106,10 +113,21 @@ function App() {
         </Routes>
         {/* Instructor Auth Routes */}
         <Routes>
-          <Route path="/instructor/login" element={<Instructor_Login />} />
+          <Route
+            path="/instructor/login"
+            element={
+              <Instructor_Login_Auth>
+                <Instructor_Login />
+              </Instructor_Login_Auth>
+            }
+          />
           <Route
             path="/instructor/register"
-            element={<Instructor_Register />}
+            element={
+              <Instructor_Login_Auth>
+                <Instructor_Register />
+              </Instructor_Login_Auth>
+            }
           />
           <Route
             path="/instructor/forgot_password"
@@ -122,7 +140,15 @@ function App() {
         </Routes>
         {/* Instructor Routes */}
         <Routes>
-          <Route path="/instructor" element={<Instructor />}>
+          <Route
+            path="/instructor"
+            element={
+              <Instructor_Auth>
+                <Instructor />
+              </Instructor_Auth>
+            }
+          >
+            <Route index element={<InstructorDashboard />} />
             <Route path="profile" element={<Instructor_Profile />} />
             <Route
               path="create_course"
@@ -134,6 +160,11 @@ function App() {
                 element={<Instructor_Create_Course_Curriculum />}
               />
               <Route path="3" element={<Instructor_Create_Course_Preview />} />
+            </Route>
+            <Route path="edit_course" element={<Instructor_Edit_Course />}>
+              <Route index element={<Instructor_Edit_Course_Plan />} />
+              <Route path="2" element={<Instructor_Edit_Course_Curriculum />} />
+              <Route path="3" element={<Instructor_Edit_Course_Preview />} />
             </Route>
           </Route>
         </Routes>

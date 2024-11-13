@@ -24,6 +24,7 @@ import { AdvancedImage } from "@cloudinary/react";
 import axios from "axios";
 import { toast } from "sonner";
 import { Textarea } from "../ui/textarea";
+import { motion } from "framer-motion";
 
 // import { URL } from "url";
 const form_validation = yup.object({
@@ -221,7 +222,12 @@ export default function Profile({ current_role, user_route }) {
   return (
     <>
       {/* Main Content */}
-      <div className="max-w-6xl mx-auto">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2 }}
+        className="max-w-6xl mx-auto "
+      >
         <div className=" mb-6">
           <Breadcrumb>
             <BreadcrumbList>
@@ -285,10 +291,10 @@ export default function Profile({ current_role, user_route }) {
                 </p>
               </div>
             </div>
-              <p className="p-2 border rounded-lg mt-2">
-                <span className="font-semibold text-lg">About:</span>{" "}
-                {user_data?.about || "Nil"}
-              </p>
+            <p className="p-2 border rounded-lg mt-2">
+              <span className="font-semibold text-lg">About:</span>{" "}
+              {user_data?.about || "Nil"}
+            </p>
           </CardContent>
         </Card>
 
@@ -587,7 +593,7 @@ export default function Profile({ current_role, user_route }) {
             </Formik>
           </CardContent>
         </Card>
-      </div>
+      </motion.div>
     </>
   );
 }

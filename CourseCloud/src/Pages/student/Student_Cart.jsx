@@ -42,6 +42,8 @@ export default function CartPage() {
   const [showBackToTop, setShowBackToTop] = useState(false);
   const [showFloatingCart, setShowFloatingCart] = useState(false);
   const [isCartUpdated, setIsCartUpdated] = useState(false);
+  const [isMutated,setIsMutated] = useState(false)
+
 
   const get_cart_items = async (req, res) => {
     try {
@@ -56,7 +58,7 @@ export default function CartPage() {
   };
   useEffect(() => {
     get_cart_items();
-  }, [isCartUpdated]);
+  }, [isCartUpdated,isMutated]);
 
   const removeFromCart = async (id) => {
     try {
@@ -75,12 +77,16 @@ export default function CartPage() {
     }
   };
 
+  const handleMutation = (mutated) =>{
+    setIsMutated(!mutated)
+  }
+  
   const calculateTotal = () => {
     return cartItems.reduce((total, item) => total + +item.price, 0);
   };
 
   const calculateDiscount = () => {
-    return 40; // Example fixed discount
+    return 0; // Example fixed discount
   };
 
   //   const scrollCarousel = (direction) => {
@@ -253,6 +259,11 @@ export default function CartPage() {
                   </Card>
                 </motion.div>
               ))}
+              {cartItems.length === 0 &&
+               <div>
+                 <h3 className="text-4xl  font-bold">Oops! Cart is Empty</h3>
+                 <p >Add items to your cart and Improve your skills </p> 
+                 </div>}
             </AnimatePresence>
           </div>
 
@@ -317,7 +328,7 @@ export default function CartPage() {
         </div>
 
         {/* Related Courses */}
-        <CourseContainer title={"Courses You May Like"} />
+        <CourseContainer update={isCartUpdated} mutation={handleMutation} title={"Courses You May Like"} />
       </main>
 
       {/* Footer */}

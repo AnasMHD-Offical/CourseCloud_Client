@@ -1,17 +1,20 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Search, User, Plus, Goal, Delete } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Link, Outlet, useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { Link, Outlet, useLocation, useNavigate, useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import { set_course_plan } from "@/Redux/Slices/CoursePlan";
 import { motion } from "framer-motion";
 // import { Field, Formik, Form } from "formik";
 
-export default function Instructor_Create_Course_Plan() {
-  // const [learningObjectiveError, setLearningObjectiveError] = useState("");
-  //   // const [targetAudienceError, setTargetAudienceError] = useState("");
-  //   // const [requirementsError, setRequirementsError] = useState("");
+export default function Instructor_Edit_Course_Plan() {
+  const course_plan = useSelector(
+    (state) => state?.course_plan?.Course_plan?.data
+  );
+  console.log(course_plan);
+  const location = useLocation()
+  const id = location.id
   const [isRequirementsErrorFound, setIsRequirementsErrorFound] = useState("");
   const [isTargetAudienceErrorFound, setIsTargetAudienceErrorFound] =
     useState("");
@@ -21,21 +24,22 @@ export default function Instructor_Create_Course_Plan() {
     isLearningObjectiveErrorFoundMin,
     setIsLearningObjectiveErrorFoundMin,
   ] = useState(false);
+  const [learningObjectives, setLearningObjectives] = useState([]);
+  const [requirements, setRequirements] = useState([]);
+  const [targetAudiences, setTargetAudiences] = useState([]);
   // const [isErrorFound, setIsErrorFound] = useState(false);
+  useEffect(() => {
+    setLearningObjectives(course_plan?.learningObjectives);
+    setRequirements(course_plan?.requirements);
+    setTargetAudiences(course_plan?.targetAudiences);
+  });
   const [objective, setObjective] = useState("");
   const [requirement, setRequirement] = useState("");
   const [targetAudience, setTargetAudience] = useState("");
-  const [learningObjectives, setLearningObjectives] = useState([
-    "Learn the basics of python",
-  ]);
-  const [requirements, setRequirements] = useState([
-    "Having a basic knowledge in Maths",
-  ]);
-  const [targetAudiences, setTargetAudiences] = useState([
-    "Students who are interested in coding",
-  ]);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  console.log(learningObjectives);
 
   const validation = () => {
     let isErrorFound = false;
@@ -58,53 +62,6 @@ export default function Instructor_Create_Course_Plan() {
 
     return isErrorFound;
   };
-  // const validation_schema = async () => {
-  //   if (learningObjectives.length === 0) {
-  //     setLearningObjectiveError("Learning objectives are required");
-  //     setIsLearningObjectiveErrorFound(true);
-  //     console.log(isLearningObjectiveErrorFound);
-  //   } else if (learningObjectives.length < 4) {
-  //     setLearningObjectiveError("Minimum 4 objectives required");
-  //     setIsLearningObjectiveErrorFound(true);
-  //   } else {
-  //     setIsLearningObjectiveErrorFound(false);
-  //   }
-
-  //   if (targetAudiences.length === 0) {
-  //     setTargetAudienceError("target audience field is required");
-  //     setIsTargetAudienceErrorFound(true);
-  //   } else {
-  //     setIsTargetAudienceErrorFound(false);
-  //   }
-
-  //   if (requirements.length === 0) {
-  //     setRequirementsError("Requirements is required");
-  //     setIsRequirementsErrorFound(true);
-  //   } else {
-  //     setIsRequirementsErrorFound(false);
-  //   }
-
-  //   if (isLearningObjectiveErrorFound) {
-  //     setIsErrorFound(true);
-  //   } else if (isRequirementsErrorFound) {
-  //     setIsErrorFound(true);
-  //   } else if (isTargetAudienceErrorFound) {
-  //     setIsErrorFound(true);
-  //   } else {
-  //     setIsErrorFound(false)
-  //   }
-  //   return isErrorFound
-  // };
-  // const addItem = (setter, inputId) => {
-  //   const input = document.getElementById(inputId).value;
-  //   if (input.value.trim()) {
-  //     setLearningObjectives([...learningObjectives, input]);
-  //     // setter((prev) => [...prev, input.value.trim()]);
-  //     input.value = "";
-  //   }
-  // };
-
-  //Function to add learning objectives
 
   //Function to add learning objectives
   const addLearningObjectives = (e) => {
@@ -197,8 +154,8 @@ export default function Instructor_Create_Course_Plan() {
           },
         })
       );
-      navigate("/instructor/create_course/2");
-      setIsErrorFound(false);
+      navigate(`/instructor/edit_course/2`, { id: id });
+      // setIsErrorFound(false);
     }
   };
 
