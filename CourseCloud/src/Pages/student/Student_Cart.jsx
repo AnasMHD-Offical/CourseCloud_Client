@@ -1,5 +1,3 @@
-"use client";
-
 import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -13,12 +11,8 @@ import {
 import {
   Star,
   Trash2,
-  Plus,
-  Minus,
   ArrowUp,
-  BookmarkPlus,
   Heart,
-  Timer,
   TimerIcon,
   User2,
   Target,
@@ -30,6 +24,8 @@ import Footer from "@/Components/base/Footer";
 import { useSelector } from "react-redux";
 import { axios_instance } from "@/Config/axios_instance";
 import { toast } from "sonner";
+import RazorpayPayment from "@/Services/Payment";
+import AnchorLink from "react-anchor-link-smooth-scroll";
 
 export default function CartPage() {
   const student_id = useSelector(
@@ -42,8 +38,7 @@ export default function CartPage() {
   const [showBackToTop, setShowBackToTop] = useState(false);
   const [showFloatingCart, setShowFloatingCart] = useState(false);
   const [isCartUpdated, setIsCartUpdated] = useState(false);
-  const [isMutated,setIsMutated] = useState(false)
-
+  const [isMutated, setIsMutated] = useState(false);
 
   const get_cart_items = async (req, res) => {
     try {
@@ -58,7 +53,7 @@ export default function CartPage() {
   };
   useEffect(() => {
     get_cart_items();
-  }, [isCartUpdated,isMutated]);
+  }, [isCartUpdated, isMutated]);
 
   const removeFromCart = async (id) => {
     try {
@@ -77,12 +72,15 @@ export default function CartPage() {
     }
   };
 
-  const handleMutation = (mutated) =>{
-    setIsMutated(!mutated)
-  }
-  
+  const handleMutation = (mutated) => {
+    setIsMutated(!mutated);
+  };
+
   const calculateTotal = () => {
-    return cartItems.reduce((total, item) => total + +item.price, 0);
+    return cartItems.reduce(
+      (total, item) => total + +item.price?.$numberDecimal,
+      0
+    );
   };
 
   const calculateDiscount = () => {
@@ -215,7 +213,7 @@ export default function CartPage() {
                           </div>
                           <div className="flex flex-row sm:flex-col lg:flex-row items-center justify-between">
                             <span className="text-2xl font-bold text-gray-900">
-                              ₹{item.course_id.actual_price}
+                              ₹{item.course_id.actual_price?.$numberDecimal}
                             </span>
                             <div className="flex items-center md:flex-row space-x-2">
                               <TooltipProvider>
@@ -259,16 +257,18 @@ export default function CartPage() {
                   </Card>
                 </motion.div>
               ))}
-              {cartItems.length === 0 &&
-               <div>
-                 <h3 className="text-4xl  font-bold">Oops! Cart is Empty</h3>
-                 <p >Add items to your cart and Improve your skills </p> 
-                 </div>}
+              {cartItems.length === 0 && (
+                <div>
+                  <h3 className="text-4xl  font-bold">Oops! Cart is Empty</h3>
+                  <p>Add items to your cart and Improve your skills </p>
+                </div>
+              )}
             </AnimatePresence>
           </div>
 
           {/* Checkout Summary */}
           <motion.div
+            id="payment"
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             className="lg:sticky lg:top-24"
@@ -318,9 +318,11 @@ export default function CartPage() {
                       {isApplying ? "Applying..." : "Apply"}
                     </Button>
                   </div>
-                  <Button className="w-full bg-primary text-white hover:bg-primary/90">
-                    Proceed to Checkout
-                  </Button>
+                  <RazorpayPayment
+                    price={calculateTotal() - calculateDiscount()}
+                    student_id={student_id}
+                    courses={cartItems}
+                  />
                 </div>
               </CardContent>
             </Card>
@@ -328,7 +330,11 @@ export default function CartPage() {
         </div>
 
         {/* Related Courses */}
-        <CourseContainer update={isCartUpdated} mutation={handleMutation} title={"Courses You May Like"} />
+        <CourseContainer
+          update={isCartUpdated}
+          mutation={handleMutation}
+          title={"Courses You May Like"}
+        />
       </main>
 
       {/* Footer */}
@@ -365,7 +371,9 @@ export default function CartPage() {
                 ₹{(calculateTotal() - calculateDiscount()).toLocaleString()}
               </span>
             </div>
-            <Button className="w-full">Proceed to Checkout</Button>
+            <AnchorLink href="#payment">
+              <Button className="w-full">Pay Now</Button>
+            </AnchorLink>
           </motion.div>
         )}
       </AnimatePresence>

@@ -43,6 +43,10 @@ import Instructor_Edit_Course_Curriculum from "./Pages/instructor/Instructor_Edi
 import Instructor_Edit_Course_Preview from "./Pages/instructor/Instructor_Edit_Course_Preview";
 import Instructor_Login_Auth from "./Auth/Instructor_Login_Auth";
 import Instructor_Auth from "./Auth/Instructor_Auth";
+import Admin_Course_Management from "./Pages/admin/Admin_CourseManagement";
+import Purshased_Course_Overview from "./Pages/student/Student_Purchased_Course_Overview";
+import StudentDashboard from "./Pages/student/Student_Dashboard";
+import All_Course_Component from "./Pages/student/Student_All_course";
 const HomePage = lazy(() => import("./Pages/student/Student_Homepage"));
 const CourseOverview = lazy(() =>
   import("./Pages/student/Student_Course_Overview")
@@ -75,11 +79,58 @@ function App() {
               path="category/:id/:subcategory"
               element={<CategoryPage />}
             />
-            <Route path="cart" element={<CartPage />} />
-            <Route path="dashboard" element={<Student_Main />}>
-              <Route path="wishlist" element={<WishlistPage />} />
-              <Route path="profile" element={<ProfilePage />} />
+            <Route
+              path="cart"
+              element={
+                <Student_Auth>
+                  <CartPage />
+                </Student_Auth>
+              }
+            />
+            <Route
+              path="dashboard"
+              element={
+                <Student_Auth>
+                  <Student_Main />
+                </Student_Auth>
+              }
+            >
+              <Route index element={
+                <StudentDashboard/>
+              }/>
+              <Route
+                path="wishlist"
+                element={
+                  <Student_Auth>
+                    <WishlistPage />
+                  </Student_Auth>
+                }
+              />
+              <Route
+                path="courses"
+                element={
+                  <Student_Auth>
+                    <All_Course_Component/>
+                  </Student_Auth>
+                }
+              />
+              <Route
+                path="profile"
+                element={
+                  <Student_Auth>
+                    <ProfilePage />
+                  </Student_Auth>
+                }
+              />
             </Route>
+              <Route
+                path="enrolled_course_view/:id"
+                element={
+                  <Student_Auth>
+                    <Purshased_Course_Overview />
+                  </Student_Auth>
+                }
+              />
             <Route
               path="landing"
               element={
@@ -99,14 +150,6 @@ function App() {
               </Student_Auth>
             }
           />
-          {/* <Route
-            path="overview"
-            element={
-              <Student_Login_Auth>
-                <CourseOverview/>
-              </Student_Login_Auth>
-            }
-          /> */}
 
           <Route path="forgot_password" element={<Student_Forgot_password />} />
           <Route path="password_reset" element={<Student_Password_Reset />} />
@@ -219,6 +262,7 @@ function App() {
               }
             />
             <Route path="category_management" element={<Category />} />
+            <Route path="course_management" element={<Admin_Course_Management />} />
             <Route path="profile" element={<Admin_Profile />} />
           </Route>
         </Routes>

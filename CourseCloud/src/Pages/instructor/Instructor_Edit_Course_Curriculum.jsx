@@ -7,7 +7,10 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import CloudinaryUploadWidget_Videos from "@/Utils/CloudinaryVideoUpload";
 import CloudinaryUploadWidget_Files from "@/Utils/CloudinaryFileUpload";
-import { course_curriculum, set_Course_Curriculum } from "@/Redux/Slices/CourseCuriculum";
+import {
+  course_curriculum,
+  set_Course_Curriculum,
+} from "@/Redux/Slices/CourseCuriculum";
 import * as yup from "yup";
 import { Formik, Form, Field } from "formik";
 import { motion } from "framer-motion";
@@ -36,11 +39,10 @@ const validation_form = yup.object({
 });
 
 export default function Instructor_Edit_Course_Curriculum() {
-  const location = useLocation()
-  const id = location.id
+  const location = useLocation();
+  const id = location.state;
   console.log(id);
-  
-  
+
   const course_plan = useSelector(
     (state) => state?.course_plan?.Course_plan?.data
   );
@@ -48,7 +50,7 @@ export default function Instructor_Edit_Course_Curriculum() {
     (state) => state?.course_curriculum?.Course_Curriculum?.data
   );
   console.log(course_curriculum);
-  
+
   console.log(course_plan);
   console.log(course_curriculum);
   const navigate = useNavigate();
@@ -64,9 +66,9 @@ export default function Instructor_Edit_Course_Curriculum() {
     video_tutorial: "",
     assignment: "",
   });
-  useEffect(()=>{
-    setLessons(course_curriculum)
-  },[])
+  useEffect(() => {
+    setLessons(course_curriculum);
+  }, []);
   //Function to add lessions to the lessons array
   const addLesson = (values) => {
     // e.preventDefault();
@@ -95,7 +97,7 @@ export default function Instructor_Edit_Course_Curriculum() {
   const handleNavigateCoursePreview = () => {
     if (!validation()) {
       dispatch(set_Course_Curriculum({ data: lessons }));
-      navigate("/instructor/edit_course/3" , {state:id});
+      navigate("/instructor/edit_course/3", { state: id });
     }
   };
   console.log(lessons);
@@ -286,7 +288,7 @@ export default function Instructor_Edit_Course_Curriculum() {
       <div className="mt-8 flex justify-between">
         <Button
           className="bg-black text-white px-4"
-          onClick={() => navigate("/instructor/create_course")}
+          onClick={() => navigate("/instructor/edit_course")}
         >
           <ArrowLeft className="ml-1 h-4 w-4" />
           Previous

@@ -23,7 +23,7 @@ import "./CustomStyle.css"
 const studentDropdownContent = [
   { title: "Dashboard", icon: LayoutDashboard, href: "/dashboard" },
   { title: "Profile", icon: User, href: "/dashboard/profile" },
-  { title: "My Courses", icon: GraduationCap, href: "/dashboard/my_courses" },
+  { title: "My Courses", icon: GraduationCap, href: "/dashboard/courses" },
   { title: "Wishlist", icon: Heart, href: "/dashboard/wishlist" },
   { title: "Certificates", icon: Award, href: "/dashboard/certificates" },
 ];
@@ -178,6 +178,7 @@ function Header({ isScrolled, page }) {
                   onMouseLeave={() => setIsStudentDropdownOpen(false)}
                   // onClick={handleStudentDropdown}
                   src="https://res.cloudinary.com/dtc1xcil8/image/upload/v1730571309/openart-image_z-cDRKP9_1730556373858_raw_rpgts8.jpg"
+                  alt="profile-navigator"
                 />
                 <AvatarFallback>CN</AvatarFallback>
               </Avatar>

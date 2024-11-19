@@ -86,7 +86,7 @@ export default function Admin_Dashboard() {
   const [searchQuery, setSearchQuery] = useState("");
 
   return (
-    <div className="p-2 pt-1 bg-white min-h-screen">
+    <div className="p-2 pt-1 min-h-screen">
       <div className="items-center justify-between mb-6">
         <Breadcrumb>
           <BreadcrumbList>

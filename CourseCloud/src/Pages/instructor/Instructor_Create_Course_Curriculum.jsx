@@ -46,15 +46,7 @@ export default function Instructor_Create_Course_Curriculum() {
 
   const [LessionMinRequiredErrorFound, SetLessionMinRequiredErrorFound] =
     useState(false);
-  const [lessons, setLessons] = useState([
-    {
-      title: "Lesson 1 : Introduction",
-      description:
-        "This video is a introduction of this whole course. Watch the full video. Let's kick off.",
-      video_tutorial: " ",
-      assignment: " ",
-    },
-  ]);
+  const [lessons, setLessons] = useState([]);
   const [form_initial_value, setForm_initial_value] = useState({
     title: "",
     description: "",

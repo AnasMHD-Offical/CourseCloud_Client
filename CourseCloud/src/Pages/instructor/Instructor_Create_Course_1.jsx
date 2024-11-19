@@ -15,26 +15,13 @@ import {
 
 export default function Instructor_Create_Course_1() {
   const [learningObjectiveError, setLearningObjectiveError] = useState("");
-  // const [targetAudienceError, setTargetAudienceError] = useState("");
-  // const [requirementsError, setRequirementsError] = useState("");
-  // const [isRequirementsErrorFound, setIsRequirementsErrorFound] = useState("");
-  // const [isTargetAudienceErrorFound, setIsTargetAudienceErrorFound] =
-  //   useState("");
-  // const [isLearningObjectiveErrorFound, setIsLearningObjectiveErrorFound] =
-  //   useState(false);
   const [isErrorFound, setIsErrorFound] = useState(false);
   const [objective, setObjective] = useState("");
   const [requirement, setRequirement] = useState("");
   const [targetAudience, setTargetAudience] = useState("");
-  const [learningObjectives, setLearningObjectives] = useState([
-    "Learn the basics of python",
-  ]);
-  const [requirements, setRequirements] = useState([
-    "Having a basic knowledge in Maths",
-  ]);
-  const [targetAudiences, setTargetAudiences] = useState([
-    "Students who are interested in coding",
-  ]);
+  const [learningObjectives, setLearningObjectives] = useState([]);
+  const [requirements, setRequirements] = useState([]);
+  const [targetAudiences, setTargetAudiences] = useState([]);
   const navigate = useNavigate();
 
   // const validation_schema = async () => {
@@ -186,7 +173,7 @@ export default function Instructor_Create_Course_1() {
             <BreadcrumbList>
               <BreadcrumbItem>
                 <BreadcrumbLink>
-                  <Link to="/instuctor/dashboard">Instructor</Link>
+                  <Link to="/instuctor/">Instructor</Link>
                 </BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator />
@@ -201,7 +188,7 @@ export default function Instructor_Create_Course_1() {
           <p className="text-gray-600 mb-6">
             Follow the instructions that we provided
           </p>
-          <Outlet/>
+          <Outlet />
         </div>
       </div>
     </>

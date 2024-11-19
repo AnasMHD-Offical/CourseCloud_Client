@@ -53,14 +53,17 @@ const validation_form = yup.object({
   subject: yup.string().required("Subject of the course is required"),
   thumbnail: yup.string().required("Thumbnail of the course is required"),
   price: yup
-    .string()
-    .matches(/^[0-9,. ]+$/, "Price must be in numeric")
+    .number()
+    .positive("Price must be a positive Integer")
+    .integer("Price must be a positive Integer")
     .required("Price of the course is required"),
 });
 
 export default function Instructor_Edit_Course_Preview() {
-  const location = useLocation()
-  const id = location.id
+  const location = useLocation();
+  const id = location.state;
+  console.log(id);
+
   const instructor_id = useSelector(
     (state) => state?.instructor?.instructor_data?.instructor?._id
   );
@@ -108,12 +111,12 @@ export default function Instructor_Edit_Course_Preview() {
     try {
       const course_data = {
         instructor_id: instructor_id,
-        course_id:id,
+        course_id: id,
         course_preview: values,
         course_plan: course_plan,
         course_curriculam: course_curriculam,
       };
-      const response = await axios_instance.post(
+      const response = await axios_instance.put(
         "api/instructor/edit_course",
         course_data
       );
@@ -121,7 +124,7 @@ export default function Instructor_Edit_Course_Preview() {
       if (success) {
         dispatch(remove_course_plan());
         dispatch(remove_Course_Curriculum());
-        dispatch(remove_Course_Preview())
+        dispatch(remove_Course_Preview());
         setisDialogOpen(true);
       }
     } catch (error) {
@@ -148,8 +151,19 @@ export default function Instructor_Edit_Course_Preview() {
 
   useEffect(() => {
     setCourse_curriculum_data(course_curriculam);
-    SetFormData(course_preview);
-    setThumbnailPreview(course_preview.thumbnail)
+    SetFormData({
+      title: course_preview.title,
+      subtitle: course_preview.subtitle,
+      description: course_preview.description,
+      language: course_preview.language,
+      difficulty: course_preview.difficulty,
+      category: course_preview.category,
+      subcategory: course_preview.subcategory,
+      subject: course_preview.subject,
+      thumbnail: course_preview.thumbnail,
+      price: course_preview.price?.$numberDecimal,
+    });
+    setThumbnailPreview(course_preview.thumbnail);
     get_category();
   }, []);
 
@@ -483,7 +497,7 @@ export default function Instructor_Edit_Course_Preview() {
                 <div className="mt-8 flex justify-between">
                   <Button
                     className="bg-black text-white px-4"
-                    onClick={() => navigate("/instructor/create_course/2")}
+                    onClick={() => navigate("/instructor/edit_course/2")}
                   >
                     <ArrowLeft className="ml-1 h-4 w-4" />
                     Previous
@@ -509,7 +523,7 @@ export default function Instructor_Edit_Course_Preview() {
               "The course is reviewed and edited changes will shown to this platform shortly"
             }
             buttonText={"Back to Dashboard"}
-            customRoute={"/instructor/dashboard"}
+            customRoute={"/instructor"}
           />
         </div>
       </motion.div>

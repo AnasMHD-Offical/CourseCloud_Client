@@ -73,7 +73,7 @@ export default function Student_Main() {
           initial={{ x: -300 }}
           animate={{ x: 0 }}
           transition={{ type: "spring", stiffness: 100 }}
-          className="hidden md:flex flex-col w-64 border-r bg-card "
+          className="hidden xl:flex flex-col w-64 border-r bg-card "
         >
           <ScrollArea className="flex-1 px-3 py-3">
             <div className="space-y-1">

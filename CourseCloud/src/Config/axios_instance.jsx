@@ -59,7 +59,7 @@ axios_instance.interceptors.response.use(
         window.location.href = "/";
       }else if(error?.response?.data?.role === "instructor"){
         window.location.href = "/instructor";
-      }else{
+      }else if(error?.response?.data?.role === "admin"){
         window.location.href = "/admin/login"
       }
 

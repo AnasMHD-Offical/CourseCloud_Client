@@ -52,8 +52,6 @@ function CardWishlist({ handleChange, value, course }) {
     setConfirmDialog({ isOpen: false, courseId: null });
   };
 
-
-
   const handleAddToCart = async () => {
     try {
       const response = await axios_instance.put("api/add_to_cart", {
@@ -63,13 +61,13 @@ function CardWishlist({ handleChange, value, course }) {
       });
       const { success, message } = response?.data;
       if (success) {
-        setIsChanged(!isChanged)
+        setIsChanged(!isChanged);
         toast.success(message);
         console.log(response);
       }
     } catch (error) {
       console.log(error);
-      toast.error(error?.response?.data?.message)
+      toast.error(error?.response?.data?.message);
     }
   };
 
@@ -157,16 +155,22 @@ function CardWishlist({ handleChange, value, course }) {
               </div>
             </div>
             <div className="font-bold text-xl text-primary">
-              {actual_price ? `Rs. ${actual_price} ` : "Rs. 799"}
+              {actual_price
+                ? `Rs. ${actual_price?.$numberDecimal} `
+                : "Rs. 799"}
             </div>
           </div>
         </CardContent>
         <CardFooter className="p-6 pt-0 flex gap-2">
           <Button
-            onClick={BtnText === "Add to Cart" ? handleAddToCart : ()=>navigate("/cart")}
+            onClick={
+              BtnText === "Add to Cart"
+                ? handleAddToCart
+                : () => navigate("/cart")
+            }
             className="w-full rounded-full  text-white bg-gradient-to-r from-primary/100 to-purple-600 hover:bg-primary-dark transition-colors duration-300"
           >
-           {BtnText}
+            {BtnText}
           </Button>
           <TooltipProvider>
             <Tooltip>

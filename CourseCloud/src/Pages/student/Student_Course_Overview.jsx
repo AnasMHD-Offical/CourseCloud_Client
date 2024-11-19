@@ -196,8 +196,8 @@ export default function CourseDetails() {
                   {courses.difficulty ? courses.difficulty : "Beginner"}
                 </Badge>
                 <span className="text-muted-foreground">
-                  {courses.entrolled_count
-                    ? `${courses.entrolled_count} students enrolled`
+                  {courses.enrolled_count
+                    ? `${courses.enrolled_count} students enrolled`
                     : `12,345 students enrolled`}
                 </span>
               </motion.div>

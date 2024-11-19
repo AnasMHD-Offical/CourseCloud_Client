@@ -25,15 +25,9 @@ export default function Instructor_Create_Course_Plan() {
   const [objective, setObjective] = useState("");
   const [requirement, setRequirement] = useState("");
   const [targetAudience, setTargetAudience] = useState("");
-  const [learningObjectives, setLearningObjectives] = useState([
-    "Learn the basics of python",
-  ]);
-  const [requirements, setRequirements] = useState([
-    "Having a basic knowledge in Maths",
-  ]);
-  const [targetAudiences, setTargetAudiences] = useState([
-    "Students who are interested in coding",
-  ]);
+  const [learningObjectives, setLearningObjectives] = useState([]);
+  const [requirements, setRequirements] = useState([]);
+  const [targetAudiences, setTargetAudiences] = useState([]);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 

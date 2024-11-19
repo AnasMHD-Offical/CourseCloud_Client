@@ -34,6 +34,8 @@ import { Textarea } from "@/Components/ui/textarea";
 import * as yup from "yup";
 import { toast } from "sonner";
 import axios from "axios";
+import { cn } from "@/lib/utils";
+import { Separator } from "@radix-ui/react-separator";
 
 const form_validation = yup.object({
   name: yup
@@ -185,6 +187,15 @@ export default function ProfilePage() {
   useEffect(() => {
     get_profile();
   }, [is_profile_data_changed]);
+
+  const navItems = [
+    { href: "/dashboard", icon: LayoutDashboard, label: "Dashboard" },
+    { href: "/profile", icon: User, label: "Profile" },
+    { href: "/courses", icon: BookOpen, label: "All courses" },
+    { href: "/wishlist", icon: Heart, label: "Wishlist" },
+    { href: "/certificates", icon: Medal, label: "Certificates" },
+    { href: "/learning", icon: GraduationCap, label: "Learning" },
+  ];
 
   const toggleMenu = () => setIsOpen(!isOpen);
   return (

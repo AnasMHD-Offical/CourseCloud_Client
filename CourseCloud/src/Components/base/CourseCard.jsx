@@ -108,7 +108,9 @@ function CourseCard({ update, mutation, naviate, course }) {
               </span>
             </div>
             <div className="font-bold text-xl text-primary">
-              {actual_price ? `Rs. ${actual_price} ` : "Rs. 799"}
+              {actual_price
+                ? `Rs. ${actual_price?.$numberDecimal} `
+                : "Rs. 799"}
             </div>
           </div>
         </CardContent>

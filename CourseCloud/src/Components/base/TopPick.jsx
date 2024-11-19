@@ -77,7 +77,7 @@ function TopPick() {
                     </span>
                   </div>
                   <div className="font-bold text-3xl mb-6 text-primary">
-                    {TopPickCourse ? `Rs. ${TopPickCourse.actual_price}` : "Rs. 7999"}
+                    {TopPickCourse ? `Rs. ${TopPickCourse.actual_price?.$numberDecimal}` : "Rs. 7999"}
                   </div>
                   <Button
                     size="lg"

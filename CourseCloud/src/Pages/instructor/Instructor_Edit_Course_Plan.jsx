@@ -14,7 +14,9 @@ export default function Instructor_Edit_Course_Plan() {
   );
   console.log(course_plan);
   const location = useLocation()
-  const id = location.id
+  const id = location.state
+  console.log(id);
+  
   const [isRequirementsErrorFound, setIsRequirementsErrorFound] = useState("");
   const [isTargetAudienceErrorFound, setIsTargetAudienceErrorFound] =
     useState("");
@@ -154,7 +156,7 @@ export default function Instructor_Edit_Course_Plan() {
           },
         })
       );
-      navigate(`/instructor/edit_course/2`, { id: id });
+      navigate(`/instructor/edit_course/2`, { state: id });
       // setIsErrorFound(false);
     }
   };

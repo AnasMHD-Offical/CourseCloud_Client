@@ -77,7 +77,7 @@ export default function Instructor_Edit_Course() {
             <BreadcrumbList>
               <BreadcrumbItem>
                 <BreadcrumbLink>
-                  <Link to="/instuctor/dashboard">Instructor</Link>
+                  <Link to="/instuctor">Instructor</Link>
                 </BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator />

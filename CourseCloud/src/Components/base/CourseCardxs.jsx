@@ -1,23 +1,29 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Heart, Star } from "lucide-react";
 import { Button } from "../ui/button";
 import { useSelector } from "react-redux";
+import { axios_instance } from "@/Config/axios_instance";
+import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 function CourseCardxs({ naviate, course }) {
+  const [BtnText, SetBtnText] = useState("Add To Cart");
+  const [isChanged, setIsChanged] = useState();
   const student_id = useSelector(
     (state) => state?.student?.student_data?.student?._id
   );
+  const navigate = useNavigate();
   const { title, subtitle, thumbnail, rating, reviews, actual_price } = course;
   const handleAddToCart = async () => {
     try {
       const response = await axios_instance.put("api/add_to_cart", {
         student_id: student_id,
         course_id: course._id,
-        price: actual_price,
+        price: actual_price?.$numberDecimal,
       });
       const { success, message } = response?.data;
       if (success) {
-        setisWishlisted(true);
+        setIsChanged(!isChanged);
         toast.success(message);
         console.log(response);
       }
@@ -25,6 +31,25 @@ function CourseCardxs({ naviate, course }) {
       console.log(error);
     }
   };
+  const get_cart_items = async (req, res) => {
+    try {
+      const response = await axios_instance.get(`api/get_cart/${student_id}`);
+      const { cart_items, success } = response?.data;
+      if (success) {
+        console.log(response);
+
+        const isAddedtoCart = cart_items?.cart_items.filter(
+          (item) => item.course_id._id == course._id
+        );
+        SetBtnText(isAddedtoCart.length > 0 ? "Go to Cart" : "Add to Cart");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  useEffect(() => {
+    get_cart_items;
+  }, [isChanged]);
 
   return (
     <>
@@ -58,13 +83,22 @@ function CourseCardxs({ naviate, course }) {
               </span>
             </div>
             <div className="font-bold text-xl sm:text-lg text-primary">
-              {actual_price ? `Rs. ${actual_price} ` : "Rs. 799"}
+              {actual_price
+                ? `Rs. ${actual_price?.$numberDecimal} `
+                : "Rs. 799"}
             </div>
           </div>
         </CardContent>
         <CardFooter className="p-6 sm:p-4 pt-0">
-          <Button onClick={handleAddToCart} className="w-full rounded-full  text-white bg-gradient-to-r from-primary to-purple-600 hover:bg-primary-dark transition-colors duration-300">
-            Add to Cart
+          <Button
+            onClick={
+              BtnText === "Add to Cart"
+                ? handleAddToCart
+                : () => navigate("/cart")
+            }
+            className="w-full rounded-full  text-white bg-gradient-to-r from-primary to-purple-600 hover:bg-primary-dark transition-colors duration-300"
+          >
+            {BtnText}
           </Button>
         </CardFooter>
       </Card>
