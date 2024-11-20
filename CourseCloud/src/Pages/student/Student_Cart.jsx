@@ -208,7 +208,12 @@ export default function CartPage() {
                             </div>
                             <div className="flex gap-1 items-center">
                               <Target className="w-4 h-4 " />
-                              <span>{item.course_id.difficulty}</span>
+                              <span>
+                                {item.course_id.difficulty
+                                  .charAt(0)
+                                  .toUpperCase() +
+                                  item.course_id.difficulty.slice(1)}
+                              </span>
                             </div>
                           </div>
                           <div className="flex flex-row sm:flex-col lg:flex-row items-center justify-between">

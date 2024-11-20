@@ -191,6 +191,8 @@ function CardWishlist({ handleChange, value, course }) {
           </TooltipProvider>
         </CardFooter>
       </Card>
+
+      
       <Dialog open={confirmDialog.isOpen} onOpenChange={closeConfirmDialog}>
         <DialogContent>
           <DialogHeader>

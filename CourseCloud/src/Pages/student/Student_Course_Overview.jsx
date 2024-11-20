@@ -193,7 +193,8 @@ export default function CourseDetails() {
                   variant="secondary"
                   className="bg-primary/10 text-primary"
                 >
-                  {courses.difficulty ? courses.difficulty : "Beginner"}
+                  {courses.difficulty ? courses.difficulty.charAt(0).toUpperCase() + courses.difficulty.slice(1) : "Beginner"}
+                  
                 </Badge>
                 <span className="text-muted-foreground">
                   {courses.enrolled_count
@@ -239,7 +240,7 @@ export default function CourseDetails() {
                 <div>
                   <span className="text-3xl font-bold">
                     {courses?.actual_price
-                      ? `Rs. ${courses?.actual_price}`
+                      ? `Rs. ${courses?.actual_price?.$numberDecimal}`
                       : "₹7,999"}
                   </span>
                   <Badge

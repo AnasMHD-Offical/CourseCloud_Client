@@ -11,8 +11,10 @@ import {
 import { Button } from "../ui/button";
 
 export default function PaginationComp({ page, setPage, limit, total }) {
+  console.log("Total : ",total ,"limir :", limit);  
+  
   const totalPages = Math.ceil(total / limit);
-  console.log(totalPages);  
+  console.log("Total pages : ",totalPages);  
   return (
     <Pagination>
       <PaginationContent className="flex gap-2">

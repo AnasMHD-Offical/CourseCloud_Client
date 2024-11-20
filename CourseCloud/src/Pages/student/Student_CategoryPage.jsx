@@ -58,7 +58,7 @@ export default function CategoryPage() {
   const [sortBy, setSortBy] = useState("popularity");
   const [currentPage, setCurrentPage] = useState(1);
   const [totalCourses, setTotalCourse] = useState();
-  const [courseLimit, setCourseLimit] = useState(3);
+  const [courseLimit, setCourseLimit] = useState(6);
   const [isLoading, setIsLoading] = useState(true);
   const [CoursesByCategory, setCoursesByCategory] = useState([]);
   const [CoursesBySubCategory, setCoursesBySubCategory] = useState([]);
@@ -121,9 +121,10 @@ export default function CategoryPage() {
         }
       );
 
-      const { success, message, courses } = response?.data;
+      const { success, message, courses, totalPage } = response?.data;
       if (success) {
         setCourses(courses);
+        setTotalCourse(totalPage);
         console.log(courses);
         setIsLoading(false);
       }
@@ -133,18 +134,18 @@ export default function CategoryPage() {
     }
   };
 
-  const get_course_length = async () => {
-    try {
-      const response = await axios_instance.get("api/get_course_length");
-      const { totalCourses, success } = response?.data;
-      if (success) {
-        setTotalCourse(totalCourses);
-      }
-    } catch (error) {
-      console.log(error);
-      toast.error(error?.response?.data?.message);
-    }
-  };
+  // const get_course_length = async () => {
+  //   try {
+  //     const response = await axios_instance.get("api/get_course_length");
+  //     const { totalCourses, success } = response?.data;
+  //     if (success) {
+  //       setTotalCourse(totalCourses);
+  //     }
+  //   } catch (error) {
+  //     console.log(error);
+  //     toast.error(error?.response?.data?.message);
+  //   }
+  // };
 
   console.log(priceRange);
 
@@ -170,130 +171,7 @@ export default function CategoryPage() {
   useEffect(() => {
     get_courses_by_category();
     get_category();
-    get_course_length()
   }, []);
-
-  // const categories = [
-  //   { id: "all", name: "All Categories" },
-  //   { id: "development", name: "Development" },
-  //   { id: "business", name: "Business" },
-  //   { id: "finance", name: "Finance & Accounting" },
-  //   { id: "it", name: "IT & Software" },
-  //   { id: "design", name: "Design" },
-  // ];
-
-  // const subcategories = {
-  //   all: [{ id: "all", name: "All Subcategories" }],
-  //   development: [
-  //     { id: "web", name: "Web Development" },
-  //     { id: "mobile", name: "Mobile Development" },
-  //     { id: "programming", name: "Programming Languages" },
-  //     { id: "game", name: "Game Development" },
-  //   ],
-  //   business: [
-  //     { id: "entrepreneurship", name: "Entrepreneurship" },
-  //     { id: "communication", name: "Communication" },
-  //     { id: "management", name: "Management" },
-  //     { id: "sales", name: "Sales" },
-  //   ],
-  //   finance: [
-  //     { id: "accounting", name: "Accounting & Bookkeeping" },
-  //     { id: "crypto", name: "Cryptocurrency & Blockchain" },
-  //     { id: "finance", name: "Finance" },
-  //     { id: "investing", name: "Investing & Trading" },
-  //   ],
-  //   it: [
-  //     { id: "network", name: "Network & Security" },
-  //     { id: "hardware", name: "Hardware" },
-  //     { id: "operating-systems", name: "Operating Systems" },
-  //     { id: "other", name: "Other IT & Software" },
-  //   ],
-  //   design: [
-  //     { id: "web-design", name: "Web Design" },
-  //     { id: "graphic-design", name: "Graphic Design" },
-  //     { id: "ux-ui", name: "UX/UI Design" },
-  //     { id: "3d-animation", name: "3D & Animation" },
-  //   ],
-  // };
-
-  // const courses = [
-  //   {
-  //     id: 1,
-  //     title: "The Complete 2023 Web Development Bootcamp",
-  //     instructor: "Dr. Angela Yu",
-  //     rating: 4.7,
-  //     reviews: 240563,
-  //     students: 967832,
-  //     actual_price: 3499,
-  //     originalPrice: 4999,
-  //     thumbnail:
-  //       "https://res.cloudinary.com/dtc1xcil8/image/upload/v1730710700/dehvw4jfovkrkmsldhwc.jpg",
-  //     category: "development",
-  //     subcategory: "web",
-  //     level: "Beginner",
-  //     duration: "65 hours",
-  //     lastUpdated: "Last updated 04/2023",
-  //     description:
-  //       "Become a Full-Stack Web Developer with just ONE course. HTML, CSS, Javascript, Node, React, MongoDB, Web3 and DApps",
-  //   },
-  //   {
-  //     id: 2,
-  //     title: "Machine Learning A-Z™: Hands-On Python & R In Data Science",
-  //     instructor: "Kirill Eremenko, Hadelin de Ponteves",
-  //     rating: 4.5,
-  //     reviews: 154126,
-  //     students: 692631,
-  //     actual_price: 4199,
-  //     originalPrice: 5999,
-  //     thumbnail:
-  //       "https://res.cloudinary.com/dtc1xcil8/image/upload/v1730710700/dehvw4jfovkrkmsldhwc.jpg",
-  //     category: "it",
-  //     subcategory: "other",
-  //     level: "Intermediate",
-  //     duration: "44 hours",
-  //     lastUpdated: "Last updated 03/2023",
-  //     description:
-  //       "Learn to create Machine Learning Algorithms in Python and R from two Data Science experts. Code templates included.",
-  //   },
-  //   {
-  //     id: 3,
-  //     title: "The Complete Financial Analyst Course 2023",
-  //     instructor: "365 Careers",
-  //     rating: 4.6,
-  //     reviews: 78953,
-  //     students: 326715,
-  //     actual_price: 3799,
-  //     originalPrice: 5499,
-  //     thumbnail:
-  //       "https://res.cloudinary.com/dtc1xcil8/image/upload/v1730710700/dehvw4jfovkrkmsldhwc.jpg",
-  //     category: "finance",
-  //     subcategory: "finance",
-  //     level: "All Levels",
-  //     duration: "19 hours",
-  //     lastUpdated: "Last updated 05/2023",
-  //     description:
-  //       "Excel, Accounting, Financial Statement Analysis, Business Analysis, Financial Math, PowerPoint: Everything is Included!",
-  //   },
-  //   {
-  //     id: 4,
-  //     title: "Ultimate AWS Certified Solutions Architect Associate 2023",
-  //     instructor: "Stephane Maarek",
-  //     rating: 4.7,
-  //     reviews: 155732,
-  //     students: 525641,
-  //     actual_price: 4599,
-  //     originalPrice: 6499,
-  //     thumbnail:
-  //       "https://res.cloudinary.com/dtc1xcil8/image/upload/v1730710700/dehvw4jfovkrkmsldhwc.jpg",
-  //     category: "it",
-  //     subcategory: "network",
-  //     level: "Intermediate",
-  //     duration: "27 hours",
-  //     lastUpdated: "Last updated 06/2023",
-  //     description:
-  //       "Pass the AWS Certified Solutions Architect Associate Certification SAA-C03. Complete Amazon Web Services Cloud training!",
-  //   },
-  // ];
 
   const handleCategoryChange = (value) => {
     setSelectedCategory(value);
@@ -375,22 +253,6 @@ export default function CategoryPage() {
         </div>
       </section>
 
-      {/* Ccourse From the selected subcategory */}
-      <CourseContainerManual
-        title={`Courses From ${subcategory}`}
-        CourseData={CoursesBySubCategory}
-      />
-
-      {/* Courses From the selected category */}
-      <CourseContainerManual
-        title={
-          categoryName
-            ? `Courses Related to ${categoryName}`
-            : "Courses Related to your Category"
-        }
-        CourseData={CoursesByCategory}
-      />
-
       {/* Main Content */}
       <main className="mx-auto xl:px-4 pb-12 pt-8 bg-gradient-to-br from-primary/10 via-purple-100 to-blue-50">
         <h2 className="text-3xl md:text-4xl ms-10 md:ms-16 mb-6 font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-purple-600">
@@ -425,7 +287,14 @@ export default function CategoryPage() {
                     </SelectTrigger>
                     <SelectContent>
                       {categories.map((category) => (
-                        <SelectItem key={category._id} value={category._id}>
+                        <SelectItem
+                          key={category._id}
+                          value={
+                            category.title === "All Category"
+                              ? "all"
+                              : category._id
+                          }
+                        >
                           {category.title}
                         </SelectItem>
                       ))}
@@ -555,10 +424,14 @@ export default function CategoryPage() {
                     <SelectItem value="popularity">Most Popular</SelectItem>
                     <SelectItem value="newest">Newest</SelectItem>
                     <SelectItem value="oldest">Oldest</SelectItem>
-                    <SelectItem value="PriceAsc">Low to High</SelectItem>
-                    <SelectItem value="PriceDes">High to Low</SelectItem>
-                    <SelectItem value="AlphaAsc">A-Z</SelectItem>
-                    <SelectItem value="AlphaDes">Z-A</SelectItem>
+                    <SelectItem value="PriceAsc">
+                      Price : Low to High
+                    </SelectItem>
+                    <SelectItem value="PriceDes">
+                      Price : High to Low
+                    </SelectItem>
+                    <SelectItem value="AlphaAsc">Course : A-Z</SelectItem>
+                    <SelectItem value="AlphaDes">Course : Z-A</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -593,21 +466,55 @@ export default function CategoryPage() {
                         </motion.div>
                       ))
                   : courses.map((course) => (
-                      <motion.div key={course._id}>
+                      <motion.div
+                        key={course._id}
+                        initial={{ opacity: 0, y: 20, scale: 0.9 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.9 }}
+                        transition={{ delay: 0.3 }}
+                      >
                         <CourseCardxs course={course} />
                       </motion.div>
                     ))}
+                {courses.length === 0 && (
+                  <div className="w-full bg-clip-text text-transparent bg-gradient-to-r to-primary from-purple-800">
+                    <h3 className="text-4xl  font-bold">
+                      Oops! No Course Found
+                    </h3>
+                    <p>
+                      Filter and sort another courses and Improve your skills{" "}
+                    </p>
+                  </div>
+                )}
               </AnimatePresence>
             </motion.div>
-            <PaginationComp
-              page={currentPage}
-              setPage={handlePageChange}
-              total={totalCourses}
-              limit={courseLimit}
-            />
+            {courses.length > 0 && (
+              <PaginationComp
+                page={currentPage}
+                setPage={handlePageChange}
+                total={totalCourses}
+                limit={courseLimit}
+              />
+            )}
           </div>
         </div>
       </main>
+
+      {/* Ccourse From the selected subcategory */}
+      <CourseContainerManual
+        title={`Courses From ${subcategory}`}
+        CourseData={CoursesBySubCategory}
+      />
+
+      {/* Courses From the selected category */}
+      <CourseContainerManual
+        title={
+          categoryName
+            ? `Courses Related to ${categoryName}`
+            : "Courses Related to your Category"
+        }
+        CourseData={CoursesByCategory}
+      />
 
       {/* Footer */}
       <Footer />

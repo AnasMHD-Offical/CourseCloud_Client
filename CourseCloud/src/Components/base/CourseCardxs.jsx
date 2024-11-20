@@ -16,10 +16,11 @@ function CourseCardxs({ naviate, course }) {
   const { title, subtitle, thumbnail, rating, reviews, actual_price } = course;
   const handleAddToCart = async () => {
     try {
+      
       const response = await axios_instance.put("api/add_to_cart", {
         student_id: student_id,
         course_id: course._id,
-        price: actual_price?.$numberDecimal,
+        price: actual_price,
       });
       const { success, message } = response?.data;
       if (success) {
@@ -36,7 +37,7 @@ function CourseCardxs({ naviate, course }) {
       const response = await axios_instance.get(`api/get_cart/${student_id}`);
       const { cart_items, success } = response?.data;
       if (success) {
-        console.log(response);
+        console.log("Cart items",response);
 
         const isAddedtoCart = cart_items?.cart_items.filter(
           (item) => item.course_id._id == course._id
@@ -48,7 +49,7 @@ function CourseCardxs({ naviate, course }) {
     }
   };
   useEffect(() => {
-    get_cart_items;
+    get_cart_items()
   }, [isChanged]);
 
   return (
