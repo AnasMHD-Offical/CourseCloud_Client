@@ -5,7 +5,7 @@ import { Card, CardContent } from "../ui/card";
 import { Badge } from "../ui/badge";
 import { useNavigate } from "react-router-dom";
 function PurshacedCourseCard({ course, course_metadata }) {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   return (
     <>
       <Card
@@ -16,7 +16,9 @@ function PurshacedCourseCard({ course, course_metadata }) {
           src={course.course_id.thumbnail}
           alt={course.course_id.title}
           className="w-full h-40 object-cover"
-          onClick={()=>navigate(`/enrolled_course_view/${course.course_id._id}`)}
+          onClick={() =>
+            navigate(`/enrolled_course_view/${course.course_id._id}`)
+          }
         />
         <CardContent className="p-4 flex-1">
           <h3 className="font-bold text-base mb-2 text-gray-800 dark:text-white">
@@ -28,7 +30,7 @@ function PurshacedCourseCard({ course, course_metadata }) {
               <div className="flex items-center">
                 <Star className="h-5 w-5 text-yellow-400 fill-current" />
                 <span className="ml-1 text-gray-600 dark:text-gray-400">
-                  {course.course_id.rating || 4.5}
+                  {course.course_id.rating ? course.course_id.rating.toFixed(1) : 4.5 }
                 </span>
               </div>
             </div>
@@ -37,7 +39,10 @@ function PurshacedCourseCard({ course, course_metadata }) {
                 variant="secondary"
                 className="bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-200"
               >
-                {course.course_id.difficulty}
+                {course.course_id.difficulty
+                  ? course.course_id.difficulty.charAt(0).toUpperCase() +
+                    course.course_id.difficulty.slice(1)
+                  : "Beginner"}
               </Badge>
               <div className="flex items-center text-sm text-gray-600 dark:text-gray-400">
                 <Clock className="h-4 w-4 mr-1" />

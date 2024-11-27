@@ -5,16 +5,27 @@ import { Button } from "../ui/button";
 import { Star } from "lucide-react";
 import { axios_instance } from "@/Config/axios_instance";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 function TopPick() {
   const [TopPickCourse, SetTopPickCourse] = useState({});
+  const student_id = useSelector(
+    (state) => state?.student?.student_data?.student?._id
+  );
   const navigate = useNavigate()
   const get_Courses = async () => {
     try {
-      const resposne = await axios_instance.get("/api/get_courses");
+      const resposne = await axios_instance.get("/api/get_courses",{
+        params: {
+          student_id: student_id ? student_id : null,
+        },
+      });
       const { success, courses } = resposne?.data;
       if (success) {
+        const filteredCourse = courses.filter((course)=> (course.is_purchased === false))
+        console.log(filteredCourse);
+        
         SetTopPickCourse(
-          courses[Math.floor(Math.random(courses.length - 1) * courses.length)]
+          filteredCourse[Math.floor(Math.random(filteredCourse.length - 1) * filteredCourse.length)]?._doc
         );
         console.log(Math.floor(Math.random(courses.length - 1) * courses.length));
       }

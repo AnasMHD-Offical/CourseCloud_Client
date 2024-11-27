@@ -6,7 +6,7 @@ import { useSelector } from "react-redux";
 import { axios_instance } from "@/Config/axios_instance";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
-function CourseCardxs({ naviate, course }) {
+function CourseCardxs({ naviate, course, isPurchased }) {
   const [BtnText, SetBtnText] = useState("Add To Cart");
   const [isChanged, setIsChanged] = useState();
   const student_id = useSelector(
@@ -91,7 +91,15 @@ function CourseCardxs({ naviate, course }) {
           </div>
         </CardContent>
         <CardFooter className="p-6 sm:p-4 pt-0">
-          <Button
+        {isPurchased && (
+            <Button
+              onClick={() => navigate(`/enrolled_course_view/${course._id}`)}
+              className="w-full rounded-full  text-white bg-gradient-to-r from-primary to-purple-600 hover:bg-primary-dark transition-colors duration-300"
+            >
+              Go to Courses
+            </Button>
+          )}
+         {!isPurchased && <Button
             onClick={
               BtnText === "Add to Cart"
                 ? handleAddToCart
@@ -100,7 +108,7 @@ function CourseCardxs({ naviate, course }) {
             className="w-full rounded-full  text-white bg-gradient-to-r from-primary to-purple-600 hover:bg-primary-dark transition-colors duration-300"
           >
             {BtnText}
-          </Button>
+          </Button>}
         </CardFooter>
       </Card>
     </>

@@ -1,75 +1,10 @@
 import { Star } from "lucide-react";
 import React, { useState } from "react";
 import { Button } from "../ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogFooter,
-  DialogTitle,
-} from "../ui/dialog";
-import { toast } from "sonner";
-import { axios_instance } from "@/Config/axios_instance";
+import { useNavigate } from "react-router-dom";
 
-export default function CourseCardLandscape({ courses, isUpdated, updateVal }) {
-    
-  const [confirmation, setConfirmation] = useState({
-    isOpen: false,
-    is_blocked: false,
-    course_id: null,
-  });
-
-  const closeConfirmDialog = () => {
-    setConfirmation({
-      isOpen: false,
-      is_blocked: false,
-      course_id: null,
-    });
-  };
-
-  const handleBlock = async (id) => {
-    try {
-      const response = await axios_instance.put("api/admin/block_course", {
-        _id: id,
-      });
-      const { success, message } = response?.data;
-      if (success) {
-        setConfirmation({
-          isOpen: false,
-          is_blocked: false,
-          course_id: null,
-        });
-        isUpdated(!updateVal);
-        toast.success(message);
-      }
-    } catch (error) {
-      console.log(error);
-      toast.error(error?.response?.data?.message);
-    }
-  };
-
-  const handleUnblock = async (id) => {
-    try {
-      const response = await axios_instance.put("api/admin/unblock_course", {
-        _id: id,
-      });
-      const { success, message } = response?.data;
-      if (success) {
-        setConfirmation({
-          isOpen: false,
-          is_blocked: false,
-          course_id: null,
-        });
-        isUpdated(!updateVal);
-        toast.success(message);
-      }
-    } catch (error) {
-      console.log(error);
-      toast.error(error?.response?.data?.message);
-    }
-  };
-
+export default function CourseCardLandscapeReuse({ courses }) {
+  const navigate = useNavigate();
   return (
     <div className="space-y-4 mb-10">
       {courses.map((course) => (
@@ -84,9 +19,7 @@ export default function CourseCardLandscape({ courses, isUpdated, updateVal }) {
           />
           <div className="flex-1">
             <h3 className="text-lg font-semibold">{course.title}</h3>
-            <p className="text-sm text-gray-500">
-              By {course.instructor_id?.name}
-            </p>
+            <p className="text-sm text-gray-500">{course?.subtitle}</p>
             <div className="flex items-center mt-2">
               <Star className="h-4 w-4 text-yellow-400 fill-current" />
               <span className="ml-1 text-sm">{course.rating || 4.5}</span>
@@ -101,20 +34,24 @@ export default function CourseCardLandscape({ courses, isUpdated, updateVal }) {
           </div>
           <div className="flex flex-col items-end space-y-2">
             <span className="font-bold">
-              Rs.{course.actual_price?.$numberDecimal}
+              Rs.{course?.actual_price?.$numberDecimal}
             </span>
             <div className="flex space-x-2">
               <Button
+                className="bg-gradient-to-r from-purple-900 to-purple-600 text-white hover:from-white hover:to-purple-200 hover:text-black"
                 onClick={() =>
-                  setConfirmation({
-                    isOpen: true,
-                    is_blocked: course.is_blocked,
-                    course_id: course._id,
-                  })
+                  navigate(`/instructor/course_overview/${course?._id}`)
                 }
-                size="sm"
               >
-                {course.is_blocked ? "Unblock" : "Block"}
+                Course progress
+              </Button>
+              <Button
+                className="bg-gradient-to-r to-purple-900 from-purple-600 text-white hover:to-white hover:from-purple-200 hover:text-black"
+                onClick={() =>
+                  navigate(`/instructor/Students_progress/${course?._id}`)
+                }
+              >
+                Student progress
               </Button>
             </div>
           </div>
@@ -122,7 +59,7 @@ export default function CourseCardLandscape({ courses, isUpdated, updateVal }) {
       ))}
 
       {/*   confirmation dialog */}
-      <Dialog open={confirmation.isOpen} onOpenChange={closeConfirmDialog}>
+      {/* <Dialog open={confirmation.isOpen} onOpenChange={closeConfirmDialog}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>
@@ -150,7 +87,7 @@ export default function CourseCardLandscape({ courses, isUpdated, updateVal }) {
             </Button>
           </DialogFooter>
         </DialogContent>
-      </Dialog>
+      </Dialog> */}
     </div>
   );
 }

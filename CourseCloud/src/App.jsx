@@ -47,6 +47,10 @@ import Admin_Course_Management from "./Pages/admin/Admin_CourseManagement";
 import Purshased_Course_Overview from "./Pages/student/Student_Purchased_Course_Overview";
 import StudentDashboard from "./Pages/student/Student_Dashboard";
 import All_Course_Component from "./Pages/student/Student_All_course";
+import QuizConponentOverview from "./Pages/student/Quiz_Component/StudentQuizOverview";
+import InstructorCourseManagement from "./Pages/instructor/CourseManagement/InstructorCourseManagement";
+import InstructorCourseOverview from "./Pages/instructor/CourseManagement/InstructorCourseOverview";
+import InstructorStudentsProgress from "./Pages/instructor/CourseManagement/InstructorStudentProgess";
 const HomePage = lazy(() => import("./Pages/student/Student_Homepage"));
 const CourseOverview = lazy(() =>
   import("./Pages/student/Student_Course_Overview")
@@ -95,9 +99,7 @@ function App() {
                 </Student_Auth>
               }
             >
-              <Route index element={
-                <StudentDashboard/>
-              }/>
+              <Route index element={<StudentDashboard />} />
               <Route
                 path="wishlist"
                 element={
@@ -110,7 +112,7 @@ function App() {
                 path="courses"
                 element={
                   <Student_Auth>
-                    <All_Course_Component/>
+                    <All_Course_Component />
                   </Student_Auth>
                 }
               />
@@ -123,14 +125,14 @@ function App() {
                 }
               />
             </Route>
-              <Route
-                path="enrolled_course_view/:id"
-                element={
-                  <Student_Auth>
-                    <Purshased_Course_Overview />
-                  </Student_Auth>
-                }
-              />
+            <Route
+              path="enrolled_course_view/:id"
+              element={
+                <Student_Auth>
+                  <Purshased_Course_Overview />
+                </Student_Auth>
+              }
+            ></Route>
             <Route
               path="landing"
               element={
@@ -145,9 +147,9 @@ function App() {
           <Route
             path="register"
             element={
-              <Student_Auth>
+              <Student_Login_Auth>
                 <Student_Register />
-              </Student_Auth>
+              </Student_Login_Auth>
             }
           />
 
@@ -193,6 +195,18 @@ function App() {
           >
             <Route index element={<InstructorDashboard />} />
             <Route path="profile" element={<Instructor_Profile />} />
+            <Route
+              path="course_management"
+              element={<InstructorCourseManagement />}
+            />
+            <Route
+              path="course_overview/:id"
+              element={<InstructorCourseOverview />}
+            />
+            <Route
+              path="Students_progress/:id"
+              element={<InstructorStudentsProgress />}
+            />
             <Route
               path="create_course"
               element={<Instructor_Create_Course_1 />}
@@ -262,7 +276,10 @@ function App() {
               }
             />
             <Route path="category_management" element={<Category />} />
-            <Route path="course_management" element={<Admin_Course_Management />} />
+            <Route
+              path="course_management"
+              element={<Admin_Course_Management />}
+            />
             <Route path="profile" element={<Admin_Profile />} />
           </Route>
         </Routes>

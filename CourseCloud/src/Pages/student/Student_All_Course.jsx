@@ -43,6 +43,7 @@ import PurshacedCourseContainer from "@/Components/base/PurshacedCourseContainer
 import { axios_instance } from "@/Config/axios_instance";
 import { useSelector } from "react-redux";
 import CourseContainer from "@/Components/base/CourseContainer";
+import ContainerSkelton from "@/Components/fallback/ContainerSkeleton";
 
 export default function All_Course_Component() {
   const student_id = useSelector(
@@ -55,6 +56,7 @@ export default function All_Course_Component() {
   const [isOpen, setIsOpen] = useState(false);
   const [purchasedCourses, setPurchasedCourses] = useState([]);
   const [courseMetadata, setCourseMatadata] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   //   const searchParams = useSearchParams();
   const page = 1;
   const toggleMenu = () => setIsOpen(!isOpen);
@@ -78,6 +80,7 @@ export default function All_Course_Component() {
       if (success) {
         setPurchasedCourses(purchased_courses?.courses);
         setCourseMatadata(Courses_duration);
+        setIsLoading(false);
         console.log(response?.data);
       }
     } catch (error) {
@@ -259,11 +262,15 @@ export default function All_Course_Component() {
               </div>
             </div>
             <TabsContent className="mt-6" value={activeTab}>
-              <PurshacedCourseContainer
-                title={"All Purchased Courses"}
-                courses={purchasedCourses}
-                course_metadata={courseMetadata}
-              />
+              {isLoading ? (
+                <ContainerSkelton />
+              ) : (
+                <PurshacedCourseContainer
+                  title={"All Purchased Courses"}
+                  courses={purchasedCourses}
+                  course_metadata={courseMetadata}
+                />
+              )}
             </TabsContent>
           </Tabs>
           {/* <div className="mt-8">
@@ -285,7 +292,7 @@ export default function All_Course_Component() {
             </Pagination>
           </div> */}
 
-          <CourseContainer title={"Top picks for you"}/>
+          <CourseContainer title={"Top picks for you"} />
         </div>
       </div>
     </main>

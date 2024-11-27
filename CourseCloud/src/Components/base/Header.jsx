@@ -16,10 +16,11 @@ import { Link, useNavigate } from "react-router-dom";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { student_logout } from "@/Redux/Slices/StudentSlice";
 import { axios_instance } from "@/Config/axios_instance";
-import "./CustomStyle.css"
+import "./CustomStyle.css";
+import { ScrollArea } from "../ui/scroll-area";
 const studentDropdownContent = [
   { title: "Dashboard", icon: LayoutDashboard, href: "/dashboard" },
   { title: "Profile", icon: User, href: "/dashboard/profile" },
@@ -29,6 +30,9 @@ const studentDropdownContent = [
 ];
 
 function Header({ isScrolled, page }) {
+  const student_id = useSelector(
+    (state) => state?.student?.student_data?.student?._id
+  );
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isStudentDropdownOpen, setIsStudentDropdownOpen] = useState(false);
   const [isSearchFilterOpen, setIsSearchFilterOpen] = useState(false);
@@ -42,7 +46,11 @@ function Header({ isScrolled, page }) {
   // };
   const get_Courses = async () => {
     try {
-      const resposne = await axios_instance.get("/api/get_courses");
+      const resposne = await axios_instance.get("/api/get_courses", {
+        params: {
+          student_id: student_id ? student_id : null,
+        },
+      });
       const { success, message } = resposne?.data;
       if (success) {
         setCourses(resposne?.data?.courses);
@@ -55,6 +63,44 @@ function Header({ isScrolled, page }) {
   useEffect(() => {
     get_Courses();
   }, []);
+
+  const get_course_by_search = async () => {
+    try {
+      const response = await axios_instance.get(
+        "api/get_course_by_search_sort_filter",
+        {
+          params: {
+            search: searchItem,
+            student_id: student_id,
+          },
+        }
+      );
+
+      const { success, courses } = response?.data;
+      if (success) {
+        setFilteredCourse(courses);
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error(error?.response?.data?.message);
+    }
+  };
+
+  const handleResultCourseView = (id) => {
+    navigate(`/overview/${id}`);
+    setIsSearchFilterOpen(false);
+    setSearchItem("");
+  };
+  const handleResultPurchasedCourseView = (id) => {
+    navigate(`/enrolled_course_view/${id}`);
+    setIsSearchFilterOpen(false);
+    setSearchItem("");
+  };
+
+  useEffect(() => {
+    get_course_by_search();
+  }, [searchItem]);
+
   const handleLogout = async () => {
     try {
       const response = await axios_instance.post("/api/student_logout");
@@ -80,13 +126,6 @@ function Header({ isScrolled, page }) {
     } else {
       setIsSearchFilterOpen(false);
     }
-
-    const filteredSearch = Courses.filter((course) =>
-      course.title.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-
-    setFilteredCourse(filteredSearch);
-    console.log(filteredSearch);
   };
 
   return (
@@ -109,29 +148,43 @@ function Header({ isScrolled, page }) {
             <div className="relative group">
               <Input
                 onChange={handleInputChange}
+                value={searchItem}
                 className="pl-10 pr-4 py-2 w-more rounded-full border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50 transition-all duration-300"
                 placeholder="Search for anything you want to learn over or under the clouds"
               />
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 group-hover:text-primary transition-colors duration-300 w-4 h-4" />
             </div>
             {isSearchFilterOpen && (
-              <motion.div className="absolute lg:left-52 left-more top-14 w-more h-2">
-                <ul className="bg-white rounded-lg py-4 px-4  space-y-4">
-                  {FilteredCourse.length > 0 ? (
-                    FilteredCourse.map((course) => {
-                      return (
-                        <li
-                          className="hover:bg-gray-100 py-2 ps-2 rounded-md"
-                          key={course._id}
-                        >
-                          {course.title}
-                        </li>
-                      );
-                    })
-                  ) : (
-                    <li key={0}> No results found </li>
-                  )}
-                </ul>
+              <motion.div className="absolute lg:left-52 left-more top-14 w-more h-2 ">
+                <ScrollArea>
+                  <ul className="bg-white rounded-lg py-4 px-4  space-y-4">
+                    {FilteredCourse.length > 0 ? (
+                      FilteredCourse.map((course) => {
+                        return (
+                          <li
+                            className="hover:bg-gray-100 py-2 ps-2 rounded-md cursor-pointer"
+                            key={course?._doc?._id || course?._id}
+                            onClick={
+                              course?.is_purchased
+                                ? () =>
+                                    handleResultPurchasedCourseView(
+                                      course?._doc?._id || course?._id
+                                    )
+                                : () =>
+                                    handleResultCourseView(
+                                      course?._doc?._id || course?._id
+                                    )
+                            }
+                          >
+                            {course?._doc?.title || course.title}
+                          </li>
+                        );
+                      })
+                    ) : (
+                      <li key={0}> No results found </li>
+                    )}
+                  </ul>
+                </ScrollArea>
               </motion.div>
             )}
           </div>
@@ -151,7 +204,7 @@ function Header({ isScrolled, page }) {
               <Button
                 variant="ghost"
                 size="icon"
-                onClick={()=>navigate(`/cart`)}
+                onClick={() => navigate(`/cart`)}
                 className="hover:bg-primary/10 transition-colors relative"
               >
                 <ShoppingCart className="w-5 h-5" />
@@ -161,7 +214,7 @@ function Header({ isScrolled, page }) {
               <Button
                 variant="ghost"
                 size="icon"
-                onClick={()=>navigate("/dashboard/wishlist")}
+                onClick={() => navigate("/dashboard/wishlist")}
                 className="hover:bg-primary/10 transition-colors relative"
               >
                 <Heart className="w-8 h-8" />

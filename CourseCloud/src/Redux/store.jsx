@@ -6,6 +6,7 @@ import instructor_slice from "./Slices/Instructor_Slice";
 import course_plan from "./Slices/CoursePlan";
 import course_curriculum from "./Slices/CourseCuriculum";
 import course_Preview from "./Slices/CoursePreview";
+import current_course_details  from "./Slices/CourseMetaData";
 //Configuring redux store
 const store = configureStore({
   reducer: {
@@ -15,6 +16,7 @@ const store = configureStore({
     course_plan: course_plan,
     course_curriculum: course_curriculum,
     course_Preview: course_Preview,
+    current_course_data : current_course_details
   },
 });
 

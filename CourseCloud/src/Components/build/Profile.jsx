@@ -17,10 +17,6 @@ import {
 import { Link } from "react-router-dom";
 import { axios_instance } from "@/Config/axios_instance";
 import { useSelector } from "react-redux";
-import { Cloudinary } from "@cloudinary/url-gen";
-import { auto } from "@cloudinary/url-gen/actions/resize";
-import { autoGravity } from "@cloudinary/url-gen/qualifiers/gravity";
-import { AdvancedImage } from "@cloudinary/react";
 import axios from "axios";
 import { toast } from "sonner";
 import { Textarea } from "../ui/textarea";
@@ -207,7 +203,7 @@ export default function Profile({ current_role, user_route }) {
       };
       console.log(data);
 
-      const response = await axios_instance.put(edit_user_route, data);
+      const response = await axios_instance.patch(edit_user_route, data);
       const { success, message } = response?.data;
       if (success) {
         toast.success(message);
@@ -362,7 +358,7 @@ export default function Profile({ current_role, user_route }) {
                     )}
                   </div>
                   {/* Email */}
-                  <div>
+                  {/* <div>
                     <label
                       htmlFor="email"
                       className="block text-sm font-medium text-gray-700"
@@ -380,7 +376,7 @@ export default function Profile({ current_role, user_route }) {
                     {errors.email && touched.email && (
                       <div className="text-sm text-red-500">{errors.email}</div>
                     )}
-                  </div>
+                  </div> */}
                   {/* Dob */}
                   <div>
                     <label
@@ -448,7 +444,7 @@ export default function Profile({ current_role, user_route }) {
                     </div>
                   )}
                   {/* Current password */}
-                  <div>
+                 {!user_data?.googleId && <div>
                     <label
                       htmlFor="password"
                       className="block text-sm font-medium text-gray-700"
@@ -483,9 +479,9 @@ export default function Profile({ current_role, user_route }) {
                         </div>
                       )}
                     </div>
-                  </div>
+                  </div>}
                   {/* New password */}
-                  <div>
+                  {!user_data?.googleId && <div>
                     <label
                       htmlFor="password"
                       className="block text-sm font-medium text-gray-700"
@@ -518,9 +514,9 @@ export default function Profile({ current_role, user_route }) {
                         </div>
                       )}
                     </div>
-                  </div>
+                  </div>}
                   {/* Confirm password */}
-                  <div>
+                  {!user_data?.googleId && <div>
                     <label
                       htmlFor="confirmPassword"
                       className="block text-sm font-medium text-gray-700"
@@ -555,7 +551,7 @@ export default function Profile({ current_role, user_route }) {
                         </div>
                       )}
                     </div>
-                  </div>
+                  </div>}
                   {/* Upload picture */}
                   <div>
                     <label

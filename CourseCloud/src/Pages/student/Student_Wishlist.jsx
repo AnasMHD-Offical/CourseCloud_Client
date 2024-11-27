@@ -40,6 +40,7 @@ export default function WishlistPage() {
     courseId: null,
   });
   const [isOpen, setIsOpen] = useState(false);
+  const [isMutated, setIsMutated] = useState(false);
   const get_wishlisted_items = async () => {
     try {
       const response = await axios_instance.get(
@@ -57,8 +58,7 @@ export default function WishlistPage() {
   };
   useEffect(() => {
     get_wishlisted_items();
-  }, [isWishlistChanged]);
-
+  }, [isWishlistChanged,isMutated]);
 
   const navItems = [
     { href: "/dashboard", icon: LayoutDashboard, label: "Dashboard" },
@@ -70,8 +70,12 @@ export default function WishlistPage() {
   ];
 
   const handleChange = (val) => {
-    setIsWishlistChanged(!val);
+    setIsMutated(!val)
   };
+
+  const handleWishlistChange = (val)=>{
+    setIsWishlistChanged(!val)
+  }
   const toggleMenu = () => setIsOpen(!isOpen);
   return (
     <>
@@ -233,17 +237,27 @@ export default function WishlistPage() {
                       className="group relative rounded-lg overflow-hidden border shadow-sm hover:shadow-lg transition-all duration-300"
                     >
                       <CardWishlist
-                        handleChange={handleChange}
+                        handleChange={handleWishlistChange}
                         value={isWishlistChanged}
                         course={course}
                       />
                     </motion.div>
                   ))}
+              {WishlistedCourses.length === 0 && (
+                <div className="text-center w-full">
+                  <h3 className="text-4xl  font-bold">Oops! wishlist is Empty</h3>
+                  <p>Add items to your wishlist and achieve your dreams.</p>
+                </div>
+              )}
             </AnimatePresence>
           </div>
 
           {/* Recommended Courses */}
-          <CourseContainer wishlistMutation={handleChange} title={"Our Top Picks For You"} />
+          <CourseContainer
+            wishlistMutation={handleChange}
+            value={isMutated}
+            title={"Our Top Picks For You"}
+          />
         </div>
       </main>
     </>

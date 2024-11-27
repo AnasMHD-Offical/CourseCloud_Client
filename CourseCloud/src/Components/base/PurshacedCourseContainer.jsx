@@ -1,13 +1,14 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import PurshacedCourseCard from "./PurshacedCourseCard";
 import { Button } from "../ui/button";
 import { ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
-function PurshacedCourseContainer({ courses, title , course_metadata}) {
+function PurshacedCourseContainer({ courses, title, course_metadata }) {
   const CourseContainerRef = useRef();
   const handleCourseScroll = (scrollOffset) => {
     CourseContainerRef.current.scrollLeft += scrollOffset;
   };
+
   return (
     <>
       <div className="container mx-auto px-4">
@@ -29,17 +30,20 @@ function PurshacedCourseContainer({ courses, title , course_metadata}) {
           ref={CourseContainerRef}
         >
           {courses.map((course, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: i * 0.1 }}
-              whileHover={{ y: -5 }}
-              className="flex flex-nowrap "
-            >
-              <PurshacedCourseCard course={course} course_metadata={course_metadata[i]}/>
-            </motion.div>
-          ))}
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5}}
+                  whileHover={{ y: -5 }}
+                  className="flex flex-nowrap "
+                >
+                  <PurshacedCourseCard
+                    course={course}
+                    course_metadata={course_metadata[i]}
+                  />
+                </motion.div>
+              ))}
         </div>
       </div>
     </>

@@ -1,5 +1,5 @@
 import { Button } from "@/Components/ui/button";
-import { Plus } from "lucide-react";
+import { Plus, Upload } from "lucide-react";
 import { useRef, useEffect } from "react";
 import { toast } from "sonner";
 const CloudinaryUploadWidget_Files = ({ onUploadComplete }) => {
@@ -38,8 +38,13 @@ const CloudinaryUploadWidget_Files = ({ onUploadComplete }) => {
 
   return (
     <>
-      <Button onClick={() => FileWidgetRef.current.open()} type="button" variant="outline">
-        <Plus className="mr-2 h-4 w-4" /> Add Assignments
+      <Button
+        onClick={() => FileWidgetRef.current.open()}
+        type="button"
+        variant="outline"
+        className="bg-gradient-to-r from-purple-900 to-purple-600 text-white hover:text-white"
+      >
+        <Upload className="mr-2 h-4 w-4" /> Upload Assignment
       </Button>
     </>
   );

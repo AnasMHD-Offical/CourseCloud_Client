@@ -4,7 +4,7 @@ import { Button } from "@/Components/ui/button";
 import { axios_instance } from "@/Config/axios_instance";
 import { toast } from "sonner";
 
-const RazorpayPayment = ({ price, student_id, courses }) => {
+const RazorpayPayment = ({ price, student_id, courses, handleMutation }) => {
   const { error, isLoading, Razorpay } = useRazorpay();
 
   const handlePayment = () => {
@@ -19,6 +19,7 @@ const RazorpayPayment = ({ price, student_id, courses }) => {
         });
         const { message, success } = response?.data;
         if (success) {
+          handleMutation(false)
           toast.success(message);
         }
       } catch (error) {

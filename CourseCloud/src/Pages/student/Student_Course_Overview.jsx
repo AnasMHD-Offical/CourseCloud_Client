@@ -63,6 +63,7 @@ export default function CourseDetails() {
   const [objectives, setObjectives] = useState([]);
   const [requirements, setRequirements] = useState([]);
   const [targetAudience, setTargetAudience] = useState([]);
+  const [reviews, setReviews] = useState([]);
   const { id } = useParams();
   console.log(id);
 
@@ -100,9 +101,29 @@ export default function CourseDetails() {
     }
   };
 
+  const get_review = async () => {
+    try {
+      const response = await axios_instance.get("api/get_reviews");
+      const { success, message, reviews } = response?.data;
+      console.log("Review : ",reviews);
+      
+      if(success){
+        setReviews(reviews)
+        // setUpdated(!updated)
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error(error.response.data?.message)
+    }
+  };
+
   useEffect(() => {
     get_course_by_id();
-  }, []);
+  }, [id]);
+
+  useEffect(()=>{
+    get_review()
+  },[])
 
   const courseProgress = 50; // Example progress
 
@@ -193,8 +214,10 @@ export default function CourseDetails() {
                   variant="secondary"
                   className="bg-primary/10 text-primary"
                 >
-                  {courses.difficulty ? courses.difficulty.charAt(0).toUpperCase() + courses.difficulty.slice(1) : "Beginner"}
-                  
+                  {courses.difficulty
+                    ? courses.difficulty.charAt(0).toUpperCase() +
+                      courses.difficulty.slice(1)
+                    : "Beginner"}
                 </Badge>
                 <span className="text-muted-foreground">
                   {courses.enrolled_count
@@ -529,13 +552,13 @@ export default function CourseDetails() {
             <div className="flex flex-col md:flex-row gap-8 mb-4 py-12">
               <div className="flex-1 flex flex-col items-center justify-between">
                 <div className="text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-purple-600 ">
-                  4.7
+                  {courses?.rating ? courses?.rating.toFixed(1) : "4.7"}
                 </div>
                 <div className="flex my-2">
                   {[1, 2, 3, 4, 5].map((star) => (
                     <Star
                       key={star}
-                      className="h-5 w-5 text-yellow-400 fill-yellow-400"
+                      className={`h-5 w-5 text-yellow-400 ${star < courses.rating ? "fill-yellow-400" : "fill-white"}`}
                     />
                   ))}
                 </div>
@@ -560,26 +583,7 @@ export default function CourseDetails() {
               </div>
             </div>
             <div className="space-y-6">
-              {[
-                {
-                  name: "Alex Johnson",
-                  rating: 5,
-                  comment:
-                    "This course is incredibly comprehensive. I started with basic web knowledge and now I feel confident in building full stack applications. Abhay's teaching style is clear and engaging.",
-                },
-                {
-                  name: "Sarah Lee",
-                  rating: 4,
-                  comment:
-                    "Great course overall. The projects are practical and relevant. I would have liked more depth on certain advanced topics, but it's an excellent starting point for aspiring full stack developers.",
-                },
-                {
-                  name: "Michael Chen",
-                  rating: 5,
-                  comment:
-                    "I've taken several web development courses, and this is by far the best. The curriculum is well-structured, and the instructor's explanations are top-notch. Highly recommended!",
-                },
-              ].map((review, index) => (
+              {reviews.map((review, index) => (
                 <motion.div
                   key={index}
                   className="pb-4 border-b last:border-b-0"
@@ -589,11 +593,12 @@ export default function CourseDetails() {
                 >
                   <div className="flex items-center gap-2 mb-2">
                     <Avatar>
-                      <AvatarFallback>{review.name[0]}</AvatarFallback>
+                      <AvatarFallback>{review?.student_id?.name[0]}</AvatarFallback>
+                      <AvatarImage src={review?.student_id?.profile || ""}/>
                     </Avatar>
                     <div>
                       <div className="font-semibold bg-clip-text text-transparent bg-gradient-to-r from-primary to-purple-600">
-                        {review.name}
+                        {review?.student_id?.name}
                       </div>
                       <div className="flex">
                         {[1, 2, 3, 4, 5].map((star) => (
@@ -609,7 +614,7 @@ export default function CourseDetails() {
                       </div>
                     </div>
                   </div>
-                  <p className="text-muted-foreground">{review.comment}</p>
+                  <p className="text-muted-foreground">{review.feedback}</p>
                 </motion.div>
               ))}
             </div>

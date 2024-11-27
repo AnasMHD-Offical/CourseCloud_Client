@@ -46,6 +46,7 @@ import { axios_instance } from "@/Config/axios_instance";
 import CourseContainerManual from "@/Components/base/CourseContainerManual";
 import { toast } from "sonner";
 import PaginationComp from "@/Components/base/Pagination";
+import { useSelector } from "react-redux";
 
 export default function CategoryPage() {
   const [viewMode, setViewMode] = useState();
@@ -73,6 +74,10 @@ export default function CategoryPage() {
   const isInView = useInView(courseGridRef, { once: true, amount: 0.2 });
   const controls = useAnimation();
   const { id, subcategory } = useParams();
+
+  const student_id = useSelector(
+    (state) => state?.student?.student_data?.student?._id
+  );
 
   const get_courses_by_category = async () => {
     try {
@@ -117,6 +122,7 @@ export default function CategoryPage() {
             Ending_price: priceRange[1],
             page: currentPage,
             limit: courseLimit,
+            student_id: student_id,
           },
         }
       );
@@ -467,13 +473,16 @@ export default function CategoryPage() {
                       ))
                   : courses.map((course) => (
                       <motion.div
-                        key={course._id}
+                        key={course?._doc?._id || course._id}
                         initial={{ opacity: 0, y: 20, scale: 0.9 }}
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, scale: 0.9 }}
                         transition={{ delay: 0.3 }}
                       >
-                        <CourseCardxs course={course} />
+                        <CourseCardxs
+                          course={course?._doc || course}
+                          isPurchased={course?.is_purchased || null}
+                        />
                       </motion.div>
                     ))}
                 {courses.length === 0 && (

@@ -107,8 +107,7 @@ export default function ProfilePage() {
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setshowConfirmPassword] = useState(false);
-  const [studentData,setStudentData] = useState({}) 
-
+  const [studentData, setStudentData] = useState({});
 
   const get_profile = async () => {
     try {
@@ -128,7 +127,7 @@ export default function ProfilePage() {
           new_password: "",
           confirm_password: "",
         });
-        setStudentData(student_data)
+        setStudentData(student_data);
       }
     } catch (error) {
       console.log(error);
@@ -179,9 +178,9 @@ export default function ProfilePage() {
         SetIs_profile_data_changed(!is_profile_data_changed);
       }
     } catch (error) {
-      const {message} = error?.response?.data
+      const { message } = error?.response?.data;
       console.log(error);
-      toast.error(message)
+      toast.error(message);
     }
   };
   useEffect(() => {
@@ -389,7 +388,9 @@ export default function ProfilePage() {
                           </div>
                           <div>
                             <h2 className="text-2xl font-semibold">
-                              {studentData.name ? studentData.name : "Full Name"}
+                              {studentData.name
+                                ? studentData.name
+                                : "Full Name"}
                             </h2>
                             <p className="text-gray-600">
                               {studentData.proffession
@@ -419,7 +420,7 @@ export default function ProfilePage() {
                                   </div>
                                 )}
                               </div>
-                              <div className="space-y-2">
+                              {/* <div className="space-y-2">
                                 <Label htmlFor="email">Email</Label>
                                 <Field
                                   as={Input}
@@ -433,7 +434,7 @@ export default function ProfilePage() {
                                     {errors.email}
                                   </div>
                                 )}
-                              </div>
+                              </div> */}
                               <div className="space-y-2">
                                 <Label htmlFor="mobile">Phone</Label>
                                 <Field
@@ -498,136 +499,140 @@ export default function ProfilePage() {
                             </div>
                           </div>
 
-                          <div>
-                            <h2 className="text-xl font-semibold mb-4">
-                              Account Settings
-                            </h2>
-                            <div className="space-y-6">
-                              <div>
-                                <h3 className="text-lg font-medium mb-2">
-                                  Change Password
-                                </h3>
-                                <div className="space-y-4">
-                                  <div className="space-y-2">
-                                    <Label htmlFor="current_password">
-                                      Current Password
-                                    </Label>
-                                    <div className="relative">
-                                      <Field
-                                        as={Input}
-                                        id="current_password"
-                                        name="current_password"
-                                        className="h-10"
-                                        type={
-                                          showCurrentPassword
-                                            ? "text"
-                                            : "password"
-                                        }
-                                        placeholder="Your password"
-                                      />
-                                      <button
-                                        type="button"
-                                        className="absolute inset-y-0 right-0 pr-3 flex items-center"
-                                        onClick={() =>
-                                          setShowCurrentPassword(
-                                            !showCurrentPassword
-                                          )
-                                        }
-                                      >
-                                        {showCurrentPassword ? (
-                                          <EyeOff className="h-4 w-4 text-gray-400" />
-                                        ) : (
-                                          <Eye className="h-4 w-4 text-gray-400" />
-                                        )}
-                                      </button>
-                                      {errors.current_password &&
-                                        touched.current_password && (
-                                          <div className="text-sm text-red-500">
-                                            {errors.current_password}
-                                          </div>
-                                        )}
+                          {!studentData?.googleId && (
+                            <div>
+                              <h2 className="text-xl font-semibold mb-4">
+                                Account Settings
+                              </h2>
+                              <div className="space-y-6">
+                                <div>
+                                  <h3 className="text-lg font-medium mb-2">
+                                    Change Password
+                                  </h3>
+                                  <div className="space-y-4">
+                                    <div className="space-y-2">
+                                      <Label htmlFor="current_password">
+                                        Current Password
+                                      </Label>
+                                      <div className="relative">
+                                        <Field
+                                          as={Input}
+                                          id="current_password"
+                                          name="current_password"
+                                          className="h-10"
+                                          type={
+                                            showCurrentPassword
+                                              ? "text"
+                                              : "password"
+                                          }
+                                          placeholder="Your password"
+                                        />
+                                        <button
+                                          type="button"
+                                          className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                                          onClick={() =>
+                                            setShowCurrentPassword(
+                                              !showCurrentPassword
+                                            )
+                                          }
+                                        >
+                                          {showCurrentPassword ? (
+                                            <EyeOff className="h-4 w-4 text-gray-400" />
+                                          ) : (
+                                            <Eye className="h-4 w-4 text-gray-400" />
+                                          )}
+                                        </button>
+                                        {errors.current_password &&
+                                          touched.current_password && (
+                                            <div className="text-sm text-red-500">
+                                              {errors.current_password}
+                                            </div>
+                                          )}
+                                      </div>
                                     </div>
-                                  </div>
-                                  <div className="space-y-2">
-                                    <Label htmlFor="newPassword">
-                                      New Password
-                                    </Label>
-                                    <div className="relative">
-                                      <Field
-                                        as={Input}
-                                        id="new_password"
-                                        name="new_password"
-                                        className="h-10"
-                                        type={
-                                          showNewPassword ? "text" : "password"
-                                        }
-                                        placeholder="Your password"
-                                      />
-                                      <button
-                                        type="button"
-                                        className="absolute inset-y-0 right-0 pr-3 flex items-center"
-                                        onClick={() =>
-                                          setShowNewPassword(!showNewPassword)
-                                        }
-                                      >
-                                        {showNewPassword ? (
-                                          <EyeOff className="h-4 w-4 text-gray-400" />
-                                        ) : (
-                                          <Eye className="h-4 w-4 text-gray-400" />
-                                        )}
-                                      </button>
-                                      {errors.new_password &&
-                                        touched.new_password && (
-                                          <div className="text-sm text-red-500">
-                                            {errors.new_password}
-                                          </div>
-                                        )}
+                                    <div className="space-y-2">
+                                      <Label htmlFor="newPassword">
+                                        New Password
+                                      </Label>
+                                      <div className="relative">
+                                        <Field
+                                          as={Input}
+                                          id="new_password"
+                                          name="new_password"
+                                          className="h-10"
+                                          type={
+                                            showNewPassword
+                                              ? "text"
+                                              : "password"
+                                          }
+                                          placeholder="Your password"
+                                        />
+                                        <button
+                                          type="button"
+                                          className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                                          onClick={() =>
+                                            setShowNewPassword(!showNewPassword)
+                                          }
+                                        >
+                                          {showNewPassword ? (
+                                            <EyeOff className="h-4 w-4 text-gray-400" />
+                                          ) : (
+                                            <Eye className="h-4 w-4 text-gray-400" />
+                                          )}
+                                        </button>
+                                        {errors.new_password &&
+                                          touched.new_password && (
+                                            <div className="text-sm text-red-500">
+                                              {errors.new_password}
+                                            </div>
+                                          )}
+                                      </div>
                                     </div>
-                                  </div>
-                                  <div className="space-y-2">
-                                    <Label htmlFor="confirmPassword">
-                                      Confirm New Password
-                                    </Label>
-                                    <div className="relative">
-                                      <Field
-                                        as={Input}
-                                        id="confirm_password"
-                                        name="confirm_password"
-                                        className="h-10"
-                                        type={
-                                          showConfirmPassword
-                                            ? "text"
-                                            : "password"
-                                        }
-                                        placeholder="Your confirm password"
-                                      />
-                                      <button
-                                        type="button"
-                                        className="absolute inset-y-0 right-0 pr-3 flex items-center"
-                                        onClick={() =>
-                                          setshowConfirmPassword(
-                                            !showConfirmPassword
-                                          )
-                                        }
-                                      >
-                                        {showConfirmPassword ? (
-                                          <EyeOff className="h-4 w-4 text-gray-400" />
-                                        ) : (
-                                          <Eye className="h-4 w-4 text-gray-400" />
-                                        )}
-                                      </button>
-                                      {errors.confirm_password &&
-                                        touched.confirm_password && (
-                                          <div className="text-sm text-red-500">
-                                            {errors.confirm_password}
-                                          </div>
-                                        )}
+                                    <div className="space-y-2">
+                                      <Label htmlFor="confirmPassword">
+                                        Confirm New Password
+                                      </Label>
+                                      <div className="relative">
+                                        <Field
+                                          as={Input}
+                                          id="confirm_password"
+                                          name="confirm_password"
+                                          className="h-10"
+                                          type={
+                                            showConfirmPassword
+                                              ? "text"
+                                              : "password"
+                                          }
+                                          placeholder="Your confirm password"
+                                        />
+                                        <button
+                                          type="button"
+                                          className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                                          onClick={() =>
+                                            setshowConfirmPassword(
+                                              !showConfirmPassword
+                                            )
+                                          }
+                                        >
+                                          {showConfirmPassword ? (
+                                            <EyeOff className="h-4 w-4 text-gray-400" />
+                                          ) : (
+                                            <Eye className="h-4 w-4 text-gray-400" />
+                                          )}
+                                        </button>
+                                        {errors.confirm_password &&
+                                          touched.confirm_password && (
+                                            <div className="text-sm text-red-500">
+                                              {errors.confirm_password}
+                                            </div>
+                                          )}
+                                      </div>
                                     </div>
                                   </div>
                                 </div>
                               </div>
                             </div>
-                          </div>
+                          )}
                         </div>
                         <Button type="submit" className="mt-8">
                           Save Changes

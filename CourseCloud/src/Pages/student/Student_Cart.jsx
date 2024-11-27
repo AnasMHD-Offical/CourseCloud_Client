@@ -31,8 +31,8 @@ export default function CartPage() {
   const student_id = useSelector(
     (state) => state?.student?.student_data?.student?._id
   );
-  const [cartItems, setCartItems] = useState([]);
 
+  const [cartItems, setCartItems] = useState([]);
   const [couponCode, setCouponCode] = useState("");
   const [isApplying, setIsApplying] = useState(false);
   const [showBackToTop, setShowBackToTop] = useState(false);
@@ -327,6 +327,7 @@ export default function CartPage() {
                     price={calculateTotal() - calculateDiscount()}
                     student_id={student_id}
                     courses={cartItems}
+                    handleMutation={handleMutation}
                   />
                 </div>
               </CardContent>

@@ -86,9 +86,9 @@ export default function Instructor() {
       label: "Create Course",
     },
     {
-      href: "/instructor/student_progress",
+      href: "/instructor/course_management",
       icon: TrendingUp,
-      label: "Students Progress",
+      label: "Course Management",
     },
   ];
 

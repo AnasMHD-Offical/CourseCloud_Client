@@ -10,9 +10,17 @@
   width: 36rem !important;
 }
 
+.w-landscape{
+  width: 24rem !important;
+}
+
+
 @media screen and (min-width: 1024px) {
   .custom-h {
     height: 512px !important;
+  }
+  .w-landscape{
+    width: 42rem !important;
   }
 }
 @media screen and (min-width: 1280px) {
