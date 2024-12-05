@@ -69,17 +69,19 @@ function CourseCard({ update, mutation,value, naviate, wishlist_mutation, course
       console.log(error);
     }
   };
+
   useEffect(() => {
     get_cart_items();
   }, [isChanged, update]);
 
+  
   return (
     <>
       <Card className="cursor-pointer overflow-hidden w-72 sm:min-w-80 transition-all duration-300 hover:shadow-lg group">
         <CardContent className="p-0">
           <div className="relative h-48 overflow-hidden">
             <img
-              onClick={isPurchased ? ()=>navigate(`/enrolled_course_view/${course._id}`) :() => navigate(`/overview/${course._id}`)}
+              onClick={isPurchased ? ()=>navigate(`/enrolled_course_view/${course._id}`) : () => navigate(`/overview/${course._id}`)}
               src={
                 thumbnail
                   ? thumbnail
@@ -103,7 +105,7 @@ function CourseCard({ update, mutation,value, naviate, wishlist_mutation, course
             </h3>
             <div className="flex items-center text-sm text-yellow-500 mb-2">
               <Star className="w-4 h-4 fill-current mr-1" />
-              <span>{rating ? rating : "4.5"}</span>
+              <span>{rating ? rating.toFixed(1) : "4.5"}</span>
               <span className="text-gray-500 ml-1">
                 {reviews ? `(${reviews}k reviews)` : "(2.3k reviews)"}
               </span>

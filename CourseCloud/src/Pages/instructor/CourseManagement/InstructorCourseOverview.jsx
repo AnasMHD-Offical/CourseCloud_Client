@@ -66,7 +66,10 @@ export default function InstructorCourseOverview() {
       console.log(error);
     }
   };
-
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+  
   useEffect(() => {
     getCourse();
   }, []);

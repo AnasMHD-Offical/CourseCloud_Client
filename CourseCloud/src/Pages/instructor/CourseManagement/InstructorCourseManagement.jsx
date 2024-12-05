@@ -108,7 +108,9 @@ export default function InstructorCourseManagement() {
   const handlePageChange = (page) => {
     setCurrentPage(page);
   };
-
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
   useEffect(() => {
     get_all_courses();
   }, [currentPage, searchQuery, sortBy, filterBy, updated]);

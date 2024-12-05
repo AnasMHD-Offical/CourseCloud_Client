@@ -18,6 +18,7 @@ import confetti from "canvas-confetti";
 import { useSelector } from "react-redux";
 import { toast } from "sonner";
 import { axios_instance } from "@/Config/axios_instance";
+import { title } from "process";
 const questions = [
   {
     question: "What does HTML stand for?",
@@ -88,7 +89,7 @@ const questions = [
   },
 ];
 
-export default function Quiz({ questions, difficulty }) {
+export default function Quiz({ questions, difficulty,title , handleQuizCompletion}) {
   const student_id = useSelector(
     (state) => state?.student?.student_data?.student?._id
   );
@@ -182,6 +183,7 @@ export default function Quiz({ questions, difficulty }) {
       if (success) {
         setShowResults(true);
         toast.success(message);
+        handleQuizCompletion(false)
       }
     } catch (error) {
       console.log(error);
@@ -239,12 +241,12 @@ export default function Quiz({ questions, difficulty }) {
           ) : (
             <div className="space-y-4">
               <h1 className="text-3xl font-bold mb-4 text-center text-indigo-600">
-                HTML Quiz Challenge
+               {`${title} Quiz` || "Title"}
               </h1>
               {!quizStarted ? (
                 <div className="text-center space-y-4">
                   <p className="text-lg text-indigo-500">
-                    Test your HTML knowledge with 10 questions!
+                    {`Test your knowledge in the "${title}" course with 10 questions!`}
                   </p>
                   <p className="text-sm text-indigo-400">
                     You have 12 minutes and 45 seconds to complete the quiz.

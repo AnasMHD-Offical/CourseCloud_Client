@@ -24,6 +24,8 @@ import {
   Dot,
   FileEdit,
   Brain,
+  CheckCircleIcon,
+  Circle,
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -50,13 +52,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/Components/ui/select";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   setCurrent_Course_id,
   setCurrent_Lesson_id,
 } from "@/Redux/Slices/CourseMetaData";
 import AssignmentComponent from "./Student_Assignment";
 import { CourseReviews } from "./ReviewAndRatings/course_review";
+import Chat from "./AskDoubt_Component/Chat";
+import SavedNotes from "./Student_SavedNotes";
+import Cloudinary_VideoPlayer from "@/Utils/Cloudinary_VideoPlayer";
 
 export default function Purshased_Course_Overview() {
   const [isPlaying, setIsPlaying] = useState(false);
@@ -69,14 +74,21 @@ export default function Purshased_Course_Overview() {
   const [courses, setCourses] = useState();
   const [selectedNav, setSelectedNav] = useState("Overview");
   const [video_url, setVideo_url] = useState("");
-  const [thumbnail, setThumbnail] = useState("kpsd38m8mtl6nxtmujlr.jpg");
+  // const [thumbnail, setThumbnail] = useState("kpsd38m8mtl6nxtmujlr.jpg");
   const [currentLesson, setCurrentLesson] = useState({});
   const [reviews, setReviews] = useState([]);
+  const [video_progress, setVideo_progress] = useState();
+  const [progressMutation, setProgressMutation] = useState(false);
+  const [lessonProgresses, setLessonProgresses] = useState([]);
   const dispatch = useDispatch();
 
   const videoRef = useRef();
 
   const { id } = useParams();
+
+  const student_id = useSelector(
+    (state) => state?.student?.student_data?.student?._id
+  );
 
   const get_course_by_id = async () => {
     try {
@@ -111,6 +123,62 @@ export default function Purshased_Course_Overview() {
       toast.error(error.response.data?.message);
     }
   };
+  const get_video_progress = async () => {
+    try {
+      console.log("ind the fn");
+
+      const response = await axios_instance.get("api/get_video_progress", {
+        params: {
+          student_id: student_id,
+          lesson_id: currentLesson._id,
+        },
+      });
+      const { video_progress } = response?.data;
+      if (response?.data?.success) {
+        setVideo_progress(video_progress);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const get_lesson_progress = async () => {
+    try {
+      const response = await axios_instance.get("api/get_lesson_progress", {
+        params: {
+          student_id: student_id,
+          course_id: id,
+        },
+      });
+      const { lesson_progress } = response?.data;
+      if (response?.data?.success) {
+        setLessonProgresses(lesson_progress);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  // const create_lesson_progress = async () => {
+  //   try {
+  //     if(student_id && id && currentLesson?._id){
+
+  //       const response = await axios_instance.post("api/create_lesson_progress",{
+  //         student_id:student_id,
+  //         course_id : id,
+  //         lesson_id : currentLesson._id
+  //       })
+  //       console.log("Lesson_progress_created : " , response)
+  //     }
+  //     } catch (error) {
+  //     console.log(error)
+  //   }
+  // };
+
+  const video_progress_rate = useSelector(
+    (state) => state?.Video_tutorial_progress?.video_tutorial_progress
+  );
+  console.log("video progress rate : ", video_progress_rate);
 
   useEffect(() => {
     get_course_by_id();
@@ -124,6 +192,13 @@ export default function Purshased_Course_Overview() {
   useEffect(() => {
     get_review();
   }, []);
+
+  useEffect(() => {
+    get_video_progress();
+    get_lesson_progress();
+    // setVideo_progress(video_progress_rate)
+  }, [currentLesson, progressMutation]);
+
   const NavRoutes = [
     { href: "/", label: "Overview" },
     { href: "/quiz", label: "Lesson Quiz" },
@@ -132,6 +207,8 @@ export default function Purshased_Course_Overview() {
     { href: "/notes", label: "Saved Notes" },
     { href: "/reviews", label: "Reviews & Ratings" },
   ];
+
+  console.log("Lesson progresses : ", lessonProgresses);
 
   const handleSelecetedNav = (val) => {
     setSelectedNav(val);
@@ -150,8 +227,12 @@ export default function Purshased_Course_Overview() {
   };
 
   const handleTutorialChange = (lesson) => {
-    setVideo_url(lesson.video_tutorial_link);
     setCurrentLesson(lesson);
+    setVideo_url(lesson.video_tutorial_link);
+  };
+
+  const handleProgressMutation = (val) => {
+    setProgressMutation(val === false ? true : false);
   };
 
   return (
@@ -182,7 +263,7 @@ export default function Purshased_Course_Overview() {
               // onMouseEnter={() => setShowControls(true)}
               // onMouseLeave={() => setShowControls(false)}
             >
-              <iframe
+              {/* <iframe
                 ref={videoRef}
                 src={`https://player.cloudinary.com/embed/?public_id=${video_url}&cloud_name=dtc1xcil8&player[showJumpControls]=true&player[pictureInPictureToggle]=true&player[controlBar][fullscreenToggle]=true&source[poster]=https%3A%2F%2Fres.cloudinary.com%2Fdtc1xcil8%2Fimage%2Fupload%2F${thumbnail}&source[chapters]=true&source[sourceTypes][0]=hls`}
                 // src="https://player.cloudinary.com/embed/?public_id=mcfbvelvdwkqbpf0o24e&cloud_name=dtc1xcil8&player[showJumpControls]=true&player[pictureInPictureToggle]=true&player[colors][accent]=%23A00DFF&player[fontFace]=Ruda&source[chapters]=true&source[sourceTypes][0]=hls"
@@ -193,7 +274,12 @@ export default function Purshased_Course_Overview() {
                 onTimeUpdate={handleTimeUpdate}
                 onLoadedMetadata={handleLoadedMetadata}
                 frameborder="0"
-              ></iframe>
+              ></iframe> */}
+
+              <Cloudinary_VideoPlayer
+                public_id={video_url}
+                handleMutation={handleProgressMutation}
+              />
 
               {/* <AnimatePresence>
                 {showControls && (
@@ -438,14 +524,20 @@ export default function Purshased_Course_Overview() {
                     {console.log(currentLesson.description)}
                     {currentLesson && (
                       <QuizConponentOverview
-                        topic={currentLesson.description}
-                        title={currentLesson.title}
+                        topic={courses?.title}
+                        title={courses?.title}
                         For={"tabs"}
                       />
                     )}
                   </TabsContent>
                   <TabsContent value="Assignments">
                     <AssignmentComponent assignment={currentLesson} />
+                  </TabsContent>
+                  <TabsContent value="Ask your doubts">
+                    <Chat />
+                  </TabsContent>
+                  <TabsContent value="Saved Notes">
+                    <SavedNotes />
                   </TabsContent>
                   <TabsContent value="Reviews & Ratings">
                     <CourseReviews />
@@ -610,8 +702,8 @@ export default function Purshased_Course_Overview() {
                 )}
                 {selectedNav === "Lesson Quiz" && currentLesson && (
                   <QuizConponentOverview
-                    topic={currentLesson.description}
-                    title={currentLesson.title}
+                    topic={courses.title}
+                    title={courses.title}
                     For={"select"}
                     course_id={id}
                     lesson_id={currentLesson._id}
@@ -621,6 +713,9 @@ export default function Purshased_Course_Overview() {
                 {selectedNav === "Assignments" && (
                   <AssignmentComponent assignment={currentLesson} />
                 )}
+                {selectedNav === "Ask your doubts" && <Chat />}
+                {selectedNav === "Saved Notes" && <SavedNotes />}
+                {selectedNav === "Reviews & Ratings" && <CourseReviews />}
               </div>
             </div>
           </div>
@@ -628,7 +723,7 @@ export default function Purshased_Course_Overview() {
           {/* Course Content Sidebar */}
           <div className="lg:w-96">
             <div className="sticky top-36">
-              <div className="bg-white rounded-lg border overflow-hidden">
+              <div className="bg-gradient-to-r from-purple-50 to-blue-50 rounded-lg border overflow-hidden">
                 <div className="p-4 border-b">
                   <h2 className="font-semibold">Course Content</h2>
                   <p className="text-sm text-gray-600 flex gap-4 mt-2">
@@ -641,8 +736,7 @@ export default function Purshased_Course_Overview() {
                       Assignments{" "}
                     </span>{" "}
                     <span className="flex items-center gap-1">
-                      <Brain className="w-4 h-4" /> {CourseLessons.length * 3}{" "}
-                      Quizzes{" "}
+                      <Brain className="w-4 h-4" /> {`3 level`} Quizzes{" "}
                     </span>
                   </p>
                 </div>
@@ -654,24 +748,48 @@ export default function Purshased_Course_Overview() {
                     className="w-full"
                   >
                     {CourseLessons.map((lesson, index) => (
-                      <AccordionItem key={lesson._id} value={lesson._id}>
-                        <AccordionTrigger className="px-4 hover:no-underline hover:bg-gray-50">
-                          <div className="flex items-start justify-between">
-                            <span
-                              className="font-medium"
-                              onClick={() => handleTutorialChange(lesson)}
-                            >
-                              {lesson.title}
-                            </span>
-                            {""}
-                          </div>
-                        </AccordionTrigger>
-                        <AccordionContent>
-                          <div className="space-y-1 p-2">
-                            {lesson.description}
-                          </div>
-                        </AccordionContent>
-                      </AccordionItem>
+                      <>
+                        {}
+                        <AccordionItem key={lesson._id} value={lesson._id}>
+                          <AccordionTrigger className="px-4 hover:no-underline hover:bg-white">
+                            <div className="flex flex-col gap-1">
+                              <div className="flex items-center justify-between gap-1">
+                                {video_progress?.tutorial_completed ? (
+                                  <CheckCircleIcon className="w-4 h-4" />
+                                ) : (
+                                  <Circle className="w-4 h-4" />
+                                )}
+                                <span
+                                  className="font-medium"
+                                  onClick={() => handleTutorialChange(lesson)}
+                                >
+                                  {lesson.title}
+                                </span>
+                                {""}
+                              </div>
+                              <Badge
+                                className={
+                                  " text-xs text-black bg-purple-300 hover:bg-purple-300 max-w-28"
+                                }
+                              >
+                                {lessonProgresses[index]?.video_tutorial_completed
+                                  ? "100% completed"
+                                  : `${
+                                      video_progress_rate?.lesson_id ===
+                                      lesson._id
+                                        ? video_progress_rate?.progress
+                                        : 0
+                                    }% completed`}
+                              </Badge>
+                            </div>
+                          </AccordionTrigger>
+                          <AccordionContent>
+                            <div className="space-y-1 p-2">
+                              {lesson.description}
+                            </div>
+                          </AccordionContent>
+                        </AccordionItem>
+                      </>
                     ))}
                   </Accordion>
                 </ScrollArea>

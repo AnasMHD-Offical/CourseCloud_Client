@@ -44,6 +44,7 @@ import { axios_instance } from "@/Config/axios_instance";
 import { useSelector } from "react-redux";
 import CourseContainer from "@/Components/base/CourseContainer";
 import ContainerSkelton from "@/Components/fallback/ContainerSkeleton";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/Components/ui/select";
 
 export default function All_Course_Component() {
   const student_id = useSelector(
@@ -73,7 +74,7 @@ export default function All_Course_Component() {
   const get_purchased_courses = async () => {
     try {
       const response = await axios_instance.get(
-        `api/get_purchased_courses/${student_id}`
+        `api/get_purchased_courses/${student_id}`,
       );
       const { message, success, purchased_courses, Courses_duration } =
         response?.data;
@@ -216,7 +217,7 @@ export default function All_Course_Component() {
             defaultValue={activeTab}
             onValueChange={setActiveTab}
           >
-            <TabsList>
+            {/* <TabsList>
               <TabsTrigger value="enrolled">Enrolled</TabsTrigger>
               <TabsTrigger value="in-progress">In Progress</TabsTrigger>
               <TabsTrigger value="completed">Completed</TabsTrigger>
@@ -233,34 +234,31 @@ export default function All_Course_Component() {
                 />
               </div>
               <div className="flex items-center gap-2">
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="outline" className="flex">
-                      <ArrowDownUpIcon className="text-black w-4 h-4" /> Sort By
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent>
-                    <DropdownMenuItem>Newest</DropdownMenuItem>
-                    <DropdownMenuItem>Price: Low to High</DropdownMenuItem>
-                    <DropdownMenuItem>Price: High to Low</DropdownMenuItem>
-                    <DropdownMenuItem>Rating</DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="outline">
-                      <ListFilter className="text-black w-4 h-4" />
-                      Filter{" "}
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent>
-                    <DropdownMenuItem>All Courses</DropdownMenuItem>
-                    <DropdownMenuItem>Free Courses</DropdownMenuItem>
-                    <DropdownMenuItem>Paid Courses</DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
+                <Select value={sortBy} onValueChange={setSortBy}>
+                  <SelectTrigger className="w-full md:w-[180px] border rounded-full shadow-md bg-slate-50">
+                    <SelectValue placeholder="Sort By" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Courses</SelectItem>
+                    <SelectItem value="popularity">Most Popular</SelectItem>
+                    <SelectItem value="newest">Newest</SelectItem>
+                    <SelectItem value="oldest">Oldest</SelectItem>
+                    <SelectItem value="AlphaAsc">Course : A-Z</SelectItem>
+                    <SelectItem value="AlphaDes">Course : Z-A</SelectItem>
+                  </SelectContent>
+                </Select>
+                <Select value={filter} onValueChange={setFilter}>
+                  <SelectTrigger className="w-full md:w-[180px] border rounded-full shadow-md bg-slate-50">
+                    <SelectValue placeholder="Filter" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Courses</SelectItem>
+                    <SelectItem value="free">Free courses</SelectItem>
+                    <SelectItem value="paid">Paid Courses</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
-            </div>
+            </div> */}
             <TabsContent className="mt-6" value={activeTab}>
               {isLoading ? (
                 <ContainerSkelton />

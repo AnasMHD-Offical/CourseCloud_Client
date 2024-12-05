@@ -39,15 +39,12 @@ const quizzes = [
 
 const difficulty = ["easy", "medium", "hard"];
 
-export default function QuizConponentOverview({
-  topic,
-  title,
-  For,
-}) {
+export default function QuizConponentOverview({ topic, title, For }) {
   const [easyQuiz, setEasyQuiz] = useState([]);
   const [intermediateQuiz, setIntermediateQuiz] = useState([]);
   const [hardQuiz, setHardQuiz] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [quizCompleted, setQuizCompleted] = useState(false);
 
   const get_quizes = async () => {
     try {
@@ -71,11 +68,15 @@ export default function QuizConponentOverview({
       toast.error(error?.response?.data?.message);
     }
   };
-
+  const handleQuizCompletion = (val) => {
+    setQuizCompleted(val === false ? true : false);
+  };
 
   useEffect(() => {
+    setIsLoading(true)
     get_quizes();
-  }, []);
+  }, [quizCompleted]);
+
   return (
     <motion.div>
       <Tabs defaultValue="easy" className="mb-6">
@@ -87,115 +88,123 @@ export default function QuizConponentOverview({
           ))}
         </TabsList>
         <TabsContent value="easy">
-          {isLoading ? (
-            <ContainerSkelton width={"w-landscape"} cards={1} />
-          ) : (
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
-              {quizzes
-                .filter((quiz) => quiz.difficulty === "easy")
-                .map((quiz) => (
-                  <Card
-                    key={quiz.id}
-                    className="border flex flex-col md:flex-row md:justify-between md:items-start rounded-lg shadow-sm shadow-purple-100 bg-gradient-to-r to-blue-50 from-purple-50"
-                  >
-                    <CardContent className="p-4">
-                      <h3 className="text-xl lg:text-2xl font-bold bg-clip-text bg-gradient-to-r from-primary to-purple-800 text-transparent">
-                        {`${easyQuiz?.length} Easy Questions from ${title}`}
-                      </h3>
-                      <div className="flex items-center gap-2 mt-2 text-sm text-muted-foreground">
-                        <Clock className="h-4 w-4" />
-                        <span>{quiz.time}</span>
-                        <Star className="h-4 w-4" />
-                        <span>Total score: {quiz.score}</span>
-                      </div>
-                      <p className="mt-2 text-sm text-muted-foreground">
-                        {quiz.description}
-                      </p>
-                    </CardContent>
-                    <CardFooter className="p-4">
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
+            {quizzes
+              .filter((quiz) => quiz.difficulty === "easy")
+              .map((quiz) => (
+                <Card
+                  key={quiz.id}
+                  className="border flex flex-col md:flex-row md:justify-between md:items-start rounded-lg shadow-sm shadow-purple-100 bg-gradient-to-r to-blue-50 from-purple-50"
+                >
+                  <CardContent className="p-4">
+                    <h3 className="text-xl lg:text-2xl font-bold bg-clip-text bg-gradient-to-r from-primary to-purple-800 text-transparent">
+                      {`${
+                        easyQuiz?.length || 10
+                      }  Easy Questions from ${title}`}
+                    </h3>
+                    <div className="flex items-center gap-2 mt-2 text-sm text-muted-foreground">
+                      <Clock className="h-4 w-4" />
+                      <span>{quiz.time}</span>
+                      <Star className="h-4 w-4" />
+                      <span>Total score: {quiz.score}</span>
+                    </div>
+                    <p className="mt-2 text-sm text-muted-foreground">
+                      {quiz.description}
+                    </p>
+                  </CardContent>
+                  <CardFooter className="p-4">
+                    {isLoading ? (
+                      "Ai is createing quiz for you wait for it....."
+                    ) : (
                       <Quiz
                         questions={easyQuiz}
                         difficulty={"easy"}
+                        title={title}
+                        handleQuizCompletion={handleQuizCompletion}
                       />
-                    </CardFooter>
-                  </Card>
-                ))}
-            </div>
-          )}
+                    )}
+                  </CardFooter>
+                </Card>
+              ))}
+          </div>
         </TabsContent>
         <TabsContent value="medium">
-          {isLoading ? (
-            <ContainerSkelton width={"w-landscape"} cards={1} />
-          ) : (
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
-              {quizzes
-                .filter((quiz) => quiz.difficulty === "medium")
-                .map((quiz) => (
-                  <Card
-                    key={quiz.id}
-                    className="border flex flex-col md:flex-row md:justify-between md:items-start rounded-lg shadow-sm shadow-purple-100 bg-gradient-to-r to-blue-50 from-purple-50"
-                  >
-                    <CardContent className="p-4">
-                      <h3 className="text-xl lg:text-2xl font-bold bg-clip-text bg-gradient-to-r from-primary to-purple-800 text-transparent">
-                        {`${intermediateQuiz?.length} Medium Questions from ${title}`}
-                      </h3>
-                      <div className="flex items-center gap-2 mt-2 text-sm text-muted-foreground">
-                        <Clock className="h-4 w-4" />
-                        <span>{quiz.time}</span>
-                        <Star className="h-4 w-4" />
-                        <span>Total score: {quiz.score}</span>
-                      </div>
-                      <p className="mt-2 text-sm text-muted-foreground">
-                        {quiz.description}
-                      </p>
-                    </CardContent>
-                    <CardFooter className="p-4">
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
+            {quizzes
+              .filter((quiz) => quiz.difficulty === "medium")
+              .map((quiz) => (
+                <Card
+                  key={quiz.id}
+                  className="border flex flex-col md:flex-row md:justify-between md:items-start rounded-lg shadow-sm shadow-purple-100 bg-gradient-to-r to-blue-50 from-purple-50"
+                >
+                  <CardContent className="p-4">
+                    <h3 className="text-xl lg:text-2xl font-bold bg-clip-text bg-gradient-to-r from-primary to-purple-800 text-transparent">
+                      {`${intermediateQuiz?.length} Medium Questions from ${title}`}
+                    </h3>
+                    <div className="flex items-center gap-2 mt-2 text-sm text-muted-foreground">
+                      <Clock className="h-4 w-4" />
+                      <span>{quiz.time}</span>
+                      <Star className="h-4 w-4" />
+                      <span>Total score: {quiz.score}</span>
+                    </div>
+                    <p className="mt-2 text-sm text-muted-foreground">
+                      {quiz.description}
+                    </p>
+                  </CardContent>
+                  <CardFooter className="p-4">
+                    {isLoading ? (
+                      "Ai is createing quiz for you wait for it....."
+                    ) : (
                       <Quiz
                         questions={intermediateQuiz}
                         difficulty={"medium"}
+                        title={title}
+                        handleQuizCompletion={handleQuizCompletion}
                       />
-                    </CardFooter>
-                  </Card>
-                ))}
-            </div>
-          )}
+                    )}
+                  </CardFooter>
+                </Card>
+              ))}
+          </div>
         </TabsContent>
         <TabsContent value="hard">
-          {isLoading ? (
-            <ContainerSkelton width={"w-landscape"} cards={1} />
-          ) : (
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
-              {quizzes
-                .filter((quiz) => quiz.difficulty === "hard")
-                .map((quiz) => (
-                  <Card
-                    key={quiz.id}
-                    className="border flex flex-col md:flex-row md:justify-between md:items-start rounded-lg shadow-sm shadow-purple-100 bg-gradient-to-r to-blue-50 from-purple-50"
-                  >
-                    <CardContent className="p-4">
-                      <h3 className="text-xl lg:text-2xl font-bold bg-clip-text bg-gradient-to-r from-primary to-purple-800 text-transparent">
-                        {`${hardQuiz.length} Hard Questions from ${title}`}
-                      </h3>
-                      <div className="flex items-center gap-2 mt-2 text-sm text-muted-foreground">
-                        <Clock className="h-4 w-4" />
-                        <span>{quiz.time}</span>
-                        <Star className="h-4 w-4" />
-                        <span>Total score: {quiz.score}</span>
-                      </div>
-                      <p className="mt-2 text-sm text-muted-foreground">
-                        {quiz.description}
-                      </p>
-                    </CardContent>
-                    <CardFooter className="p-4">
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
+            {quizzes
+              .filter((quiz) => quiz.difficulty === "hard")
+              .map((quiz) => (
+                <Card
+                  key={quiz.id}
+                  className="border flex flex-col md:flex-row md:justify-between md:items-start rounded-lg shadow-sm shadow-purple-100 bg-gradient-to-r to-blue-50 from-purple-50"
+                >
+                  <CardContent className="p-4">
+                    <h3 className="text-xl lg:text-2xl font-bold bg-clip-text bg-gradient-to-r from-primary to-purple-800 text-transparent">
+                      {`${hardQuiz.length} Hard Questions from ${title}`}
+                    </h3>
+                    <div className="flex items-center gap-2 mt-2 text-sm text-muted-foreground">
+                      <Clock className="h-4 w-4" />
+                      <span>{quiz.time}</span>
+                      <Star className="h-4 w-4" />
+                      <span>Total score: {quiz.score}</span>
+                    </div>
+                    <p className="mt-2 text-sm text-muted-foreground">
+                      {quiz.description}
+                    </p>
+                  </CardContent>
+                  <CardFooter className="p-4">
+                    {isLoading ? (
+                      "Ai is createing quiz for you wait for it....."
+                    ) : (
                       <Quiz
                         questions={hardQuiz}
                         difficulty={"hard"}
+                        title={title}
+                        handleQuizCompletion={handleQuizCompletion}
                       />
-                    </CardFooter>
-                  </Card>
-                ))}
-            </div>
-          )}
+                    )}
+                  </CardFooter>
+                </Card>
+              ))}
+          </div>
         </TabsContent>
       </Tabs>
     </motion.div>

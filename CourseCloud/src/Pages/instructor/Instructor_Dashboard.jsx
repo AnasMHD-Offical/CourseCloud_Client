@@ -37,10 +37,12 @@ const revenueData = [
 
 export default function InstructorDashboard() {
   const [createdCourses, setCreatedCourses] = useState([]);
+  const [DashboardData, setDashboardData] = useState([]);
   const instructor_id = useSelector(
     (state) => state?.instructor?.instructor_data?.instructor?._id
   );
   const navigate = useNavigate();
+
   const get_courses = async () => {
     try {
       const response = await axios_instance.get(
@@ -55,8 +57,25 @@ export default function InstructorDashboard() {
       console.log(error);
     }
   };
+
+  const get_instructor_dashboard_data = async () => {
+    try {
+      const response = await axios_instance.get(
+        `/api/instructor/get_instructor_dashboard_data/${instructor_id}`
+      );
+      if (response?.data?.success) {
+        setDashboardData(response?.data?.dashboard_data);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  console.log(DashboardData)
+
   useEffect(() => {
+    window.scrollTo(0, 0);
     get_courses();
+    get_instructor_dashboard_data()
   }, []);
   return (
     <>
@@ -210,7 +229,13 @@ export default function InstructorDashboard() {
                       </p>
                     </div>
                     <div className="flex flex-row gap-4">
-                      <Button variant="outline" className="hover:bg-indigo-50">
+                      <Button
+                        onClick={() =>
+                          navigate(`/instructor/course_overview/${course._id}`)
+                        }
+                        variant="outline"
+                        className="hover:bg-indigo-50"
+                      >
                         View Details
                       </Button>
                       <Button
