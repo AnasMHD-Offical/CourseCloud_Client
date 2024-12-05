@@ -7,7 +7,7 @@ import { axios_instance } from "@/Config/axios_instance";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 function CourseCardxs({ naviate, course, isPurchased }) {
-  const [BtnText, SetBtnText] = useState("Add To Cart");
+  const [BtnText, SetBtnText] = useState("Add to Cart");
   const [isChanged, setIsChanged] = useState();
   const student_id = useSelector(
     (state) => state?.student?.student_data?.student?._id
@@ -78,7 +78,7 @@ function CourseCardxs({ naviate, course, isPurchased }) {
             </h3>
             <div className="flex items-center text-sm text-yellow-500 mb-2">
               <Star className="w-4 h-4 sm:w-3 sm:h-3 fill-current mr-1" />
-              <span>{rating ? rating : "4.5"}</span>
+              <span>{rating ? rating.toFixed(1) : "4.5"}</span>
               <span className="text-gray-500 sm:text-xs ml-1">
                 {reviews ? `(${reviews}k reviews)` : "(2.3k reviews)"}
               </span>
@@ -101,7 +101,7 @@ function CourseCardxs({ naviate, course, isPurchased }) {
           )}
          {!isPurchased && <Button
             onClick={
-              BtnText === "Add to Cart"
+              BtnText == "Add to Cart"
                 ? handleAddToCart
                 : () => navigate("/cart")
             }

@@ -57,7 +57,7 @@ const RazorpayPayment = ({ price, student_id, courses, handleMutation }) => {
     <div>
       {/* <h1>Payment Page</h1> */}
       {isLoading && <p>Loading Razorpay...</p>}
-      {error && <p>Error loading Razorpay: {error}</p>}
+       {error && <p>Error loading Razorpay: {error}</p>}
       <Button
         varient="ghost"
         className="w-full  bg-black text-white hover:bg-primary/90"

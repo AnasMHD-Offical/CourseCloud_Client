@@ -16,31 +16,61 @@ import { axios_instance } from "@/Config/axios_instance";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
-// Dummy data for charts
-const enrollmentData = [
-  { month: "Jan", students: 120 },
-  { month: "Feb", students: 150 },
-  { month: "Mar", students: 200 },
-  { month: "Apr", students: 180 },
-  { month: "May", students: 250 },
-  { month: "Jun", students: 300 },
-];
-
-const revenueData = [
-  { month: "Jan", revenue: 5000 },
-  { month: "Feb", revenue: 6000 },
-  { month: "Mar", revenue: 8000 },
-  { month: "Apr", revenue: 7500 },
-  { month: "May", revenue: 9000 },
-  { month: "Jun", revenue: 11000 },
-];
 
 export default function InstructorDashboard() {
   const [createdCourses, setCreatedCourses] = useState([]);
-  const [DashboardData, setDashboardData] = useState([]);
+  const [DashboardData, setDashboardData] = useState();
+  const [studentEnrollment, setStudentEnrollment] = useState([
+    { month: "Jan", students: 0 },
+    { month: "Feb", students: 0 },
+    { month: "Mar", students: 0 },
+    { month: "Apr", students: 0 },
+    { month: "May", students: 0 },
+    { month: "Jun", students: 0 },
+  ]);
+  const [revenueData, setRevenueData] = useState([
+    { month: "Jan", revenue: 0 },
+    { month: "Feb", revenue: 0 },
+    { month: "Mar", revenue: 0 },
+    { month: "Apr", revenue: 0 },
+    { month: "May", revenue: 0 },
+    { month: "Jun", revenue: 0 },
+  ]);
   const instructor_id = useSelector(
     (state) => state?.instructor?.instructor_data?.instructor?._id
   );
+
+  const dashboardValues = [
+    {
+      title: "Total Students",
+      value: DashboardData?.totalEnrolled || "0",
+      icon: Users,
+      color: "bg-blue-500",
+    },
+    {
+      title: "Active Courses",
+      value: DashboardData?.courseCount || "0",
+      icon: BookOpen,
+      color: "bg-green-500",
+    },
+    {
+      title: "Total Revenue",
+      value: DashboardData?.totalRevenue
+        ? `Rs. ${DashboardData?.totalRevenue}`
+        : "Rs. 0",
+      icon: PieChart,
+      color: "bg-purple-500",
+    },
+    {
+      title: "Avg. Course Rating",
+      value: DashboardData?.averageRating
+        ? DashboardData?.averageRating.toFixed(1)
+        : "No ratings",
+      icon: GraduationCap,
+      color: "bg-yellow-500",
+    },
+  ];
+
   const navigate = useNavigate();
 
   const get_courses = async () => {
@@ -70,12 +100,43 @@ export default function InstructorDashboard() {
       console.log(error);
     }
   };
-  console.log(DashboardData)
+
+  const get_student_enrollment_data = async () => {
+    try {
+      const response = await axios_instance.get(
+        `/api/instructor/get_student_enrollment_data/${instructor_id}`
+      );
+      if (
+        response?.data?.success &&
+        response?.data?.student_enrollment_data.length > 0
+      ) {
+        setStudentEnrollment(response?.data?.student_enrollment_data);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const get_revenue_data = async () => {
+    try {
+      const response = await axios_instance.get(
+        `/api/instructor/get_revenue_data/${instructor_id}`
+      );
+      if (response?.data?.success && response?.data?.revenue_data.length > 0) {
+        setRevenueData(response?.data?.revenue_data);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  console.log(DashboardData);
 
   useEffect(() => {
     window.scrollTo(0, 0);
     get_courses();
-    get_instructor_dashboard_data()
+    get_instructor_dashboard_data();
+    get_student_enrollment_data();
+    get_revenue_data();
   }, []);
   return (
     <>
@@ -92,32 +153,7 @@ export default function InstructorDashboard() {
 
           {/* Overview Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            {[
-              {
-                title: "Total Students",
-                value: "1,234",
-                icon: Users,
-                color: "bg-blue-500",
-              },
-              {
-                title: "Active Courses",
-                value: "12",
-                icon: BookOpen,
-                color: "bg-green-500",
-              },
-              {
-                title: "Total Revenue",
-                value: "$12,345",
-                icon: PieChart,
-                color: "bg-purple-500",
-              },
-              {
-                title: "Avg. Course Rating",
-                value: "4.8",
-                icon: GraduationCap,
-                color: "bg-yellow-500",
-              },
-            ].map((item, index) => (
+            {dashboardValues.map((item, index) => (
               <motion.div
                 key={index}
                 initial={{ opacity: 0, y: 20 }}
@@ -153,7 +189,7 @@ export default function InstructorDashboard() {
                   Student Enrollment
                 </h3>
                 <ResponsiveContainer width="100%" height={300}>
-                  <LineChart data={enrollmentData}>
+                  <LineChart data={studentEnrollment}>
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="month" />
                     <YAxis />
