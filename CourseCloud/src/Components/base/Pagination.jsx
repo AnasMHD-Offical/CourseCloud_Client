@@ -16,7 +16,7 @@ export default function PaginationComp({ page, setPage, limit, total }) {
   const totalPages = Math.ceil(total / limit);
   console.log("Total pages : ",totalPages);  
   return (
-    <Pagination>
+    <Pagination className={"pb-2"}>
       <PaginationContent className="flex gap-2">
         <PaginationItem>
             <PaginationPrevious className={"rounded-lg p-4 shadow bg-white text-black"} onClick={()=>setPage(page === 1 ? page : page - 1)} />

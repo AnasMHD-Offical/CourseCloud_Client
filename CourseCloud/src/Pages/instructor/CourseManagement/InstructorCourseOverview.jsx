@@ -5,6 +5,7 @@ import RevenueStats from "./Components/RevenueStats";
 import { axios_instance } from "@/Config/axios_instance";
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
+import ReviewStats from "./Components/ReviewStats";
 
 const courseData = {
   courseTitle: "Complete Full Stack Development Course 2024",
@@ -37,6 +38,7 @@ const courseData = {
 export default function InstructorCourseOverview() {
   const [courseData, setCourseData] = useState([]);
   const [revenueStats, setRevenueStats] = useState({});
+  const [reviews, setReviews] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
   const { id } = useParams();
@@ -66,12 +68,31 @@ export default function InstructorCourseOverview() {
       console.log(error);
     }
   };
+
+  const get_review = async () => {
+    try {
+      const response = await axios_instance.get(
+        `api/instructor/get_reviews/${id}`
+      );
+      const { success, message, reviews } = response?.data;
+      console.log("Review : ", reviews);
+
+      if (success) {
+        setReviews(reviews);
+        // setUpdated(!updated)
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error(error.response.data?.message);
+    }
+  };
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
-  
+
   useEffect(() => {
     getCourse();
+    // get_review();
   }, []);
 
   console.log(courseData);
@@ -89,13 +110,14 @@ export default function InstructorCourseOverview() {
         <div className="grid gap-6">
           {!isLoading && <CourseDetail course={courseData} />}
           <div className="grid gap-6 md:grid-cols-2">
+            {!isLoading && <ReviewStats course_id={id} />}
+            {!isLoading && <RevenueStats stats={revenueStats} />}
             {!isLoading && (
               <CourseCurriculum
                 CourseLessons={courseData?.lessons}
                 thumbnail={courseData?.thumbnail}
               />
             )}
-            {!isLoading && <RevenueStats stats={revenueStats} />}
           </div>
         </div>
       </div>

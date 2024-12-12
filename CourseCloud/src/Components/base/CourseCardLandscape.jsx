@@ -11,14 +11,19 @@ import {
 } from "../ui/dialog";
 import { toast } from "sonner";
 import { axios_instance } from "@/Config/axios_instance";
+import { AdminReviewManagement } from "@/Pages/admin/Admin_Review_Management";
 
 export default function CourseCardLandscape({ courses, isUpdated, updateVal }) {
-    
   const [confirmation, setConfirmation] = useState({
     isOpen: false,
     is_blocked: false,
     course_id: null,
   });
+  const [isModalOpen, setisModalOpen] = useState(false);
+
+  const handleReview = () => {
+    setisModalOpen(true);
+  };
 
   const closeConfirmDialog = () => {
     setConfirmation({
@@ -89,7 +94,9 @@ export default function CourseCardLandscape({ courses, isUpdated, updateVal }) {
             </p>
             <div className="flex items-center mt-2">
               <Star className="h-4 w-4 text-yellow-400 fill-current" />
-              <span className="ml-1 text-sm">{course.rating || 4.5}</span>
+              <span className="ml-1 text-sm">
+                {course.rating ? course?.rating.toFixed(1) : 4.5}
+              </span>
               <span className="mx-2 text-gray-300">|</span>
               <span className="text-sm text-gray-500">
                 {course?.enrolled_count} students •{" "}
@@ -104,6 +111,7 @@ export default function CourseCardLandscape({ courses, isUpdated, updateVal }) {
               Rs.{course.actual_price?.$numberDecimal}
             </span>
             <div className="flex space-x-2">
+              <AdminReviewManagement course_id={course._id} />
               <Button
                 onClick={() =>
                   setConfirmation({
@@ -114,7 +122,7 @@ export default function CourseCardLandscape({ courses, isUpdated, updateVal }) {
                 }
                 size="sm"
               >
-                {course.is_blocked ? "Unblock" : "Block"}
+                {course.is_blocked ? "Show" : "Hide"}
               </Button>
             </div>
           </div>

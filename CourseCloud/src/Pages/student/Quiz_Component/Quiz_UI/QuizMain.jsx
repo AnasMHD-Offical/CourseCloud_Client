@@ -183,7 +183,7 @@ export default function Quiz({ questions, difficulty,title , handleQuizCompletio
       if (success) {
         setShowResults(true);
         toast.success(message);
-        handleQuizCompletion(false)
+        // handleQuizCompletion(false)
       }
     } catch (error) {
       console.log(error);
@@ -206,6 +206,7 @@ export default function Quiz({ questions, difficulty,title , handleQuizCompletio
     setTimeTaken(0);
     setQuizStarted(false);
     setIsOpen(false);
+     handleQuizCompletion(false)
   };
 
   const startQuiz = () => {

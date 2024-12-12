@@ -3,23 +3,10 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  Bell,
   BookOpen,
-  ChevronDown,
   ChevronRight,
-  ChevronUp,
-  Heart,
   Home,
-  PlayCircle,
-  Search,
-  Settings,
-  Share2,
-  ShoppingBag,
   Star,
-  User,
-  Volume2,
-  Check,
-  X,
   Goal,
   Dot,
   FileEdit,
@@ -74,12 +61,15 @@ export default function Purshased_Course_Overview() {
   const [courses, setCourses] = useState();
   const [selectedNav, setSelectedNav] = useState("Overview");
   const [video_url, setVideo_url] = useState("");
-  // const [thumbnail, setThumbnail] = useState("kpsd38m8mtl6nxtmujlr.jpg");
+  const [thumbnail, setThumbnail] = useState("kpsd38m8mtl6nxtmujlr.jpg");
   const [currentLesson, setCurrentLesson] = useState({});
   const [reviews, setReviews] = useState([]);
   const [video_progress, setVideo_progress] = useState();
   const [progressMutation, setProgressMutation] = useState(false);
   const [lessonProgresses, setLessonProgresses] = useState([]);
+  const [nextVideoData, setNextVideoData] = useState({});
+  const [currentTutorialIndex, setCurrentTutorialIndex] = useState(0);
+  // const [nextTutorialIndex,setNextTutorialIndex] = useState(1)
   const dispatch = useDispatch();
 
   const videoRef = useRef();
@@ -102,6 +92,7 @@ export default function Purshased_Course_Overview() {
         setRequirements(course.requirements);
         setTargetAudience(course.target_students);
         setVideo_url(course?.lessons[0].video_tutorial_link);
+        setNextVideoData(course?.lessons[1]);
         setCurrentLesson(course?.lessons[0]);
       }
     } catch (error) {
@@ -178,7 +169,12 @@ export default function Purshased_Course_Overview() {
   const video_progress_rate = useSelector(
     (state) => state?.Video_tutorial_progress?.video_tutorial_progress
   );
+
   console.log("video progress rate : ", video_progress_rate);
+  console.log("Lesson progress : ", lessonProgresses);
+
+  console.log("Next tutorial : ", nextVideoData);
+  console.log("curr tutorial : ", video_url, "index :", currentTutorialIndex);
 
   useEffect(() => {
     get_course_by_id();
@@ -186,7 +182,7 @@ export default function Purshased_Course_Overview() {
   }, [id]);
 
   useEffect(() => {
-    dispatch(setCurrent_Lesson_id(currentLesson._id));
+    dispatch(setCurrent_Lesson_id(currentLesson?._id));
   }, [currentLesson]);
 
   useEffect(() => {
@@ -201,7 +197,7 @@ export default function Purshased_Course_Overview() {
 
   const NavRoutes = [
     { href: "/", label: "Overview" },
-    { href: "/quiz", label: "Lesson Quiz" },
+    // { href: "/quiz", label: "Lesson Quiz" },
     { href: "/assignments", label: "Assignments" },
     { href: "/ask_doubt", label: "Ask your doubts" },
     { href: "/notes", label: "Saved Notes" },
@@ -214,21 +210,15 @@ export default function Purshased_Course_Overview() {
     setSelectedNav(val);
   };
 
-  const handleTimeUpdate = () => {
-    if (videoRef.current) {
-      setCurrentTime(videoRef.current.currentTime);
-    }
-  };
-
-  const handleLoadedMetadata = () => {
-    if (videoRef.current) {
-      setDuration(videoRef.current.duration);
-    }
-  };
-
-  const handleTutorialChange = (lesson) => {
+  const handleTutorialChange = (lesson, currentIndex, nextTutorialIndex) => {
     setCurrentLesson(lesson);
     setVideo_url(lesson.video_tutorial_link);
+    setCurrentTutorialIndex(currentIndex);
+    setNextVideoData(
+      nextTutorialIndex < CourseLessons.length
+        ? CourseLessons[nextTutorialIndex]
+        : ""
+    );
   };
 
   const handleProgressMutation = (val) => {
@@ -258,77 +248,14 @@ export default function Purshased_Course_Overview() {
             </div>
 
             {/* Video Player */}
-            <div
-              className="relative aspect-video bg-black rounded-lg overflow-hidden mb-8"
-              // onMouseEnter={() => setShowControls(true)}
-              // onMouseLeave={() => setShowControls(false)}
-            >
-              {/* <iframe
-                ref={videoRef}
-                src={`https://player.cloudinary.com/embed/?public_id=${video_url}&cloud_name=dtc1xcil8&player[showJumpControls]=true&player[pictureInPictureToggle]=true&player[controlBar][fullscreenToggle]=true&source[poster]=https%3A%2F%2Fres.cloudinary.com%2Fdtc1xcil8%2Fimage%2Fupload%2F${thumbnail}&source[chapters]=true&source[sourceTypes][0]=hls`}
-                // src="https://player.cloudinary.com/embed/?public_id=mcfbvelvdwkqbpf0o24e&cloud_name=dtc1xcil8&player[showJumpControls]=true&player[pictureInPictureToggle]=true&player[colors][accent]=%23A00DFF&player[fontFace]=Ruda&source[chapters]=true&source[sourceTypes][0]=hls"
-                allow="autoplay; fullscreen; encrypted-media; picture-in-picture"
-                undefined
-                allowfullscreen
-                className="w-full h-full"
-                onTimeUpdate={handleTimeUpdate}
-                onLoadedMetadata={handleLoadedMetadata}
-                frameborder="0"
-              ></iframe> */}
-
+            <div className="relative aspect-video bg-black rounded-lg overflow-hidden mb-8">
               <Cloudinary_VideoPlayer
                 public_id={video_url}
                 handleMutation={handleProgressMutation}
+                nextTutorial={nextVideoData}
+                currentTutorialIndex={currentTutorialIndex}
+                handleLessonChange={handleTutorialChange}
               />
-
-              {/* <AnimatePresence>
-                {showControls && (
-                  <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"
-                  >
-                    <div className="absolute bottom-0 left-0 right-0 p-4">
-                      <div className="flex items-center gap-4 text-white">
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="text-white hover:text-white/80"
-                          onClick={togglePlay}
-                        >
-                          {isPlaying ? (
-                            <X className="h-6 w-6" />
-                          ) : (
-                            <PlayCircle className="h-6 w-6" />
-                          )}
-                        </Button>
-                        <div className="flex-1">
-                          <Progress
-                            value={(currentTime / duration) * 100}
-                            className="h-1"
-                          />
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <Volume2 className="h-4 w-4" />
-                          <input
-                            type="range"
-                            min="0"
-                            max="1"
-                            step="0.1"
-                            value={volume}
-                            onChange={handleVolumeChange}
-                            className="w-20"
-                          />
-                        </div>
-                        <span className="text-sm">
-                          {formatTime(currentTime)} / {formatTime(duration)}
-                        </span>
-                      </div>
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence> */}
             </div>
 
             <div>
@@ -520,7 +447,7 @@ export default function Purshased_Course_Overview() {
                       </div>
                     </div>
                   </TabsContent>
-                  <TabsContent value="Lesson Quiz">
+                  {/* <TabsContent value="Lesson Quiz">
                     {console.log(currentLesson.description)}
                     {currentLesson && (
                       <QuizConponentOverview
@@ -529,7 +456,7 @@ export default function Purshased_Course_Overview() {
                         For={"tabs"}
                       />
                     )}
-                  </TabsContent>
+                  </TabsContent> */}
                   <TabsContent value="Assignments">
                     <AssignmentComponent assignment={currentLesson} />
                   </TabsContent>
@@ -700,7 +627,7 @@ export default function Purshased_Course_Overview() {
                     </div>
                   </div>
                 )}
-                {selectedNav === "Lesson Quiz" && currentLesson && (
+                {/* {selectedNav === "Lesson Quiz" && currentLesson && (
                   <QuizConponentOverview
                     topic={courses.title}
                     title={courses.title}
@@ -708,7 +635,7 @@ export default function Purshased_Course_Overview() {
                     course_id={id}
                     lesson_id={currentLesson._id}
                   />
-                )}
+                )} */}
 
                 {selectedNav === "Assignments" && (
                   <AssignmentComponent assignment={currentLesson} />
@@ -754,14 +681,21 @@ export default function Purshased_Course_Overview() {
                           <AccordionTrigger className="px-4 hover:no-underline hover:bg-white">
                             <div className="flex flex-col gap-1">
                               <div className="flex items-center justify-between gap-1">
-                                {video_progress?.tutorial_completed ? (
+                                {lessonProgresses[index]
+                                  ?.video_tutorial_completed ? (
                                   <CheckCircleIcon className="w-4 h-4" />
                                 ) : (
                                   <Circle className="w-4 h-4" />
                                 )}
                                 <span
                                   className="font-medium"
-                                  onClick={() => handleTutorialChange(lesson)}
+                                  onClick={() =>
+                                    handleTutorialChange(
+                                      lesson,
+                                      index,
+                                      index + 1
+                                    )
+                                  }
                                 >
                                   {lesson.title}
                                 </span>
@@ -772,7 +706,8 @@ export default function Purshased_Course_Overview() {
                                   " text-xs text-black bg-purple-300 hover:bg-purple-300 max-w-28"
                                 }
                               >
-                                {lessonProgresses[index]?.video_tutorial_completed
+                                {lessonProgresses[index]
+                                  ?.video_tutorial_completed
                                   ? "100% completed"
                                   : `${
                                       video_progress_rate?.lesson_id ===
@@ -791,6 +726,17 @@ export default function Purshased_Course_Overview() {
                         </AccordionItem>
                       </>
                     ))}
+                    {/* {console.log("kopjowef",)} */}
+                    {lessonProgresses[CourseLessons.length - 1]
+                      ?.video_tutorial_completed && (
+                      <QuizConponentOverview
+                        topic={courses?.title}
+                        title={courses?.title}
+                        For={"select"}
+                        course_id={id}
+                        lesson_id={currentLesson?._id}
+                      />
+                    )}
                   </Accordion>
                 </ScrollArea>
               </div>

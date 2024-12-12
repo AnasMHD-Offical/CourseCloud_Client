@@ -18,7 +18,6 @@ export function Results({ answers, questions, timeTaken, onRestart }) {
     return `${minutes}:${remainingSeconds.toString().padStart(2, "0")}`;
   };
 
-
   return (
     <div className="space-y-4">
       <h1 className="text-3xl font-bold mb-4 text-center text-purple-600">
@@ -60,9 +59,15 @@ export function Results({ answers, questions, timeTaken, onRestart }) {
         </div>
       </div>
       <div className="flex justify-center mt-6">
-        <Button onClick={onRestart} className="px-8 py-2 text-lg">
-          Restart Quiz
-        </Button>
+        {percentage >= 80 ? (
+          <Button onClick={onRestart} className="px-8 py-2 text-lg">
+            You are eligible for the cetificate
+          </Button>
+        ) : (
+          <Button onClick={onRestart} className="px-8 py-2 text-lg">
+            Restart Quiz
+          </Button>
+        )}
       </div>
     </div>
   );

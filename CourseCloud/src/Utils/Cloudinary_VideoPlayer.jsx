@@ -4,8 +4,15 @@ import { useDispatch, useSelector } from "react-redux";
 // import "cloudinary-video-player/dist/cld-video-player.min.css";
 import cloudinary from "cloudinary-video-player";
 import { set_video_tutorial_progress } from "@/Redux/Slices/Video_tutorial_progress";
+import { LucideGlobeLock } from "lucide-react";
 
-export default function Cloudinary_VideoPlayer({ public_id, handleMutation }) {
+export default function Cloudinary_VideoPlayer({
+  public_id,
+  handleMutation,
+  nextTutorial,
+  currentTutorialIndex,
+  handleLessonChange,
+}) {
   const [currentTime, setCurrentTime] = useState();
   // const [Tutorial, setTurorial] = useState("");
   const cloudinaryRef = useRef(null);
@@ -14,6 +21,7 @@ export default function Cloudinary_VideoPlayer({ public_id, handleMutation }) {
   // const [CurrentVideoProgress,setCurrentVideoProgress] = useState(0);
   const [duration, setDuration] = useState(0);
   const [lessonCompleted, setLessonCompleted] = useState(false);
+  const [initialisePlayer, setInitialisePlayer] = useState(false);
 
   const student_id = useSelector(
     (state) => state?.student?.student_data?.student?._id
@@ -63,8 +71,28 @@ export default function Cloudinary_VideoPlayer({ public_id, handleMutation }) {
 
         if (public_id && videoRef.current) {
           if (playerInstanceRef.current) {
-            playerInstanceRef.current.destroy();
-            playerInstanceRef.current = null;
+            const response = await axios_instance.get(
+              "api/get_video_progress",
+              {
+                params: {
+                  student_id: student_id,
+                  course_id: current_course_id,
+                  lesson_id: current_lesson_id,
+                },
+              }
+            );
+            console.log("Playerinstance : ", playerInstanceRef.current);
+            // console.log("player instance",playerInstanceRef.current)
+            playerInstanceRef.current
+              .source(public_id, {
+                cloud_name: "dtc1xcil8",
+                profile: "cld-adaptive-stream",
+              })
+              .currentTime(
+                Math.floor(
+                  response?.data?.video_progress?.recently_watched_time
+                )
+              );
           }
 
           const response = await axios_instance.get("api/get_video_progress", {
@@ -96,8 +124,6 @@ export default function Cloudinary_VideoPlayer({ public_id, handleMutation }) {
                   response?.data?.video_progress?.recently_watched_time
                 )
               );
-
-              set;
             }
           });
         }
@@ -107,8 +133,73 @@ export default function Cloudinary_VideoPlayer({ public_id, handleMutation }) {
     };
 
     initializePlayer();
-  }, [public_id, current_lesson_id]);
+  }, [public_id, current_lesson_id, nextTutorial, currentTutorialIndex]);
 
+  // useEffect(() => {
+  //   const initializePlayer = async () => {
+  //     try {
+  //       // Ensure we clean up any existing player first
+  //       if (playerInstanceRef.current) {
+  //         playerInstanceRef.current.destroy();
+  //         playerInstanceRef.current = null;
+  //       }
+
+  //       // Ensure cloudinary is initialized
+  //       if (!cloudinaryRef.current) {
+  //         cloudinaryRef.current = window.cloudinary;
+  //       }
+
+  //       // Only proceed if we have a public_id and video ref
+  //       if (public_id && videoRef.current) {
+  //         const response = await axios_instance.get("api/get_video_progress", {
+  //           params: {
+  //             student_id: student_id,
+  //             course_id: current_course_id,
+  //             lesson_id: current_lesson_id,
+  //           },
+  //         });
+
+  //         // Create a new player instance each time
+  //         playerInstanceRef.current = cloudinaryRef.current.videoPlayer(
+  //           videoRef.current,
+  //           {
+  //             cloud_name: "dtc1xcil8",
+  //             profile: "cld-adaptive-stream",
+  //             publicId: public_id || "",
+  //             showJumpControls: true,
+  //             pictureInPictureToggle: true,
+  //           }
+  //         );
+
+  //         playerInstanceRef.current.on("ready", () => {
+  //           if (
+  //             Math.floor(
+  //               response?.data?.video_progress?.recently_watched_time
+  //             ) > 0
+  //           ) {
+  //             playerInstanceRef.current.currentTime(
+  //               Math.floor(
+  //                 response?.data?.video_progress?.recently_watched_time
+  //               )
+  //             );
+  //           }
+  //         });
+  //       }
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   };
+
+  //   initializePlayer();
+
+  //   // Add a cleanup function to destroy the player when the component unmounts
+  //   return () => {
+  //     if (playerInstanceRef.current) {
+  //       playerInstanceRef.current.dispose();
+  //       playerInstanceRef.current = null;
+  //     }
+  //   };
+  // }, [public_id, current_lesson_id, student_id, current_course_id]);
   // useEffect(() => {
   //   if (!cloudinaryRef.current) {
   //     cloudinaryRef.current = window.cloudinary;
@@ -173,7 +264,7 @@ export default function Cloudinary_VideoPlayer({ public_id, handleMutation }) {
           progress: Math.floor(
             (videoRef.current.currentTime / videoRef.current.duration) * 100
           ),
-          current_time:videoRef.current.currentTime
+          current_time: videoRef.current.currentTime,
         })
       );
     }
@@ -191,21 +282,69 @@ export default function Cloudinary_VideoPlayer({ public_id, handleMutation }) {
         duration: videoRef.current.duration,
         recent_whatched_time: videoRef.current.currentTime,
       });
-      console.log("Video progress update:",response)
+      console.log("Video progress update:", response);
       if (response?.data?.success) {
         console.log("saved successfully");
         handleMutation(false);
         if (response?.data?.video_progress?.tutorial_completed) {
+          if (playerInstanceRef.current && nextTutorial) {
+            const response = await axios_instance.get(
+              "api/get_video_progress",
+              {
+                params: {
+                  student_id: student_id,
+                  course_id: current_course_id,
+                  lesson_id: nextTutorial?._id,
+                },
+              }
+            );
+            console.log("Playerinstance : ", playerInstanceRef.current);
+            // console.log("player instance",playerInstanceRef.current)
+            playerInstanceRef.current.source(
+              nextTutorial?.video_tutorial_link,
+              {
+                cloud_name: "dtc1xcil8",
+                profile: "cld-adaptive-stream",
+              }
+            );
+
+            // .currentTime(
+            //   Math.floor(
+            //     response?.data?.video_progress?.recently_watched_time
+            //   )
+            // );
+            handleLessonChange(
+              nextTutorial,
+              currentTutorialIndex + 1,
+              currentTutorialIndex + 2
+            );
+          }
+          // handleLessonChange(nextTutorial);
           await axios_instance.put("api/update_lesson_progress", {
             student_id: student_id,
             course_id: current_course_id,
             lesson_id: current_lesson_id,
             video_progress: response?.data?.video_progress?._id,
             tutorial_completed: true,
-            assignment_completed : false
+            assignment_completed: false,
           });
-          console.log("Lesson updated")
           setLessonCompleted(true);
+          console.log("Lesson updated");
+          handleLessonChange(
+            nextTutorial,
+            currentTutorialIndex + 1,
+            currentTutorialIndex + 2
+          );
+          handleMutation(true);
+          console.log("Lesson changed");
+          await axios_instance.put("api/update_course_progress", {
+            student_id: student_id,
+            course_id: current_course_id,
+            lesson_id: current_lesson_id,
+            video_progress: response?.data?.video_progress?._id,
+            tutorial_completed: true,
+            assignment_completed: false,
+          });
           handleMutation(true);
         }
       }
@@ -224,7 +363,7 @@ export default function Cloudinary_VideoPlayer({ public_id, handleMutation }) {
       {console.log(public_id)}
       <video
         ref={videoRef}
-        data-cld-public-id={`${public_id}`}
+        // data-cld-public-id={`${public_id}`}
         // data-cld-public-id={`mvxhledspwapb3l3pblv`}
         // data-cld-public-id={public_id ? `${public_id}` : "mcfbvelvdwkqbpf0o24e"}
         className="w-full h-full"

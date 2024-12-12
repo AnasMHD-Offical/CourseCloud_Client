@@ -22,7 +22,9 @@ export default function CourseCardLandscapeReuse({ courses }) {
             <p className="text-sm text-gray-500">{course?.subtitle}</p>
             <div className="flex items-center mt-2">
               <Star className="h-4 w-4 text-yellow-400 fill-current" />
-              <span className="ml-1 text-sm">{course.rating || 4.5}</span>
+              <span className="ml-1 text-sm">
+                {course.rating ? course?.rating.toFixed(1) : 4.5}
+              </span>
               <span className="mx-2 text-gray-300">|</span>
               <span className="text-sm text-gray-500">
                 {course?.enrolled_count} students •{" "}
